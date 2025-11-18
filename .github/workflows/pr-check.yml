@@ -1,0 +1,51 @@
+name: PR Check
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  check-pr-rules:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR rules
+        run: |
+          BASE_BRANCH="${{ github.base_ref }}"
+          HEAD_BRANCH="${{ github.head_ref }}"
+          HEAD_REPO="${{ github.head_repo.owner.login }}"
+          BASE_REPO="${{ github.base_repo.owner.login }}"
+          
+          echo "Base branch: $BASE_BRANCH"
+          echo "Head branch: $HEAD_BRANCH"
+          echo "Head repo: $HEAD_REPO"
+          echo "Base repo: $BASE_REPO"
+          
+          # mainブランチへのPRはdevelopブランチからのみ許可
+          if [ "$BASE_BRANCH" = "main" ]; then
+            if [ "$HEAD_BRANCH" != "develop" ]; then
+              echo "❌ Error: PRs to main branch must be from develop branch"
+              echo "Current head branch: $HEAD_BRANCH"
+              echo "Please create a PR from develop branch to main instead."
+              exit 1
+            fi
+            echo "✅ PR to main is from develop branch"
+          fi
+          
+          # developブランチへのPRは作業ブランチからのみ許可（mainは不可）
+          if [ "$BASE_BRANCH" = "develop" ]; then
+            if [ "$HEAD_BRANCH" = "main" ]; then
+              echo "❌ Error: Cannot create PR from main to develop"
+              echo "Please create a feature/bugfix branch from develop instead."
+              exit 1
+            fi
+            echo "✅ PR to develop is from a work branch"
+          fi
+          
+          # main/developブランチへの直接pushをチェック（念のため）
+          if [ "$HEAD_BRANCH" = "main" ] || [ "$HEAD_BRANCH" = "develop" ]; then
+            echo "⚠️  Warning: PR is from $HEAD_BRANCH branch"
+            echo "Work should be done in feature/bugfix/hotfix branches"
+          fi
+
