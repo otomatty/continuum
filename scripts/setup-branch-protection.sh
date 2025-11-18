@@ -28,16 +28,27 @@ fi
 echo "Setting up protection for main branch..."
 gh api repos/${REPO_OWNER}/${REPO_NAME}/branches/main/protection \
   --method PUT \
-  --field required_status_checks='{"strict":true,"contexts":["CI","Build"]}' \
-  --field enforce_admins=true \
-  --field required_pull_request_reviews='{"required_approving_review_count":1,"dismiss_stale_reviews":true,"require_code_owner_reviews":false}' \
-  --field restrictions=null \
-  --field required_linear_history=false \
-  --field allow_force_pushes=false \
-  --field allow_deletions=false \
-  --field required_conversation_resolution=true \
-  --field lock_branch=false \
-  --field allow_fork_syncing=false
+  --input - <<EOF
+{
+  "required_status_checks": {
+    "strict": true,
+    "contexts": ["CI", "Build"]
+  },
+  "enforce_admins": true,
+  "required_pull_request_reviews": {
+    "required_approving_review_count": 1,
+    "dismiss_stale_reviews": true,
+    "require_code_owner_reviews": false
+  },
+  "restrictions": null,
+  "required_linear_history": false,
+  "allow_force_pushes": false,
+  "allow_deletions": false,
+  "required_conversation_resolution": true,
+  "lock_branch": false,
+  "allow_fork_syncing": false
+}
+EOF
 
 echo "✅ Main branch protection configured"
 
@@ -45,16 +56,27 @@ echo "✅ Main branch protection configured"
 echo "Setting up protection for develop branch..."
 gh api repos/${REPO_OWNER}/${REPO_NAME}/branches/develop/protection \
   --method PUT \
-  --field required_status_checks='{"strict":true,"contexts":["CI","Build"]}' \
-  --field enforce_admins=false \
-  --field required_pull_request_reviews='{"required_approving_review_count":1,"dismiss_stale_reviews":true,"require_code_owner_reviews":false}' \
-  --field restrictions=null \
-  --field required_linear_history=false \
-  --field allow_force_pushes=false \
-  --field allow_deletions=false \
-  --field required_conversation_resolution=true \
-  --field lock_branch=false \
-  --field allow_fork_syncing=false
+  --input - <<EOF
+{
+  "required_status_checks": {
+    "strict": true,
+    "contexts": ["CI", "Build"]
+  },
+  "enforce_admins": false,
+  "required_pull_request_reviews": {
+    "required_approving_review_count": 1,
+    "dismiss_stale_reviews": true,
+    "require_code_owner_reviews": false
+  },
+  "restrictions": null,
+  "required_linear_history": false,
+  "allow_force_pushes": false,
+  "allow_deletions": false,
+  "required_conversation_resolution": true,
+  "lock_branch": false,
+  "allow_fork_syncing": false
+}
+EOF
 
 echo "✅ Develop branch protection configured"
 
