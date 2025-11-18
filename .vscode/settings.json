@@ -1,0 +1,21 @@
+{
+  "git.branchProtection": [
+    "main",
+    "develop"
+  ],
+  "git.branchProtectionPrompt": "alwaysPrompt",
+  "git.confirmSync": true,
+  "git.enableSmartCommit": false,
+  "git.confirmEmptyCommits": true,
+  "git.autofetch": true,
+  "git.allowForcePush": false,
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[rust]": {
+    "editor.defaultFormatter": "rust-lang.rust-analyzer",
+    "editor.formatOnSave": true
+  }
+}
+
