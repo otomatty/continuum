@@ -10,17 +10,17 @@ ContinuumプロジェクトのGitHubリポジトリにおけるブランチ保�
 
 ```
 main (本番環境)
-  ↑ (PR必須、developからのみ)
+  ↑ (PR必須、developまたはhotfix/*からのみ)
 develop (開発環境)
   ↑ (PR必須)
 feature/* (機能開発ブランチ)
 bugfix/* (バグ修正ブランチ)
-hotfix/* (緊急修正ブランチ)
+hotfix/* (緊急修正ブランチ、mainから直接作成)
 ```
 
 ### ブランチの役割
 
-- **main**: 本番環境にデプロイされるブランチ。developブランチからのPRのみマージ可能。
+- **main**: 本番環境にデプロイされるブランチ。developブランチまたはhotfix/*ブランチからのPRのみマージ可能。
 - **develop**: 開発環境にデプロイされるブランチ。すべての作業ブランチからのPRを受け付ける。
 - **feature/***: 新機能開発用ブランチ
 - **bugfix/***: バグ修正用ブランチ
@@ -47,11 +47,11 @@ hotfix/* (緊急修正ブランチ)
    - ✅ 有効化
 
 4. **Require linear history**
-   - ✅ 有効化（オプション）
+   - ✅ 有効化
 
 5. **Restrict who can push to matching branches**
    - ✅ 有効化
-   - 管理者のみ直接push可能
+   - 管理者も含めて直接pushは禁止（PR必須）
 
 6. **Branch name pattern**: `main`
 
@@ -84,7 +84,7 @@ hotfix/* (緊急修正ブランチ)
 
 5. **Restrict who can push to matching branches**
    - ✅ 有効化
-   - 管理者のみ直接push可能
+   - 管理者も含めて直接pushは禁止（PR必須）
 
 6. **Branch name pattern**: `develop`
 
@@ -97,35 +97,14 @@ hotfix/* (緊急修正ブランチ)
 
 GitHubの標準機能では「developブランチからのPRのみ受け付ける」という設定は直接できません。以下のいずれかの方法で実現します：
 
-#### 方法1: GitHub Actionsで自動チェック
+#### 方法1: GitHub Actionsで自動チェック（推奨）
 
-`.github/workflows/pr-check.yml` を作成：
+`.github/workflows/pr-check.yml` が自動的に以下をチェックします：
 
-```yaml
-name: PR Check
+- mainブランチへのPRはdevelopブランチまたはhotfix/*ブランチからのみ許可
+- developブランチへのPRは作業ブランチからのみ許可（mainは不可）
 
-on:
-  pull_request:
-    branches:
-      - main
-
-jobs:
-  check-base-branch:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check if PR is from develop
-        run: |
-          BASE_BRANCH="${{ github.base_ref }}"
-          HEAD_BRANCH="${{ github.head_ref }}"
-          
-          if [ "$BASE_BRANCH" = "main" ]; then
-            # mainへのPRはdevelopからのみ許可
-            if [ "$HEAD_BRANCH" != "develop" ]; then
-              echo "Error: PRs to main must be from develop branch"
-              exit 1
-            fi
-          fi
-```
+このワークフローはPR作成時に自動実行され、ルール違反がある場合はPRをブロックします。
 
 #### 方法2: ブランチ保護ルールで警告
 
@@ -133,12 +112,12 @@ GitHubのブランチ保護ルールでは直接制限できませんが、以�
 
 1. **Require pull request reviews** を有効化
 2. **Required reviewers** にレビュアーを設定
-3. レビュアーがdevelopブランチからのPRかどうかを確認
+3. レビュアーが適切なブランチからのPRかどうかを確認
 
-#### 方法3: 手動での確認（推奨）
+#### 方法3: 手動での確認
 
 PR作成時に、レビュアーが以下を確認：
-- mainへのPRはdevelopブランチからのみ
+- mainへのPRはdevelopブランチまたはhotfix/*ブランチからのみ
 - developへのPRは任意の作業ブランチから
 
 ## 設定手順
@@ -205,7 +184,7 @@ gh api repos/otomatty/continuum/branches/develop/protection \
 
 `.github/workflows/pr-check.yml` が自動的に以下をチェックします：
 
-- mainブランチへのPRはdevelopブランチからのみ許可
+- mainブランチへのPRはdevelopブランチまたはhotfix/*ブランチからのみ許可
 - developブランチへのPRは作業ブランチからのみ許可（mainは不可）
 
 このワークフローはPR作成時に自動実行され、ルール違反がある場合はPRをブロックします。
@@ -277,6 +256,7 @@ git commit -m "hotfix: urgent fix"
 git push origin hotfix/urgent-fix
 
 # GitHubでPRを作成（mainへのPR）
+# hotfix/*ブランチからmainへのPRは許可されています
 # マージ後、developにもマージ
 git checkout develop
 git merge main
@@ -294,7 +274,7 @@ git push origin develop
 - [ ] 関連ドキュメントを更新した
 
 **mainへのPR:**
-- [ ] developブランチからmainへのPRである
+- [ ] developブランチまたはhotfix/*ブランチからmainへのPRである
 - [ ] すべてのテストが通過している
 - [ ] コードレビューが承認されている
 - [ ] 本番環境へのデプロイ準備ができている

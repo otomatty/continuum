@@ -5,10 +5,18 @@
 
 set -e
 
-REPO_OWNER="otomatty"
-REPO_NAME="continuum"
+# リポジトリ情報を動的に取得
+REPO_PATH=$(gh repo view --json nameWithOwner --jq -r .nameWithOwner 2>/dev/null || echo "")
 
-echo "Setting up branch protection rules for ${REPO_OWNER}/${REPO_NAME}..."
+if [ -z "$REPO_PATH" ]; then
+    echo "Error: Could not determine repository. Make sure you're in a git repository with GitHub remote."
+    echo "You can also set REPO_PATH environment variable manually:"
+    echo "  export REPO_PATH=owner/repo-name"
+    echo "  ./scripts/setup-branch-protection.sh"
+    exit 1
+fi
+
+echo "Setting up branch protection rules for ${REPO_PATH}..."
 
 # GitHub CLIがインストールされているか確認
 if ! command -v gh &> /dev/null; then
@@ -26,7 +34,7 @@ fi
 
 # mainブランチの保護設定
 echo "Setting up protection for main branch..."
-gh api repos/${REPO_OWNER}/${REPO_NAME}/branches/main/protection \
+gh api repos/${REPO_PATH}/branches/main/protection \
   --method PUT \
   --input - <<EOF
 {
@@ -41,7 +49,7 @@ gh api repos/${REPO_OWNER}/${REPO_NAME}/branches/main/protection \
     "require_code_owner_reviews": false
   },
   "restrictions": null,
-  "required_linear_history": false,
+  "required_linear_history": true,
   "allow_force_pushes": false,
   "allow_deletions": false,
   "required_conversation_resolution": true,
@@ -54,7 +62,7 @@ echo "✅ Main branch protection configured"
 
 # developブランチの保護設定
 echo "Setting up protection for develop branch..."
-gh api repos/${REPO_OWNER}/${REPO_NAME}/branches/develop/protection \
+gh api repos/${REPO_PATH}/branches/develop/protection \
   --method PUT \
   --input - <<EOF
 {
@@ -62,7 +70,7 @@ gh api repos/${REPO_OWNER}/${REPO_NAME}/branches/develop/protection \
     "strict": true,
     "contexts": ["CI", "Build"]
   },
-  "enforce_admins": false,
+  "enforce_admins": true,
   "required_pull_request_reviews": {
     "required_approving_review_count": 1,
     "dismiss_stale_reviews": true,
