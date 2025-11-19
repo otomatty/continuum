@@ -23,17 +23,16 @@ pub struct GitHubClient {
 }
 
 impl GitHubClient {
-    pub fn new(token: String) -> Self {
+    pub fn new(token: String) -> Result<Self, GitHubError> {
         Self::new_with_base_url(token, "https://api.github.com/graphql".to_string())
     }
 
-    pub fn new_with_base_url(token: String, base_url: String) -> Self {
+    pub fn new_with_base_url(token: String, base_url: String) -> Result<Self, GitHubError> {
         let client = Client::builder()
             .user_agent("continuum/1.0")
-            .build()
-            .unwrap_or_else(|_| Client::new());
+            .build()?;
         
-        Self { client, token, base_url }
+        Ok(Self { client, token, base_url })
     }
 
     async fn execute_query<T: for<'de> Deserialize<'de>>(&self, query: &str, variables: serde_json::Value) -> Result<T, GitHubError> {
@@ -51,14 +50,14 @@ impl GitHubClient {
             return Err(GitHubError::Api(format!("Status: {}", res.status())));
         }
 
-        let body: serde_json::Value = res.json().await?;
+        let mut body: serde_json::Value = res.json().await?;
         
         if let Some(errors) = body.get("errors") {
             return Err(GitHubError::GraphQL(errors.to_string()));
         }
 
-        if let Some(data) = body.get("data") {
-            let result: T = serde_json::from_value(data.clone())?;
+        if let Some(data) = body.as_object_mut().and_then(|map| map.remove("data")) {
+            let result: T = serde_json::from_value(data)?;
             Ok(result)
         } else {
             Err(GitHubError::GraphQL("No data found in response".to_string()))
@@ -138,7 +137,7 @@ mod tests {
     #[tokio::test]
     async fn test_get_organization() {
         let mock_server = MockServer::start().await;
-        let client = GitHubClient::new_with_base_url("test_token".to_string(), mock_server.uri());
+        let client = GitHubClient::new_with_base_url("test_token".to_string(), mock_server.uri()).unwrap();
 
         let mock_response = json!({
             "data": {
@@ -173,7 +172,7 @@ mod tests {
     #[tokio::test]
     async fn test_api_error() {
         let mock_server = MockServer::start().await;
-        let client = GitHubClient::new_with_base_url("test_token".to_string(), mock_server.uri());
+        let client = GitHubClient::new_with_base_url("test_token".to_string(), mock_server.uri()).unwrap();
 
         Mock::given(method("POST"))
             .respond_with(ResponseTemplate::new(500))
@@ -187,7 +186,7 @@ mod tests {
     #[tokio::test]
     async fn test_graphql_error() {
         let mock_server = MockServer::start().await;
-        let client = GitHubClient::new_with_base_url("test_token".to_string(), mock_server.uri());
+        let client = GitHubClient::new_with_base_url("test_token".to_string(), mock_server.uri()).unwrap();
 
         let mock_response = json!({
             "errors": [

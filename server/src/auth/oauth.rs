@@ -11,8 +11,10 @@ use oauth2::{
 };
 use serde::Deserialize;
 use crate::config::Config;
-use crate::auth::session::{Session, create_session_cookie, create_logout_cookie};
+use crate::auth::session::{Session, create_session_cookie, create_logout_cookie, create_csrf_cookie};
 use crate::state::AppState;
+use leptos::logging::log;
+use axum_extra::extract::cookie::Cookie;
 
 #[derive(Clone)]
 pub struct AuthState {
@@ -53,8 +55,8 @@ pub fn create_auth_state(config: &Config) -> AuthState {
     AuthState { client }
 }
 
-async fn login(State(state): State<AppState>) -> impl IntoResponse {
-    let (auth_url, _csrf_token) = state
+async fn login(State(state): State<AppState>, jar: PrivateCookieJar) -> impl IntoResponse {
+    let (auth_url, csrf_token) = state
         .auth_state
         .client
         .authorize_url(CsrfToken::new_random)
@@ -63,7 +65,10 @@ async fn login(State(state): State<AppState>) -> impl IntoResponse {
         .add_scope(Scope::new("repo".to_string()))
         .url();
 
-    Redirect::to(auth_url.as_str())
+    let secure = state.config.server.env != "DEV";
+    let csrf_cookie = create_csrf_cookie(csrf_token.secret().to_string(), secure);
+    
+    (jar.add(csrf_cookie), Redirect::to(auth_url.as_str()))
 }
 
 async fn callback(
@@ -71,6 +76,18 @@ async fn callback(
     jar: PrivateCookieJar,
     Query(query): Query<AuthRequest>,
 ) -> impl IntoResponse {
+    // CSRF protection: verify state parameter matches cookie
+    let csrf_state_from_cookie = jar.get("oauth_csrf_state")
+        .map(|c| c.value().to_string());
+    
+    // Remove CSRF cookie after reading (one-time use)
+    let jar = jar.remove(Cookie::from("oauth_csrf_state"));
+    
+    if csrf_state_from_cookie.as_deref() != Some(&query.state) {
+        log!("CSRF token mismatch in OAuth callback");
+        return (jar, Redirect::to("/?error=csrf_mismatch")).into_response();
+    }
+
     let token_result = state
         .auth_state
         .client
@@ -82,9 +99,8 @@ async fn callback(
         Ok(token) => {
             let access_token = token.access_token().secret();
             
-            // Fetch user info to get user ID/login
-            let client = reqwest::Client::new();
-            let user_res = client
+            // Fetch user info to get user ID/login using shared HTTP client
+            let user_res = state.http_client
                 .get("https://api.github.com/user")
                 .header("Authorization", format!("Bearer {}", access_token))
                 .header("User-Agent", "continuum")
@@ -95,29 +111,42 @@ async fn callback(
                 Ok(res) => {
                     if let Ok(user_data) = res.json::<serde_json::Value>().await {
                         if let Some(login) = user_data.get("login").and_then(|v| v.as_str()) {
+                            let secure = state.config.server.env != "DEV";
+                            let duration_secs = state.config.session.duration_secs as i64;
+                            
                             let session = Session::new(
                                 login.to_string(),
                                 access_token.clone(),
-                                24 * 60 * 60, // 1 day
+                                state.config.session.duration_secs,
                             );
                             
-                            let cookie = create_session_cookie(&session);
-                            return (jar.add(cookie), Redirect::to("/")).into_response();
+                            match create_session_cookie(&session, secure, duration_secs) {
+                                Ok(cookie) => {
+                                    return (jar.add(cookie), Redirect::to("/")).into_response();
+                                }
+                                Err(e) => {
+                                    log!("Failed to create session cookie: {}", e);
+                                    return (jar, Redirect::to("/?error=session_creation_failed")).into_response();
+                                }
+                            }
                         }
                     }
                 }
-                Err(_) => {}
+                Err(e) => {
+                    log!("Failed to fetch user from GitHub: {}", e);
+                }
             }
             
-            Redirect::to("/?error=user_fetch_failed").into_response()
+            (jar, Redirect::to("/?error=user_fetch_failed")).into_response()
         }
-        Err(_) => Redirect::to("/?error=token_exchange_failed").into_response(),
+        Err(e) => {
+            log!("Failed to exchange OAuth code for token: {}", e);
+            (jar, Redirect::to("/?error=token_exchange_failed")).into_response()
+        }
     }
 }
 
-async fn logout(
-    State(_state): State<AppState>,
-    jar: PrivateCookieJar,
-) -> impl IntoResponse {
-    (jar.add(create_logout_cookie()), Redirect::to("/"))
+async fn logout(State(state): State<AppState>, jar: PrivateCookieJar) -> impl IntoResponse {
+    let secure = state.config.server.env != "DEV";
+    (jar.add(create_logout_cookie(secure)), Redirect::to("/"))
 }

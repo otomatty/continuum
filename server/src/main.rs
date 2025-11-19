@@ -26,16 +26,26 @@ async fn main() {
     let routes = generate_route_list(App);
 
     // Create cookie key from session secret
-    let key = Key::from(config.session.secret.as_bytes());
+    // Key::from expects exactly 64 bytes, so we pad or truncate the secret
+    let mut key_bytes = config.session.secret.as_bytes().to_vec();
+    if key_bytes.len() < 64 {
+        // Pad with zeros if shorter than 64 bytes
+        key_bytes.resize(64, 0);
+    } else if key_bytes.len() > 64 {
+        // Truncate if longer than 64 bytes
+        key_bytes.truncate(64);
+    }
+    let key = Key::from(&key_bytes);
     
     // Create auth state
     let auth_state = create_auth_state(&config);
 
-    let app_state = AppState {
-        leptos_options: leptos_options.clone(),
-        key: key.clone(),
+    let app_state = AppState::new(
+        leptos_options.clone(),
+        key.clone(),
         auth_state,
-    };
+        config.clone(),
+    );
 
     let app: Router<AppState> = Router::default();
     let app = app

@@ -20,6 +20,7 @@ pub struct GitHubConfig {
 #[derive(Debug, Clone, Deserialize)]
 pub struct SessionConfig {
     pub secret: String,
+    pub duration_secs: u64,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -54,6 +55,10 @@ impl Config {
         let session = SessionConfig {
             secret: env::var("SESSION_SECRET")
                 .map_err(|_| ConfigError::EnvVarMissing("SESSION_SECRET".to_string()))?,
+            duration_secs: env::var("SESSION_DURATION_SECS")
+                .ok()
+                .and_then(|v| v.parse().ok())
+                .unwrap_or(24 * 60 * 60), // Default: 1 day
         };
 
         let server = ServerConfig {

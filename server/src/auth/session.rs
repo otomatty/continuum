@@ -42,24 +42,34 @@ impl Session {
     }
 }
 
-pub fn create_session_cookie(session: &Session) -> Cookie<'static> {
-    let value = session.to_cookie_value().unwrap_or_default();
-    Cookie::build(("session", value))
+pub fn create_session_cookie(session: &Session, secure: bool, duration_secs: i64) -> Result<Cookie<'static>, serde_json::Error> {
+    let value = session.to_cookie_value()?;
+    Ok(Cookie::build(("session", value))
         .path("/")
         .http_only(true)
-        .secure(true) // Should be true in production
+        .secure(secure)
         .same_site(SameSite::Lax)
-        .max_age(Duration::seconds(24 * 60 * 60)) // 1 day
-        .build()
+        .max_age(Duration::seconds(duration_secs))
+        .build())
 }
 
-pub fn create_logout_cookie() -> Cookie<'static> {
+pub fn create_logout_cookie(secure: bool) -> Cookie<'static> {
     Cookie::build(("session", ""))
         .path("/")
         .http_only(true)
-        .secure(true)
+        .secure(secure)
         .same_site(SameSite::Lax)
         .max_age(Duration::seconds(0))
+        .build()
+}
+
+pub fn create_csrf_cookie(csrf_token: String, secure: bool) -> Cookie<'static> {
+    Cookie::build(("oauth_csrf_state", csrf_token))
+        .path("/auth/callback")
+        .http_only(true)
+        .secure(secure)
+        .same_site(SameSite::Lax)
+        .max_age(Duration::minutes(5))
         .build()
 }
 
@@ -102,7 +112,7 @@ mod tests {
     #[test]
     fn test_create_session_cookie() {
         let session = Session::new("user123".to_string(), "token123".to_string(), 3600);
-        let cookie = create_session_cookie(&session);
+        let cookie = create_session_cookie(&session, true, 3600).unwrap();
         
         assert_eq!(cookie.name(), "session");
         assert_eq!(cookie.path(), Some("/"));
@@ -113,7 +123,7 @@ mod tests {
 
     #[test]
     fn test_create_logout_cookie() {
-        let cookie = create_logout_cookie();
+        let cookie = create_logout_cookie(true);
         
         assert_eq!(cookie.name(), "session");
         assert_eq!(cookie.value(), "");
