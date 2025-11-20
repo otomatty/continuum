@@ -13,7 +13,6 @@
  *   ├─ Spec: ./countdown.spec.md
  *   └─ Module: ../mod.rs
  */
-
 use leptos::prelude::*;
 
 #[cfg(feature = "hydrate")]
@@ -34,7 +33,7 @@ pub fn Countdown(
         #[cfg(not(feature = "hydrate"))]
         let now = 0i64;
         let remaining = target_date - now;
-        
+
         if remaining <= 0 {
             set_remaining_seconds.set(0);
             set_is_complete.set(true);
@@ -48,19 +47,23 @@ pub fn Countdown(
 
     update_countdown();
 
-    let interval_handle = set_interval_with_handle(
-        move || {
-            update_countdown();
-        },
-        std::time::Duration::from_secs(1),
-    )
-    .ok();
+    // set_interval_with_handleはブラウザ専用APIなので、クライアントサイドでのみ実行
+    #[cfg(feature = "hydrate")]
+    {
+        let interval_handle = set_interval_with_handle(
+            move || {
+                update_countdown();
+            },
+            std::time::Duration::from_secs(1),
+        )
+        .ok();
 
-    on_cleanup(move || {
-        if let Some(handle) = interval_handle {
-            handle.clear();
-        }
-    });
+        on_cleanup(move || {
+            if let Some(handle) = interval_handle {
+                handle.clear();
+            }
+        });
+    }
 
     let countdown_class = if class.is_empty() {
         "countdown".to_string()
@@ -88,4 +91,3 @@ pub fn Countdown(
         </span>
     }
 }
-

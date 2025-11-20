@@ -16,9 +16,9 @@ mod tests {
     // ロジック部分のテスト: variant enumの判定
     #[test]
     fn test_accordion_variant_default() {
-        // TC-002: Arrowバリアントの適用
+        // デフォルトはNoneバリアント
         let variant = AccordionVariant::default();
-        assert_eq!(variant, AccordionVariant::Arrow);
+        assert_eq!(variant, AccordionVariant::None);
     }
 
     #[test]
@@ -27,7 +27,7 @@ mod tests {
         let variant = AccordionVariant::Arrow;
         match variant {
             AccordionVariant::Arrow => assert!(true),
-            AccordionVariant::Plus => assert!(false, "Expected Arrow variant"),
+            _ => assert!(false, "Expected Arrow variant"),
         }
     }
 
@@ -37,15 +37,26 @@ mod tests {
         let variant = AccordionVariant::Plus;
         match variant {
             AccordionVariant::Plus => assert!(true),
-            AccordionVariant::Arrow => assert!(false, "Expected Plus variant"),
+            _ => assert!(false, "Expected Plus variant"),
         }
     }
 
-    // クラス名生成ロジックのテスト（ヘルパー関数として抽出）
-    fn get_variant_class(variant: AccordionVariant) -> String {
+    #[test]
+    fn test_accordion_variant_none() {
+        // Noneバリアント（アイコンなし）
+        let variant = AccordionVariant::None;
         match variant {
-            AccordionVariant::Arrow => "collapse-title".to_string(),
-            AccordionVariant::Plus => "collapse-title collapse-plus".to_string(),
+            AccordionVariant::None => assert!(true),
+            _ => assert!(false, "Expected None variant"),
+        }
+    }
+
+    // DaisyUI標準のvariantクラス名生成ロジックのテスト
+    fn get_variant_class(variant: AccordionVariant) -> &'static str {
+        match variant {
+            AccordionVariant::Arrow => "collapse-arrow",
+            AccordionVariant::Plus => "collapse-plus",
+            AccordionVariant::None => "",
         }
     }
 
@@ -53,14 +64,20 @@ mod tests {
     fn test_get_variant_class_arrow() {
         // TC-002: Arrowバリアントの適用
         let class = get_variant_class(AccordionVariant::Arrow);
-        assert_eq!(class, "collapse-title");
+        assert_eq!(class, "collapse-arrow");
     }
 
     #[test]
     fn test_get_variant_class_plus() {
         // TC-003: Plusバリアントの適用
         let class = get_variant_class(AccordionVariant::Plus);
-        assert_eq!(class, "collapse-title collapse-plus");
+        assert_eq!(class, "collapse-plus");
+    }
+
+    #[test]
+    fn test_get_variant_class_none() {
+        let class = get_variant_class(AccordionVariant::None);
+        assert_eq!(class, "");
     }
 
     // クラス名結合ロジックのテスト
@@ -85,39 +102,70 @@ mod tests {
         assert_eq!(result, "collapse w-full");
     }
 
-    // 開閉状態のクラス名生成ロジックのテスト
-    fn get_collapse_class(is_open: bool, custom_class: &str) -> String {
-        let base = if is_open {
-            "collapse collapse-open"
+    // DaisyUI標準の開閉状態のクラス名生成ロジックのテスト
+    // DaisyUIではcheckboxのchecked状態で開閉を制御するため、collapse-openクラスは不要
+    fn get_collapse_class_with_variant(variant: AccordionVariant, custom_class: &str) -> String {
+        let variant_class = get_variant_class(variant);
+        let base = if variant_class.is_empty() {
+            "collapse".to_string()
         } else {
-            "collapse"
+            format!("collapse {}", variant_class)
         };
+
         if custom_class.is_empty() {
-            base.to_string()
+            base
         } else {
             format!("{} {}", base, custom_class)
         }
     }
 
     #[test]
-    fn test_get_collapse_class_closed() {
-        // TC-004: AccordionItemの閉じた状態
-        let class = get_collapse_class(false, "");
+    fn test_get_collapse_class_no_variant() {
+        // TC-004: AccordionItemの基本クラス
+        let class = get_collapse_class_with_variant(AccordionVariant::None, "");
         assert_eq!(class, "collapse");
-        assert!(!class.contains("collapse-open"));
     }
 
     #[test]
-    fn test_get_collapse_class_open() {
-        // TC-005: AccordionItemの開いた状態
-        let class = get_collapse_class(true, "");
-        assert_eq!(class, "collapse collapse-open");
+    fn test_get_collapse_class_with_arrow_variant() {
+        // TC-002: Arrowバリアントの適用
+        let class = get_collapse_class_with_variant(AccordionVariant::Arrow, "");
+        assert_eq!(class, "collapse collapse-arrow");
     }
 
     #[test]
-    fn test_get_collapse_class_open_with_custom() {
-        let class = get_collapse_class(true, "w-full");
-        assert_eq!(class, "collapse collapse-open w-full");
+    fn test_get_collapse_class_with_plus_variant() {
+        // TC-003: Plusバリアントの適用
+        let class = get_collapse_class_with_variant(AccordionVariant::Plus, "");
+        assert_eq!(class, "collapse collapse-plus");
+    }
+
+    #[test]
+    fn test_get_collapse_class_with_custom() {
+        let class = get_collapse_class_with_variant(AccordionVariant::Arrow, "w-full bg-base-200");
+        assert_eq!(class, "collapse collapse-arrow w-full bg-base-200");
+    }
+
+    // AccordionTitleのクラス名生成ロジックのテスト
+    fn get_title_class(custom_class: &str) -> String {
+        if custom_class.is_empty() {
+            "collapse-title".to_string()
+        } else {
+            format!("collapse-title {}", custom_class)
+        }
+    }
+
+    #[test]
+    fn test_get_title_class_default() {
+        // AccordionTitleの基本クラス
+        let class = get_title_class("");
+        assert_eq!(class, "collapse-title");
+    }
+
+    #[test]
+    fn test_get_title_class_with_custom() {
+        let class = get_title_class("text-xl font-medium");
+        assert_eq!(class, "collapse-title text-xl font-medium");
     }
 
     // AccordionContentのクラス名生成ロジックのテスト

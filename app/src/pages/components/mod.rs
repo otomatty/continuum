@@ -1,6 +1,6 @@
 use crate::components::drawer::DrawerSide as DrawerSideComponent;
 use crate::components::{
-    accordion::{Accordion, AccordionContent, AccordionHeader, AccordionItem},
+    accordion::{Accordion, AccordionContent, AccordionItem, AccordionTitle, AccordionVariant},
     alert::{Alert, AlertDescription, AlertTitle, AlertVariant},
     avatar::Avatar,
     badge::{Badge, BadgeVariant},
@@ -36,7 +36,6 @@ use crate::components::{
 };
 use chrono::Utc;
 use leptos::prelude::*;
-use leptos::wasm_bindgen::JsCast;
 
 /// Renders the components showcase page.
 #[component]
@@ -80,11 +79,7 @@ pub fn ComponentsPage() -> impl IntoView {
                                 placeholder="Enter text..."
                                 value=input_value.read_only()
                                 on_input=Callback::new(move |ev: leptos::ev::InputEvent| {
-                                    if let Some(target) = ev.target() {
-                                        if let Ok(input) = target.dyn_into::<leptos::web_sys::HtmlInputElement>() {
-                                            input_value.set(input.value());
-                                        }
-                                    }
+                                    input_value.set(event_target_value(&ev));
                                 })
                             />
                         </CardBody>
@@ -99,11 +94,7 @@ pub fn ComponentsPage() -> impl IntoView {
                                 rows=3
                                 value=textarea_value.read_only()
                                 on_input=Callback::new(move |ev: leptos::ev::InputEvent| {
-                                    if let Some(target) = ev.target() {
-                                        if let Ok(textarea) = target.dyn_into::<leptos::web_sys::HtmlTextAreaElement>() {
-                                            textarea_value.set(textarea.value());
-                                        }
-                                    }
+                                    textarea_value.set(event_target_value(&ev));
                                 })
                             />
                         </CardBody>
@@ -115,12 +106,8 @@ pub fn ComponentsPage() -> impl IntoView {
                             <p class="text-sm text-gray-600 mb-4">"Dropdown selection"</p>
                             <Select
                                 value=select_value.read_only()
-                                on_change=Callback::new(move |ev: leptos::web_sys::Event| {
-                                    if let Some(target) = ev.target() {
-                                        if let Ok(select) = target.dyn_into::<leptos::web_sys::HtmlSelectElement>() {
-                                            select_value.set(select.value());
-                                        }
-                                    }
+                                on_change=Callback::new(move |ev: leptos::ev::Event| {
+                                    select_value.set(event_target_value(&ev));
                                 })
                             >
                                 <SelectOption value="option1".to_string()>"Option 1"</SelectOption>
@@ -137,12 +124,8 @@ pub fn ComponentsPage() -> impl IntoView {
                             <div class="flex items-center gap-2">
                                 <Checkbox
                                     checked=checkbox_checked.read_only()
-                                    on_change=Callback::new(move |ev: leptos::web_sys::Event| {
-                                        if let Some(target) = ev.target() {
-                                            if let Ok(checkbox) = target.dyn_into::<leptos::web_sys::HtmlInputElement>() {
-                                                checkbox_checked.set(checkbox.checked());
-                                            }
-                                        }
+                                    on_change=Callback::new(move |ev: leptos::ev::Event| {
+                                        checkbox_checked.set(event_target_checked(&ev));
                                     })
                                 />
                                 <label>"Check me"</label>
@@ -191,12 +174,8 @@ pub fn ComponentsPage() -> impl IntoView {
                             <p class="text-sm text-gray-600 mb-4">"Toggle switch"</p>
                             <Toggle
                                 checked=toggle_checked.read_only()
-                                on_change=Callback::new(move |ev: leptos::web_sys::Event| {
-                                    if let Some(target) = ev.target() {
-                                        if let Ok(toggle) = target.dyn_into::<leptos::web_sys::HtmlInputElement>() {
-                                            toggle_checked.set(toggle.checked());
-                                        }
-                                    }
+                                on_change=Callback::new(move |ev: leptos::ev::Event| {
+                                    toggle_checked.set(event_target_checked(&ev));
                                 })
                             />
                         </CardBody>
@@ -212,12 +191,8 @@ pub fn ComponentsPage() -> impl IntoView {
                                 step=1.0
                                 value=range_value.read_only()
                                 on_input=Callback::new(move |ev: leptos::ev::InputEvent| {
-                                    if let Some(target) = ev.target() {
-                                        if let Ok(range) = target.dyn_into::<leptos::web_sys::HtmlInputElement>() {
-                                            if let Ok(val) = range.value().parse::<f64>() {
-                                                range_value.set(val);
-                                            }
-                                        }
+                                    if let Ok(val) = event_target_value(&ev).parse::<f64>() {
+                                        range_value.set(val);
                                     }
                                 })
                             />
@@ -448,14 +423,27 @@ pub fn ComponentsPage() -> impl IntoView {
                         <CardTitle>"Accordion"</CardTitle>
                         <CardBody>
                             <p class="text-sm text-gray-600 mb-4">"Collapsible content"</p>
-                            <Accordion>
-                                <AccordionItem open=accordion_open.read_only() set_open=accordion_open.write_only()>
-                                    <AccordionHeader>"Item 1"</AccordionHeader>
-                                    <AccordionContent>"Content 1"</AccordionContent>
+                            <Accordion class="space-y-2">
+                                <AccordionItem
+                                    variant=AccordionVariant::Arrow
+                                    open=accordion_open.read_only()
+                                    set_open=accordion_open.write_only()
+                                    class="bg-base-200"
+                                >
+                                    <AccordionTitle class="text-xl font-medium">
+                                        "Item 1"
+                                    </AccordionTitle>
+                                    <AccordionContent>
+                                        "Content 1"
+                                    </AccordionContent>
                                 </AccordionItem>
-                                <AccordionItem>
-                                    <AccordionHeader>"Item 2"</AccordionHeader>
-                                    <AccordionContent>"Content 2"</AccordionContent>
+                                <AccordionItem variant=AccordionVariant::Plus class="bg-base-200">
+                                    <AccordionTitle class="text-xl font-medium">
+                                        "Item 2"
+                                    </AccordionTitle>
+                                    <AccordionContent>
+                                        "Content 2"
+                                    </AccordionContent>
                                 </AccordionItem>
                             </Accordion>
                         </CardBody>

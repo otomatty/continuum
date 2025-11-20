@@ -1,4 +1,3 @@
-use leptos::ev::MouseEvent;
 /**
  * Accordion Component
  *
@@ -9,6 +8,8 @@ use leptos::ev::MouseEvent;
  *
  * Dependencies (External files that this Component imports):
  *   └─ leptos::prelude
+ *   └─ leptos::web_sys
+ *   └─ leptos::wasm_bindgen::JsCast
  *
  * Related Documentation:
  *   ├─ Spec: ./accordion.spec.md
@@ -24,26 +25,17 @@ mod tests;
 pub enum AccordionVariant {
     Arrow,
     Plus,
-}
-
-// AccordionItemのコンテキスト（toggle関数を子コンポーネントに提供）
-#[derive(Clone, Copy)]
-struct AccordionItemContext {
-    toggle: Callback<()>,
+    None,
 }
 
 impl Default for AccordionVariant {
     fn default() -> Self {
-        AccordionVariant::Arrow
+        AccordionVariant::None
     }
 }
 
 #[component]
-pub fn Accordion(
-    #[prop(optional)] _variant: AccordionVariant,
-    #[prop(optional, into)] class: String,
-    children: Children,
-) -> impl IntoView {
+pub fn Accordion(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
     let accordion_class = if class.is_empty() {
         "".to_string()
     } else {
@@ -59,12 +51,14 @@ pub fn Accordion(
 
 #[component]
 pub fn AccordionItem(
+    #[prop(optional)] variant: AccordionVariant,
     #[prop(optional, into)] open: Option<ReadSignal<bool>>,
     #[prop(optional, into)] set_open: Option<WriteSignal<bool>>,
-    #[prop(optional, into)] on_toggle: Option<Callback<()>>,
+    #[prop(optional, into)] on_toggle: Option<Callback<bool>>,
     #[prop(optional, into)] class: String,
     children: Children,
 ) -> impl IntoView {
+    // 内部状態または外部状態を使用
     let internal_open = signal(false);
     let (is_open, set_is_open) =
         if let (Some(open_signal), Some(set_open_signal)) = (open, set_open) {
@@ -73,30 +67,37 @@ pub fn AccordionItem(
             internal_open
         };
 
-    let handle_toggle = move |_: ()| {
-        if let Some(callback) = on_toggle.clone() {
-            callback.run(());
-        }
+    // checkboxの変更イベントハンドラ
+    let handle_change = move |ev: leptos::ev::Event| {
+        let checked = event_target_checked(&ev);
+
+        // 外部状態が提供されている場合のみ更新
         if open.is_none() {
-            set_is_open.set(!is_open.get());
+            set_is_open.set(checked);
+        }
+
+        // コールバックを呼び出す
+        if let Some(callback) = on_toggle.clone() {
+            callback.run(checked);
         }
     };
 
-    // トグル関数をコンテキストとして提供
-    let toggle_callback = Callback::new(handle_toggle);
-    let context = AccordionItemContext {
-        toggle: toggle_callback,
+    // variantに応じたクラスを追加
+    let variant_class = match variant {
+        AccordionVariant::Arrow => "collapse-arrow",
+        AccordionVariant::Plus => "collapse-plus",
+        AccordionVariant::None => "",
     };
-    provide_context(context);
 
     let collapse_class = move || {
-        let base = if is_open.get() {
-            "collapse collapse-open"
+        let base = if variant_class.is_empty() {
+            "collapse".to_string()
         } else {
-            "collapse"
+            format!("collapse {}", variant_class)
         };
+
         if class.is_empty() {
-            base.to_string()
+            base
         } else {
             format!("{} {}", base, class)
         }
@@ -104,48 +105,26 @@ pub fn AccordionItem(
 
     view! {
         <div class=collapse_class>
+            <input
+                type="checkbox"
+                checked=move || is_open.get()
+                on:change=handle_change
+            />
             {children()}
         </div>
     }
 }
 
 #[component]
-pub fn AccordionHeader(
-    #[prop(optional)] variant: AccordionVariant,
-    #[prop(optional, into)] class: String,
-    #[prop(optional, into)] on_click: Option<Callback<MouseEvent>>,
-    children: Children,
-) -> impl IntoView {
-    // AccordionItemから提供されるコンテキストを取得
-    let context = use_context::<AccordionItemContext>();
-
-    let variant_class = match variant {
-        AccordionVariant::Arrow => "collapse-title",
-        AccordionVariant::Plus => "collapse-title collapse-plus",
-    };
-
-    let header_class = if class.is_empty() {
-        variant_class.to_string()
+pub fn AccordionTitle(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
+    let title_class = if class.is_empty() {
+        "collapse-title".to_string()
     } else {
-        format!("{} {}", variant_class, class)
-    };
-
-    let handle_click = move |ev: MouseEvent| {
-        // 外部のon_clickコールバックを呼び出す
-        if let Some(cb) = on_click.clone() {
-            cb.run(ev);
-        }
-        // コンテキストからtoggle関数を取得して呼び出す（AccordionItemの開閉を切り替え）
-        if let Some(ctx) = context {
-            ctx.toggle.run(());
-        }
+        format!("collapse-title {}", class)
     };
 
     view! {
-        <div
-            class=header_class
-            on:click=handle_click
-        >
+        <div class=title_class>
             {children()}
         </div>
     }

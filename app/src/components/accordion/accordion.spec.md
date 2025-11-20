@@ -3,6 +3,7 @@
 ## Related Files
 
 - Implementation: `app/src/components/accordion/mod.rs`
+- Tests: `app/src/components/accordion/tests.rs`
 - Module: `app/src/components/mod.rs`
 
 ## Related Documentation
@@ -13,32 +14,30 @@
 
 ### 責務
 
-- アコーディオンの表示と管理
-- DaisyUIの`collapse`クラスを使用したスタイリング
-- AccordionItem, AccordionHeader, AccordionContentコンポーネントとの連携
-- 開閉状態の管理
+- DaisyUI標準に準拠したアコーディオンの表示と管理
+- DaisyUIの`collapse`クラスと`<input type="checkbox">`を使用したスタイリング
+- AccordionItem, AccordionTitle, AccordionContentコンポーネントとの連携
+- checkboxのchecked状態による開閉状態の管理
 
 ### Props構造
 
 #### Accordionコンポーネント
 
-- `variant` (optional, AccordionVariant): スタイルバリエーション（デフォルト: Arrow）
 - `class` (optional, String): 追加のCSSクラス
 - `children` (Children): アコーディオンの子要素（AccordionItemなど）
 
 #### AccordionItemコンポーネント
 
+- `variant` (optional, AccordionVariant): スタイルバリエーション（デフォルト: None）
 - `open` (optional, ReadSignal<bool>): 開閉状態のSignal（外部から制御する場合）
 - `set_open` (optional, WriteSignal<bool>): 開閉状態を設定するSignal（外部から制御する場合、openとセットで使用）
-- `on_toggle` (optional, Callback<()>): トグルイベントのコールバック
+- `on_toggle` (optional, Callback<bool>): トグルイベントのコールバック（引数: 新しい開閉状態）
 - `class` (optional, String): 追加のCSSクラス
-- `children` (Children): アコーディオンアイテムの子要素（AccordionHeader, AccordionContent）
+- `children` (Children): アコーディオンアイテムの子要素（AccordionTitle, AccordionContent）
 
-#### AccordionHeaderコンポーネント
+#### AccordionTitleコンポーネント
 
-- `variant` (optional, AccordionVariant): スタイルバリエーション（デフォルト: Arrow）
 - `class` (optional, String): 追加のCSSクラス
-- `on_click` (optional, Callback<MouseEvent>): クリックイベントのコールバック
 - `children` (Children): ヘッダーのテキスト
 
 #### AccordionContentコンポーネント
@@ -50,21 +49,26 @@
 
 以下のバリアントをサポート：
 
-- `Arrow`: 矢印アイコン（デフォルト）
-- `Plus`: プラスアイコン
+- `None`: アイコンなし（デフォルト）
+- `Arrow`: 矢印アイコン（`collapse-arrow`クラス）
+- `Plus`: プラスアイコン（`collapse-plus`クラス）
 
-### スタイル
+### スタイル（DaisyUI標準）
 
 - `Accordion`: ラッパー要素（デフォルトクラスなし）
-- `AccordionItem`: `collapse`クラスを適用、開いている時は`collapse-open`クラスを追加
-- `AccordionHeader`: `collapse-title`クラスを適用、Plusバリアント時は`collapse-plus`クラスを追加
+- `AccordionItem`: 
+  - 基本: `collapse`クラスを適用
+  - variant指定時: `collapse collapse-arrow`または`collapse collapse-plus`クラスを適用
+  - DaisyUI標準では`<input type="checkbox">`のchecked状態で開閉を制御するため、`collapse-open`クラスは不要
+- `AccordionTitle`: `collapse-title`クラスを適用
 - `AccordionContent`: `collapse-content`クラスを適用
 
-### 状態管理
+### 状態管理（DaisyUI標準）
 
-- AccordionItemコンポーネント内で開閉状態を管理
+- DaisyUI標準に従い、`<input type="checkbox">`を使用して開閉状態を管理
+- checkboxの`checked`属性をSignalでバインド
 - `open`プロパティが指定されている場合は外部から制御、指定されていない場合は内部で管理
-- `create_signal`を使用して状態を管理
+- `signal`を使用して状態を管理
 
 ## Test Cases
 
@@ -77,60 +81,78 @@
 ### TC-002: Arrowバリアントの適用
 
 - Given: variant=AccordionVariant::Arrow
-- When: AccordionHeaderコンポーネントをレンダリング
-- Then: `collapse-title`クラスが適用される
+- When: AccordionItemコンポーネントをレンダリング
+- Then: `collapse collapse-arrow`クラスが適用される
 
 ### TC-003: Plusバリアントの適用
 
 - Given: variant=AccordionVariant::Plus
-- When: AccordionHeaderコンポーネントをレンダリング
-- Then: `collapse-title collapse-plus`クラスが適用される
-
-### TC-004: AccordionItemの閉じた状態
-
-- Given: AccordionItemコンポーネントが閉じている
 - When: AccordionItemコンポーネントをレンダリング
-- Then: `collapse`クラスが適用される（`collapse-open`は含まれない）
+- Then: `collapse collapse-plus`クラスが適用される
 
-### TC-005: AccordionItemの開いた状態
+### TC-004: Noneバリアント（デフォルト）の適用
 
-- Given: AccordionItemコンポーネントが開いている
+- Given: variant=AccordionVariant::None（またはvariantを指定しない）
 - When: AccordionItemコンポーネントをレンダリング
-- Then: `collapse collapse-open`クラスが適用される
+- Then: `collapse`クラスのみが適用される（アイコンクラスは含まれない）
 
-### TC-006: AccordionHeaderのクリックイベント
+### TC-005: AccordionItemのチェックボックス
 
-- Given: AccordionHeaderコンポーネントにon_clickコールバックを設定
-- When: ユーザーがヘッダーをクリック
-- Then: on_clickコールバックが呼び出される
+- Given: AccordionItemコンポーネントをレンダリング
+- When: ページを表示
+- Then: `<input type="checkbox">`要素が含まれる
 
-### TC-007: AccordionContentの表示
+### TC-006: チェックボックスの状態とSignalの同期
+
+- Given: AccordionItemにopen=ReadSignal<bool>を設定
+- When: checkboxをクリック
+- Then: Signalの値が更新される
+
+### TC-007: AccordionTitleの表示
+
+- Given: AccordionTitleコンポーネントをレンダリング
+- When: ページを表示
+- Then: `collapse-title`クラスが適用された`<div>`要素が表示される
+
+### TC-008: AccordionContentの表示
 
 - Given: AccordionContentコンポーネントをレンダリング
 - When: ページを表示
 - Then: `collapse-content`クラスが適用された`<div>`要素が表示される
 
-### TC-008: 外部から開閉状態を制御
+### TC-009: 外部から開閉状態を制御
 
-- Given: AccordionItemにopen=ReadSignal<bool>を設定
+- Given: AccordionItemにopen=ReadSignal<bool>とset_open=WriteSignal<bool>を設定
 - When: 外部からSignalの値を変更
-- Then: AccordionItemの開閉状態が更新される
+- Then: AccordionItemの開閉状態（checkboxのchecked状態）が更新される
 
-### TC-009: 内部で開閉状態を管理
+### TC-010: 内部で開閉状態を管理
 
 - Given: AccordionItemにopenプロパティを設定しない
-- When: ユーザーがヘッダーをクリック
+- When: checkboxをクリック
 - Then: AccordionItemの開閉状態が内部で切り替わる
 
-### TC-010: Accordionのカスタムクラス
+### TC-011: on_toggleコールバック
+
+- Given: AccordionItemにon_toggle=Callback<bool>を設定
+- When: checkboxをクリック
+- Then: on_toggleコールバックが新しい開閉状態（bool）を引数として呼び出される
+
+### TC-012: Accordionのカスタムクラス
 
 - Given: Accordionにclass="w-full"を設定
 - When: Accordionコンポーネントをレンダリング
 - Then: "w-full"クラスが追加される
 
-### TC-011: Accordion構造の組み合わせ
+### TC-013: AccordionItemのカスタムクラス
 
-- Given: Accordion内に複数のAccordionItem（各AccordionItemにAccordionHeaderとAccordionContentを含む）を配置
+- Given: AccordionItemにclass="bg-base-200"を設定
+- When: AccordionItemコンポーネントをレンダリング
+- Then: `collapse bg-base-200`クラス（またはvariant指定時は`collapse collapse-arrow bg-base-200`など）が適用される
+
+### TC-014: Accordion構造の組み合わせ
+
+- Given: Accordion内に複数のAccordionItem（各AccordionItemにAccordionTitleとAccordionContentを含む）を配置
 - When: Accordionコンポーネントをレンダリング
 - Then: すべてのAccordionItemが正しく表示され、個別に開閉できる
 
