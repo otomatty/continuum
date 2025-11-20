@@ -42,8 +42,42 @@ use app;
 
 ## Running your project
 
+### Quick Start (Recommended)
+
+最も簡単な方法は、開発スクリプトを使用することです：
+
 ```bash
+bun run dev
+```
+
+または：
+
+```bash
+./scripts/dev.sh
+```
+
+このスクリプトは自動的に：
+1. Tailwind CSSスタイルをビルド
+2. 開発サーバーを起動（`http://127.0.0.1:3000`）
+
+### Manual Start
+
+手動で起動する場合：
+
+```bash
+# 1. スタイルをビルド（初回またはスタイル変更時）
+bun run build:styles
+
+# 2. 開発サーバーを起動
 cargo leptos watch
+```
+
+### Style Development
+
+スタイルを開発する際は、別のターミナルで以下を実行してスタイルの変更を監視できます：
+
+```bash
+bun run watch:styles
 ```
 
 ## Installing Additional Tools

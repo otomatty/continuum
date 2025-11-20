@@ -1,4 +1,7 @@
 pub mod github;
+pub mod components;
+pub mod pages;
+pub mod mock;
 
 use leptos::prelude::*;
 use leptos_meta::{provide_meta_context, MetaTags, Stylesheet, Title};
@@ -6,6 +9,8 @@ use leptos_router::{
     components::{Route, Router, Routes},
     StaticSegment,
 };
+use components::navbar::Navbar;
+use pages::{HomePage, DashboardPage, PortfolioPage};
 
 pub fn shell(options: LeptosOptions) -> impl IntoView {
     view! {
@@ -34,28 +39,18 @@ pub fn App() -> impl IntoView {
         <Stylesheet id="leptos" href="/pkg/continuum.css"/>
 
         // sets the document title
-        <Title text="Welcome to Leptos"/>
+        <Title text="Continuum - Portfolio Dashboard"/>
 
         // content for this welcome page
         <Router>
-            <main>
+            <Navbar/>
+            <main class="container mx-auto py-8">
                 <Routes fallback=|| "Page not found.".into_view()>
                     <Route path=StaticSegment("") view=HomePage/>
+                    <Route path=StaticSegment("dashboard") view=DashboardPage/>
+                    <Route path=StaticSegment("portfolio") view=PortfolioPage/>
                 </Routes>
             </main>
         </Router>
-    }
-}
-
-/// Renders the home page of your application.
-#[component]
-fn HomePage() -> impl IntoView {
-    // Creates a reactive value to update the button
-    let count = RwSignal::new(0);
-    let on_click = move |_| *count.write() += 1;
-
-    view! {
-        <h1>"Welcome to Leptos!"</h1>
-        <button on:click=on_click>"Click Me: " {count}</button>
     }
 }
