@@ -2,7 +2,7 @@
 
 ## Related Files
 
-- Implementation: `app/src/components/badge.rs`
+- Implementation: `app/src/components/badge/mod.rs`
 - Module: `app/src/components/mod.rs`
 
 ## Related Documentation

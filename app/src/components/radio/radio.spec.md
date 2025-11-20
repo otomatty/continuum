@@ -2,7 +2,7 @@
 
 ## Related Files
 
-- Implementation: `app/src/components/radio.rs`
+- Implementation: `app/src/components/radio/mod.rs`
 - Module: `app/src/components/mod.rs`
 
 ## Related Documentation

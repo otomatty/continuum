@@ -2,7 +2,7 @@
 
 ## Related Files
 
-- Implementation: `app/src/components/input.rs`
+- Implementation: `app/src/components/input/mod.rs`
 - Module: `app/src/components/mod.rs`
 
 ## Related Documentation

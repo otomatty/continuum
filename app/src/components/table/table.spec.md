@@ -2,7 +2,7 @@
 
 ## Related Files
 
-- Implementation: `app/src/components/table.rs`
+- Implementation: `app/src/components/table/mod.rs`
 - Module: `app/src/components/mod.rs`
 
 ## Related Documentation

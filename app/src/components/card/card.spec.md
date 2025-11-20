@@ -2,7 +2,7 @@
 
 ## Related Files
 
-- Implementation: `app/src/components/card.rs`
+- Implementation: `app/src/components/card/mod.rs`
 - Module: `app/src/components/mod.rs`
 
 ## Related Documentation

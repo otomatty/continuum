@@ -2,7 +2,7 @@
 
 ## Related Files
 
-- Implementation: `app/src/components/button.rs`
+- Implementation: `app/src/components/button/mod.rs`
 - Module: `app/src/components/mod.rs`
 
 ## Related Documentation

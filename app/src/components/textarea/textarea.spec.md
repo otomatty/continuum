@@ -2,7 +2,7 @@
 
 ## Related Files
 
-- Implementation: `app/src/components/textarea.rs`
+- Implementation: `app/src/components/textarea/mod.rs`
 - Module: `app/src/components/mod.rs`
 
 ## Related Documentation

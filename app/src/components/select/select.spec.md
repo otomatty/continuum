@@ -2,7 +2,7 @@
 
 ## Related Files
 
-- Implementation: `app/src/components/select.rs`
+- Implementation: `app/src/components/select/mod.rs`
 - Module: `app/src/components/mod.rs`
 
 ## Related Documentation
