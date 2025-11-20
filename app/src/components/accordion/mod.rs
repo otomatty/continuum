@@ -26,6 +26,12 @@ pub enum AccordionVariant {
     Plus,
 }
 
+// AccordionItemのコンテキスト（toggle関数を子コンポーネントに提供）
+#[derive(Clone, Copy)]
+struct AccordionItemContext {
+    toggle: Callback<()>,
+}
+
 impl Default for AccordionVariant {
     fn default() -> Self {
         AccordionVariant::Arrow
@@ -67,7 +73,7 @@ pub fn AccordionItem(
             internal_open
         };
 
-    let _handle_toggle = move |_: ()| {
+    let handle_toggle = move |_: ()| {
         if let Some(callback) = on_toggle.clone() {
             callback.run(());
         }
@@ -75,6 +81,13 @@ pub fn AccordionItem(
             set_is_open.set(!is_open.get());
         }
     };
+
+    // トグル関数をコンテキストとして提供
+    let toggle_callback = Callback::new(handle_toggle);
+    let context = AccordionItemContext {
+        toggle: toggle_callback,
+    };
+    provide_context(context);
 
     let collapse_class = move || {
         let base = if is_open.get() {
@@ -103,6 +116,9 @@ pub fn AccordionHeader(
     #[prop(optional, into)] on_click: Option<Callback<MouseEvent>>,
     children: Children,
 ) -> impl IntoView {
+    // AccordionItemから提供されるコンテキストを取得
+    let context = use_context::<AccordionItemContext>();
+
     let variant_class = match variant {
         AccordionVariant::Arrow => "collapse-title",
         AccordionVariant::Plus => "collapse-title collapse-plus",
@@ -115,8 +131,13 @@ pub fn AccordionHeader(
     };
 
     let handle_click = move |ev: MouseEvent| {
+        // 外部のon_clickコールバックを呼び出す
         if let Some(cb) = on_click.clone() {
             cb.run(ev);
+        }
+        // コンテキストからtoggle関数を取得して呼び出す（AccordionItemの開閉を切り替え）
+        if let Some(ctx) = context {
+            ctx.toggle.run(());
         }
     };
 

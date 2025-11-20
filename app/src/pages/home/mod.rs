@@ -1,12 +1,13 @@
+use crate::components::{
+    button::Button,
+    button::ButtonVariant,
+    card::{Card, CardBody, CardTitle},
+};
 use leptos::prelude::*;
-use crate::components::{button::Button, button::ButtonVariant, card::{Card, CardTitle, CardBody}};
 
 /// Renders the home page of your application.
 #[component]
 pub fn HomePage() -> impl IntoView {
-    // Creates a reactive value to update the button
-    let count = RwSignal::new(0);
-
     view! {
         <div class="space-y-8">
             <div class="text-center py-12">
@@ -38,17 +39,12 @@ pub fn HomePage() -> impl IntoView {
                 </Card>
 
                 <Card>
-                    <CardTitle>"Interactive Demo"</CardTitle>
+                    <CardTitle>"Components"</CardTitle>
                     <CardBody>
-                        <p class="mb-4">"Click the button below to test reactivity:"</p>
-                        <Button 
-                            variant=ButtonVariant::Ghost 
-                            on_click=Callback::new(move |_| {
-                                *count.write() += 1;
-                            })
-                            >
-                                "Click Me: " {count}
-                        </Button>
+                        <p class="mb-4">"Browse and test all available UI components."</p>
+                        <a href="/components" class="btn btn-accent">
+                            "View Components"
+                        </a>
                     </CardBody>
                 </Card>
             </div>
@@ -72,4 +68,3 @@ pub fn HomePage() -> impl IntoView {
         </div>
     }
 }
-

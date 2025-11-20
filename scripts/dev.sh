@@ -15,9 +15,9 @@ if ! command -v cargo-leptos &> /dev/null; then
     exit 1
 fi
 
-# Note: Tailwind CSS is already included in style/main.scss
-# Leptos will compile the SCSS file automatically
-echo "📦 Styles will be compiled by Leptos..."
+# Build Tailwind CSS with DaisyUI
+echo "📦 Building Tailwind CSS styles..."
+bun run build:css
 echo ""
 
 # Start the development server

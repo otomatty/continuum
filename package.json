@@ -4,6 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "build:css": "tailwindcss -i style/input.css -o style/output.css",
     "dev": "./scripts/dev.sh",
     "build": "cargo leptos build --release",
     "build:dev": "cargo leptos build",

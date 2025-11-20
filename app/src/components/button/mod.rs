@@ -1,5 +1,5 @@
-use leptos::prelude::*;
 use leptos::ev::MouseEvent;
+use leptos::prelude::*;
 
 #[derive(Clone, Copy, PartialEq)]
 pub enum ButtonVariant {
@@ -40,7 +40,7 @@ pub fn Button(
     };
 
     view! {
-        <button 
+        <button
             class=combined_class
             on:click=handle_click
         >
@@ -48,4 +48,3 @@ pub fn Button(
         </button>
     }
 }
-
