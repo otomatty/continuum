@@ -1,6 +1,8 @@
 use leptos::prelude::*;
 use crate::components::{card::{Card, CardTitle, CardBody}, badge::{Badge, BadgeVariant}, avatar::Avatar};
-use crate::mock::data::{User, ContributionGraph, RepositoryContribution, UserRole, Period};
+use crate::concepts::user::{User, UserRole};
+use crate::concepts::contribution::{ContributionGraph, RepositoryContribution};
+use crate::concepts::organization::Period;
 
 #[component]
 pub fn UserProfile(

@@ -2,11 +2,11 @@ mod components;
 
 use leptos::prelude::*;
 use crate::components::card::{Card, CardTitle, CardBody};
-use crate::mock::data::{
-    generate_mock_organization_stats, generate_mock_weekly_ranking, 
-    generate_mock_monthly_ranking, generate_mock_activities, 
-    generate_mock_repositories, Period
-};
+use crate::concepts::organization::{initialize_mock_organization_stats, Period};
+use crate::concepts::user::initialize_mock_users;
+use crate::concepts::activity::initialize_mock_activities;
+use crate::concepts::repository::initialize_mock_repositories;
+use crate::synchronizations::{calculate_weekly_ranking, calculate_monthly_ranking};
 use components::{StatsCard, RankingTable, ActivityTimeline, RepositoryList};
 
 /**
@@ -22,18 +22,29 @@ use components::{StatsCard, RankingTable, ActivityTimeline, RepositoryList};
  *   ├─ app/src/components/table.rs
  *   ├─ app/src/components/badge.rs
  *   ├─ app/src/components/avatar.rs
- *   └─ app/src/mock/data.rs
+ *   ├─ app/src/concepts/organization/mod.rs
+ *   ├─ app/src/concepts/user/mod.rs
+ *   ├─ app/src/concepts/activity/mod.rs
+ *   ├─ app/src/concepts/repository/mod.rs
+ *   └─ app/src/synchronizations/ranking_sync.rs
  *
  * Related Documentation:
  *   └─ docs/03_plans/continuum/prototype-pages.md
  */
 #[component]
 pub fn DashboardPage() -> impl IntoView {
-    let weekly_stats = generate_mock_organization_stats(Period::Weekly);
-    let weekly_ranking = generate_mock_weekly_ranking();
-    let monthly_ranking = generate_mock_monthly_ranking();
-    let activities = generate_mock_activities();
-    let repositories = generate_mock_repositories();
+    let weekly_stats = initialize_mock_organization_stats(Period::Weekly);
+    
+    // Initialize Concept states
+    let user_state = initialize_mock_users();
+    let activity_state = initialize_mock_activities();
+    
+    // Use Synchronization to calculate rankings
+    let weekly_ranking = calculate_weekly_ranking(&user_state, &activity_state);
+    let monthly_ranking = calculate_monthly_ranking(&user_state, &activity_state);
+    
+    let activities = activity_state.activities;
+    let repositories = initialize_mock_repositories().repositories;
     
     let (selected_period, set_selected_period) = signal(Period::Weekly);
     

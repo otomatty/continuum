@@ -2,6 +2,8 @@ pub mod github;
 pub mod components;
 pub mod pages;
 pub mod mock;
+pub mod concepts;
+pub mod synchronizations;
 
 use leptos::prelude::*;
 use leptos_meta::{provide_meta_context, MetaTags, Stylesheet, Title};

@@ -1,6 +1,8 @@
 use leptos::prelude::*;
 use crate::components::{card::{Card, CardBody}, badge::Badge, badge::BadgeVariant, avatar::Avatar, table::{Table, TableHead, TableBody, TableRow, TableHeader, TableCell}};
-use crate::mock::data::{RankingEntry, Activity, Repository, ActivityType};
+use crate::concepts::ranking::RankingEntry;
+use crate::concepts::activity::{Activity, ActivityType};
+use crate::concepts::repository::Repository;
 
 #[component]
 pub fn StatsCard(
