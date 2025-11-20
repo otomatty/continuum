@@ -30,7 +30,6 @@ use components::{StatsCard, RankingTable, ActivityTimeline, RepositoryList};
 #[component]
 pub fn DashboardPage() -> impl IntoView {
     let weekly_stats = generate_mock_organization_stats(Period::Weekly);
-    let _monthly_stats = generate_mock_organization_stats(Period::Monthly);
     let weekly_ranking = generate_mock_weekly_ranking();
     let monthly_ranking = generate_mock_monthly_ranking();
     let activities = generate_mock_activities();
@@ -76,19 +75,15 @@ pub fn DashboardPage() -> impl IntoView {
                         <span>"Activity Ranking"</span>
                         <div class="join">
                             <button
-                                class=move || {
-                                    let period = selected_period.get();
-                                    format!("join-item btn btn-sm {}", if period == Period::Weekly { "btn-active" } else { "" })
-                                }
+                                class="join-item btn btn-sm"
+                                class:btn-active=move || selected_period.get() == Period::Weekly
                                 on:click=move |_| set_selected_period.set(Period::Weekly)
                             >
                                 "Weekly"
                             </button>
                             <button
-                                class=move || {
-                                    let period = selected_period.get();
-                                    format!("join-item btn btn-sm {}", if period == Period::Monthly { "btn-active" } else { "" })
-                                }
+                                class="join-item btn btn-sm"
+                                class:btn-active=move || selected_period.get() == Period::Monthly
                                 on:click=move |_| set_selected_period.set(Period::Monthly)
                             >
                                 "Monthly"

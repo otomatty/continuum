@@ -133,6 +133,47 @@ PR #6「feat: implement prototype pages with mock data」に対するレビュ�
 - `app/src/pages/home/mod.rs`
 - `docs/03_plans/continuum/prototype-pages.md`
 
+## 対応完了状況
+
+### ✅ 完了した項目（2025-11-20）
+
+#### 必須対応項目
+- ✅ 未使用変数の削除（`_monthly_stats`, `_user`）
+- ✅ コメントの追加（`NaiveDate`使用理由、TODOコメント）
+- ✅ エラーハンドリングの改善（`unwrap_or` → `expect`）
+- ✅ ハードコードされた日付の動的化（`Utc::now().date_naive()`を使用）
+- ✅ 設計書の更新（`ContributionDay`の型を`NaiveDate`に変更）
+
+#### 推奨対応項目
+- ✅ パフォーマンス改善
+  - ✅ `repository_contributions`の再生成を回避（`view!`マクロの前に生成）
+  - ✅ `generate_mock_users`と`generate_mock_repositories`に`once_cell::sync::Lazy`を使用してキャッシュ
+  - ✅ `fold`を使った効率的な計算（5回のイテレーションを1回に統合）
+- ✅ コンポーネントの柔軟性向上
+  - ✅ すべてのコンポーネントの`class`プロパティを`String`型に変更
+  - ✅ `CardBody`に`card-body`クラスを追加
+- ✅ Leptosの慣用的な書き方
+  - ✅ `class:`ディレクティブを使用（dashboard/mod.rs, portfolio/mod.rs）
+  - ✅ `on:click`ハンドラの簡略化（button.rs）
+
+### ⏳ 将来対応項目
+- ⏳ ルーティングの一元管理（プロトタイプ段階では優先度低）
+
+## 変更されたファイル一覧
+
+1. `app/src/pages/dashboard/mod.rs` - 未使用変数削除、`class:`ディレクティブ使用
+2. `app/src/pages/portfolio/mod.rs` - TODOコメント追加、データ再生成回避、`class:`ディレクティブ使用
+3. `app/src/pages/portfolio/components.rs` - `fold`を使った効率的な計算
+4. `app/src/mock/data.rs` - コメント追加、エラーハンドリング改善、日付動的化、キャッシュ追加、未使用変数削除
+5. `app/src/components/button.rs` - `class`プロパティを`String`型に変更、`on:click`簡略化
+6. `app/src/components/card.rs` - `class`プロパティを`String`型に変更、`CardBody`に`card-body`クラス追加
+7. `app/src/components/table.rs` - すべてのコンポーネントの`class`プロパティを`String`型に変更
+8. `app/src/components/avatar.rs` - `class`プロパティを`String`型に変更
+9. `app/src/components/badge.rs` - `class`プロパティを`String`型に変更
+10. `docs/03_plans/continuum/prototype-pages.md` - `ContributionDay`の型を`NaiveDate`に更新
+11. `Cargo.toml` - `once_cell`依存関係を追加
+12. `app/Cargo.toml` - `once_cell`依存関係を追加
+
 ## 参考情報
 
 - [Leptos Documentation](https://leptos.dev/)

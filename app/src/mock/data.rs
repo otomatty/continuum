@@ -1,5 +1,6 @@
 use chrono::{DateTime, Utc, NaiveDate};
 use serde::{Serialize, Deserialize};
+use once_cell::sync::Lazy;
 
 // User Role
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -97,6 +98,8 @@ pub struct ContributionGraph {
     pub period: Period,
 }
 
+// Note: We use NaiveDate here because contribution graphs only need date-level granularity
+// and do not require time or timezone information.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ContributionDay {
     pub date: NaiveDate,
@@ -119,7 +122,8 @@ pub struct RepositoryContribution {
 
 // Mock Data Generation Functions
 
-pub fn generate_mock_users() -> Vec<User> {
+// Cache mock users to avoid regeneration
+static MOCK_USERS: Lazy<Vec<User>> = Lazy::new(|| {
     vec![
         User {
             username: "alice-dev".to_string(),
@@ -167,10 +171,15 @@ pub fn generate_mock_users() -> Vec<User> {
             left_at: None,
         },
     ]
+});
+
+pub fn generate_mock_users() -> Vec<User> {
+    MOCK_USERS.clone()
 }
 
-pub fn generate_mock_repositories() -> Vec<Repository> {
-    let users = generate_mock_users();
+// Cache mock repositories to avoid regeneration
+static MOCK_REPOSITORIES: Lazy<Vec<Repository>> = Lazy::new(|| {
+    let users = MOCK_USERS.clone();
     vec![
         Repository {
             name: "awesome-rust".to_string(),
@@ -253,6 +262,10 @@ pub fn generate_mock_repositories() -> Vec<Repository> {
             ],
         },
     ]
+});
+
+pub fn generate_mock_repositories() -> Vec<Repository> {
+    MOCK_REPOSITORIES.clone()
 }
 
 pub fn generate_mock_activities() -> Vec<Activity> {
@@ -424,10 +437,11 @@ pub fn generate_mock_contribution_graph(username: &str, period: Period) -> Contr
     };
     
     let mut data = Vec::new();
-    let base_date = NaiveDate::from_ymd_opt(2024, 1, 1).expect("Invalid date");
+    // Use current date as base for dynamic date generation
+    let base_date = Utc::now().date_naive();
     
     for i in 0..days {
-        let date = base_date + chrono::Duration::try_days(i as i64).unwrap_or(chrono::Duration::days(0));
+        let date = base_date + chrono::Duration::try_days(i as i64).expect("i is a valid small integer, try_days should not fail");
         data.push(ContributionDay {
             date,
             commits: (i % 5) as u32,
@@ -445,10 +459,6 @@ pub fn generate_mock_contribution_graph(username: &str, period: Period) -> Contr
 
 pub fn generate_mock_repository_contributions(username: &str) -> Vec<RepositoryContribution> {
     let repos = generate_mock_repositories();
-    let users = generate_mock_users();
-    let _user = users.iter()
-        .find(|u| u.username == username)
-        .unwrap_or(&users[0]);
     
     repos.iter().map(|repo| {
         RepositoryContribution {

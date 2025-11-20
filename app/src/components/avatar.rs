@@ -4,7 +4,7 @@ use leptos::prelude::*;
 pub fn Avatar(
     src: String,
     #[prop(optional)] alt: String,
-    #[prop(optional)] class: &'static str,
+    #[prop(optional, into)] class: String,
 ) -> impl IntoView {
     let avatar_class = if class.is_empty() {
         "avatar".to_string()
@@ -23,7 +23,7 @@ pub fn Avatar(
 
 #[component]
 pub fn AvatarGroup(
-    #[prop(optional)] class: &'static str,
+    #[prop(optional, into)] class: String,
     children: Children,
 ) -> impl IntoView {
     let group_class = if class.is_empty() {

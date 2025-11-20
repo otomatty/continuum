@@ -2,7 +2,7 @@ use leptos::prelude::*;
 
 #[component]
 pub fn Table(
-    #[prop(optional)] class: &'static str,
+    #[prop(optional, into)] class: String,
     children: Children,
 ) -> impl IntoView {
     let table_class = if class.is_empty() {
@@ -20,7 +20,7 @@ pub fn Table(
 
 #[component]
 pub fn TableHead(
-    #[prop(optional)] class: &'static str,
+    #[prop(optional, into)] class: String,
     children: Children,
 ) -> impl IntoView {
     view! {
@@ -32,7 +32,7 @@ pub fn TableHead(
 
 #[component]
 pub fn TableBody(
-    #[prop(optional)] class: &'static str,
+    #[prop(optional, into)] class: String,
     children: Children,
 ) -> impl IntoView {
     view! {
@@ -44,7 +44,7 @@ pub fn TableBody(
 
 #[component]
 pub fn TableRow(
-    #[prop(optional)] class: &'static str,
+    #[prop(optional, into)] class: String,
     children: Children,
 ) -> impl IntoView {
     view! {
@@ -56,7 +56,7 @@ pub fn TableRow(
 
 #[component]
 pub fn TableHeader(
-    #[prop(optional)] class: &'static str,
+    #[prop(optional, into)] class: String,
     children: Children,
 ) -> impl IntoView {
     view! {
@@ -68,7 +68,7 @@ pub fn TableHeader(
 
 #[component]
 pub fn TableCell(
-    #[prop(optional)] class: &'static str,
+    #[prop(optional, into)] class: String,
     children: Children,
 ) -> impl IntoView {
     view! {

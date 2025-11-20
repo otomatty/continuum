@@ -2,7 +2,7 @@ use leptos::prelude::*;
 
 #[component]
 pub fn Card(
-    #[prop(optional)] class: &'static str,
+    #[prop(optional, into)] class: String,
     children: Children,
 ) -> impl IntoView {
     let card_class = if class.is_empty() {
@@ -20,7 +20,7 @@ pub fn Card(
 
 #[component]
 pub fn CardTitle(
-    #[prop(optional)] class: &'static str,
+    #[prop(optional, into)] class: String,
     children: Children,
 ) -> impl IntoView {
     let title_class = if class.is_empty() {
@@ -38,11 +38,17 @@ pub fn CardTitle(
 
 #[component]
 pub fn CardBody(
-    #[prop(optional)] class: &'static str,
+    #[prop(optional, into)] class: String,
     children: Children,
 ) -> impl IntoView {
+    let body_class = if class.is_empty() {
+        "card-body".to_string()
+    } else {
+        format!("card-body {}", class)
+    };
+
     view! {
-        <div class=class>
+        <div class=body_class>
             {children()}
         </div>
     }

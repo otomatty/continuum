@@ -239,7 +239,7 @@ struct ContributionGraph {
 }
 
 struct ContributionDay {
-    date: DateTime,
+    date: NaiveDate, // Note: We use NaiveDate here because contribution graphs only need date-level granularity and do not require time or timezone information.
     commits: u32,
     prs: u32,
     reviews: u32,

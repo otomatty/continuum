@@ -176,11 +176,16 @@ pub fn RepositoryContributionList(
 pub fn ContributionHighlights(
     contributions: Vec<RepositoryContribution>,
 ) -> impl IntoView {
-    let total_commits: u32 = contributions.iter().map(|c| c.commits).sum();
-    let total_prs: u32 = contributions.iter().map(|c| c.prs).sum();
-    let total_reviews: u32 = contributions.iter().map(|c| c.reviews).sum();
-    let total_lines_added: u32 = contributions.iter().map(|c| c.lines_added).sum();
-    let total_lines_deleted: u32 = contributions.iter().map(|c| c.lines_deleted).sum();
+    let (total_commits, total_prs, total_reviews, total_lines_added, total_lines_deleted) =
+        contributions.iter().fold((0, 0, 0, 0, 0), |acc, c| {
+            (
+                acc.0 + c.commits,
+                acc.1 + c.prs,
+                acc.2 + c.reviews,
+                acc.3 + c.lines_added,
+                acc.4 + c.lines_deleted,
+            )
+        });
     
     view! {
         <Card>

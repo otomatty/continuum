@@ -17,7 +17,7 @@ impl Default for ButtonVariant {
 #[component]
 pub fn Button(
     #[prop(optional)] variant: ButtonVariant,
-    #[prop(optional)] class: &'static str,
+    #[prop(optional, into)] class: String,
     #[prop(optional, into)] on_click: Option<Callback<MouseEvent>>,
     children: Children,
 ) -> impl IntoView {
@@ -36,11 +36,7 @@ pub fn Button(
     view! {
         <button 
             class=combined_class
-            on:click=move |ev| {
-                if let Some(callback) = on_click {
-                    callback.run(ev);
-                }
-            }
+            on:click=on_click
         >
             {children()}
         </button>

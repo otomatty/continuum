@@ -15,7 +15,7 @@ pub enum BadgeVariant {
 #[component]
 pub fn Badge(
     variant: BadgeVariant,
-    #[prop(optional)] class: &'static str,
+    #[prop(optional, into)] class: String,
     children: Children,
 ) -> impl IntoView {
     let variant_class = match variant {

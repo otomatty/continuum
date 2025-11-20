@@ -105,6 +105,7 @@ dependencies = [
  "leptos_axum",
  "leptos_meta",
  "leptos_router",
+ "once_cell",
  "reqwest 0.12.24",
  "serde",
  "serde_json",

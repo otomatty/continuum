@@ -33,6 +33,7 @@ pub struct PortfolioParams {
 #[component]
 pub fn PortfolioPage() -> impl IntoView {
     // For now, use default username since path params routing needs to be fixed
+    // TODO: Replace with proper path parameter routing when available. See issue #123.
     let username = move || "alice-dev".to_string();
     
     let users = generate_mock_users();
@@ -51,9 +52,8 @@ pub fn PortfolioPage() -> impl IntoView {
         generate_mock_contribution_graph(&username(), Period::Monthly)
     };
     
-    let repository_contributions = move || {
-        generate_mock_repository_contributions(&username())
-    };
+    // Generate repository contributions once before view! macro to avoid regeneration
+    let repository_contributions = generate_mock_repository_contributions(&username());
     
     let (selected_period, set_selected_period) = signal(Period::Weekly);
     
@@ -61,7 +61,7 @@ pub fn PortfolioPage() -> impl IntoView {
         <div class="space-y-8">
             <UserProfile user=user() />
             
-            <ContributionHighlights contributions=repository_contributions() />
+            <ContributionHighlights contributions=repository_contributions.clone() />
             
             {move || {
                 let period = selected_period.get();
@@ -76,19 +76,15 @@ pub fn PortfolioPage() -> impl IntoView {
                             <h2 class="text-2xl font-bold">"Contribution Graph"</h2>
                             <div class="join">
                                 <button
-                                    class=move || {
-                                        let p = selected_period.get();
-                                        format!("join-item btn btn-sm {}", if p == Period::Weekly { "btn-active" } else { "" })
-                                    }
+                                    class="join-item btn btn-sm"
+                                    class:btn-active=move || selected_period.get() == Period::Weekly
                                     on:click=move |_| set_selected_period.set(Period::Weekly)
                                 >
                                     "Weekly"
                                 </button>
                                 <button
-                                    class=move || {
-                                        let p = selected_period.get();
-                                        format!("join-item btn btn-sm {}", if p == Period::Monthly { "btn-active" } else { "" })
-                                    }
+                                    class="join-item btn btn-sm"
+                                    class:btn-active=move || selected_period.get() == Period::Monthly
                                     on:click=move |_| set_selected_period.set(Period::Monthly)
                                 >
                                     "Monthly"
@@ -100,7 +96,7 @@ pub fn PortfolioPage() -> impl IntoView {
                 }
             }}
             
-            <RepositoryContributionList contributions=repository_contributions() />
+            <RepositoryContributionList contributions=repository_contributions.clone() />
         </div>
     }
 }
