@@ -19,10 +19,9 @@
 #[cfg(test)]
 mod tests {
     use super::super::ranking_sync::*;
-    use crate::concepts::user::{UserState, User, UserRole};
-    use crate::concepts::activity::{ActivityState, Activity, ActivityType};
-    use crate::concepts::organization::Period;
-    use chrono::{DateTime, Utc};
+    use crate::concepts::activity::{Activity, ActivityState, ActivityType};
+    use crate::concepts::user::{User, UserRole, UserState};
+    use chrono::Utc;
 
     fn create_test_user(username: &str) -> User {
         User {
@@ -39,10 +38,7 @@ mod tests {
     #[test]
     fn test_calculate_weekly_ranking() {
         let user_state = UserState {
-            users: vec![
-                create_test_user("user1"),
-                create_test_user("user2"),
-            ],
+            users: vec![create_test_user("user1"), create_test_user("user2")],
             current_user_id: None,
         };
 
@@ -53,7 +49,10 @@ mod tests {
                     id: "1".to_string(),
                     activity_type: ActivityType::Commit,
                     user: user_state.users[0].clone(),
-                    repository: crate::concepts::repository::actions::initialize_mock_repositories().repositories[0].clone(),
+                    repository: crate::concepts::repository::actions::initialize_mock_repositories(
+                    )
+                    .repositories[0]
+                        .clone(),
                     title: "Test commit".to_string(),
                     created_at: now - chrono::Duration::try_days(1).unwrap(),
                     url: "https://github.com/test".to_string(),
@@ -62,7 +61,10 @@ mod tests {
                     id: "2".to_string(),
                     activity_type: ActivityType::PullRequest,
                     user: user_state.users[1].clone(),
-                    repository: crate::concepts::repository::actions::initialize_mock_repositories().repositories[0].clone(),
+                    repository: crate::concepts::repository::actions::initialize_mock_repositories(
+                    )
+                    .repositories[0]
+                        .clone(),
                     title: "Test PR".to_string(),
                     created_at: now - chrono::Duration::try_days(2).unwrap(),
                     url: "https://github.com/test".to_string(),
@@ -71,11 +73,11 @@ mod tests {
         };
 
         let ranking = calculate_weekly_ranking(&user_state, &activity_state);
-        
+
         assert!(!ranking.is_empty());
         // Check that ranking is sorted by score (descending)
         for i in 1..ranking.len() {
-            assert!(ranking[i-1].score >= ranking[i].score);
+            assert!(ranking[i - 1].score >= ranking[i].score);
         }
     }
 
@@ -86,14 +88,11 @@ mod tests {
             current_user_id: None,
         };
 
-        let activity_state = ActivityState {
-            activities: vec![],
-        };
+        let activity_state = ActivityState { activities: vec![] };
 
         let ranking = calculate_monthly_ranking(&user_state, &activity_state);
-        
+
         // With no activities, ranking should be empty
         assert!(ranking.is_empty());
     }
 }
-

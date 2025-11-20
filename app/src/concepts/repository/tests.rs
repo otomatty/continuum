@@ -19,7 +19,6 @@ mod tests {
     use super::super::actions::*;
     use super::super::state::*;
     use chrono::{DateTime, Utc};
-    use crate::concepts::user::state::{User, UserRole};
 
     #[test]
     fn test_initialize_mock_repositories() {
@@ -37,12 +36,14 @@ mod tests {
             description: Some("Test repository".to_string()),
             stars: 100,
             language: Some("Rust".to_string()),
-            updated_at: DateTime::parse_from_rfc3339("2024-01-01T00:00:00Z").unwrap().with_timezone(&Utc),
+            updated_at: DateTime::parse_from_rfc3339("2024-01-01T00:00:00Z")
+                .unwrap()
+                .with_timezone(&Utc),
             contributors: vec![],
         };
-        
+
         let result = add_repository(state, new_repo.clone());
-        
+
         assert_eq!(result.repositories.len(), 1);
         assert_eq!(result.repositories[0].name, "test-repo");
     }
@@ -50,10 +51,9 @@ mod tests {
     #[test]
     fn test_find_repository_by_name() {
         let state = initialize_mock_repositories();
-        
+
         let repo = find_repository_by_name(&state, "awesome-rust");
         assert!(repo.is_some());
         assert_eq!(repo.unwrap().name, "awesome-rust");
     }
 }
-

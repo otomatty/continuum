@@ -13,17 +13,16 @@
  *   ├─ Spec: ./toast.spec.md
  *   └─ Module: ../mod.rs
  */
-
 use leptos::prelude::*;
 
+#[cfg(feature = "hydrate")]
+use js_sys::Promise;
+#[cfg(feature = "hydrate")]
+use leptos::web_sys;
 #[cfg(feature = "hydrate")]
 use wasm_bindgen_futures::spawn_local;
 #[cfg(feature = "hydrate")]
 use wasm_bindgen_futures::JsFuture;
-#[cfg(feature = "hydrate")]
-use js_sys::Promise;
-#[cfg(feature = "hydrate")]
-use web_sys;
 
 #[derive(Clone, Copy, PartialEq)]
 pub enum ToastVariant {
@@ -43,7 +42,9 @@ impl Default for ToastVariant {
 pub fn Toast(
     message: String,
     #[prop(optional)] variant: ToastVariant,
-    #[prop(optional)] duration: Option<u32>,
+    #[prop(optional)]
+    #[allow(unused_variables)]
+    duration: Option<u32>,
     #[prop(optional, into)] on_close: Option<Callback<()>>,
     #[prop(optional, into)] class: String,
 ) -> impl IntoView {
@@ -62,7 +63,7 @@ pub fn Toast(
 
     let handle_close = move |_| {
         if let Some(callback) = on_close.clone() {
-            (callback)(());
+            callback.run(());
         }
     };
 
@@ -81,7 +82,7 @@ pub fn Toast(
             });
             let _ = JsFuture::from(promise).await;
             if let Some(cb) = callback {
-                (cb)(());
+                cb.run(());
             }
         });
     }
@@ -95,12 +96,11 @@ pub fn Toast(
                         <button class="btn btn-sm btn-circle" on:click=handle_close>
                             "✕"
                         </button>
-                    }.into_view()
+                    }.into_view().into_any()
                 } else {
-                    view! {}.into_view()
+                    view! { <span></span> }.into_view().into_any()
                 }
             }}
         </div>
     }
 }
-

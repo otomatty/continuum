@@ -13,14 +13,10 @@
  *   ├─ Spec: ./breadcrumbs.spec.md
  *   └─ Module: ../mod.rs
  */
-
 use leptos::prelude::*;
 
 #[component]
-pub fn Breadcrumbs(
-    #[prop(optional, into)] class: String,
-    children: Children,
-) -> impl IntoView {
+pub fn Breadcrumbs(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
     let breadcrumbs_class = if class.is_empty() {
         "breadcrumbs".to_string()
     } else {
@@ -50,22 +46,18 @@ pub fn BreadcrumbItem(
 
     view! {
         <li class=item_class>
-            {move || {
-                if let Some(link) = href {
-                    view! {
-                        <a href=link>
-                            {children()}
-                        </a>
-                    }.into_view()
-                } else {
-                    view! {
-                        <span>
-                            {children()}
-                        </span>
-                    }.into_view()
-                }
+            {match href {
+                Some(link) => view! {
+                    <a href=link>
+                        {children()}
+                    </a>
+                }.into_any(),
+                None => view! {
+                    <span>
+                        {children()}
+                    </span>
+                }.into_any(),
             }}
         </li>
     }
 }
-

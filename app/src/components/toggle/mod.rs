@@ -1,5 +1,5 @@
-use leptos::prelude::*;
 use leptos::ev::Event;
+use leptos::prelude::*;
 
 #[derive(Clone, Copy, PartialEq)]
 pub enum ToggleVariant {
@@ -41,9 +41,9 @@ pub fn Toggle(
         format!("toggle {} {}", variant_class, class)
     };
 
-    let handle_change = move |ev: web_sys::Event| {
+    let handle_change = move |ev: leptos::web_sys::Event| {
         if let Some(cb) = on_change.clone() {
-            (cb)(ev);
+            cb.run(ev);
         }
     };
 
@@ -56,4 +56,3 @@ pub fn Toggle(
         />
     }
 }
-

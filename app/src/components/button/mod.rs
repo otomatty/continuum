@@ -35,7 +35,7 @@ pub fn Button(
 
     let handle_click = move |ev: MouseEvent| {
         if let Some(cb) = on_click {
-            (cb)(ev);
+            cb.run(ev);
         }
     };
 

@@ -31,7 +31,7 @@ pub fn Pagination(
 
     let handle_page_change = move |page: usize| {
         if let Some(callback) = on_page_change.clone() {
-            (callback)(page);
+            callback.run(page);
         }
     };
 

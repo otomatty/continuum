@@ -15,9 +15,8 @@
  *   ├─ Spec: ./user.spec.md
  *   └─ Plan: docs/03_plans/continuum/legible-architecture-refactoring.md
  */
-
 use chrono::{DateTime, Utc};
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum UserRole {
@@ -42,4 +41,3 @@ pub struct UserState {
     pub users: Vec<User>,
     pub current_user_id: Option<String>,
 }
-

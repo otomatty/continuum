@@ -105,7 +105,7 @@ pub fn Tab(
     let handle_click = move |ev: MouseEvent| {
         set_active_index.set(index);
         if let Some(callback) = on_click.clone() {
-            (callback)(ev);
+            callback.run(ev);
         }
     };
 

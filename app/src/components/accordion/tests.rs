@@ -11,7 +11,7 @@
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::components::accordion::AccordionVariant;
 
     // ロジック部分のテスト: variant enumの判定
     #[test]
@@ -142,4 +142,3 @@ mod tests {
         assert_eq!(class, "collapse-content p-4");
     }
 }
-

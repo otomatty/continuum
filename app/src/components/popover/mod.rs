@@ -39,7 +39,7 @@ pub fn Popover(
 
     let handle_toggle = move |_| {
         if let Some(callback) = on_toggle.clone() {
-            (callback)(());
+            callback.run(());
         }
     };
 

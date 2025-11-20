@@ -29,10 +29,12 @@ pub fn Divider(
 
     view! {
         <div class=divider_class>
-            {if let Some(text) = text {
-                text.into_view()
-            } else {
-                view! {}.into_view()
+            {move || {
+                if let Some(text) = text.as_ref() {
+                    text.clone().into_view()
+                } else {
+                    "".to_string().into_view()
+                }
             }}
         </div>
     }

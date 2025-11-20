@@ -1,5 +1,5 @@
-use leptos::prelude::*;
 use leptos::ev::Event;
+use leptos::prelude::*;
 
 #[derive(Clone, Copy, PartialEq)]
 pub enum SelectVariant {
@@ -52,9 +52,9 @@ pub fn Select(
         format!("{} {}", base_class, class)
     };
 
-    let handle_change = move |ev: web_sys::Event| {
+    let handle_change = move |ev: leptos::web_sys::Event| {
         if let Some(cb) = on_change.clone() {
-            (cb)(ev);
+            cb.run(ev);
         }
     };
 
@@ -86,4 +86,3 @@ pub fn SelectOption(
         </option>
     }
 }
-

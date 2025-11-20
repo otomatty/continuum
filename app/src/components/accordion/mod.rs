@@ -1,3 +1,4 @@
+use leptos::ev::MouseEvent;
 /**
  * Accordion Component
  *
@@ -14,14 +15,12 @@
  *   ├─ Tests: ./tests.rs
  *   └─ Module: ../mod.rs
  */
-
 use leptos::prelude::*;
-use leptos::ev::MouseEvent;
 
 #[cfg(test)]
 mod tests;
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Debug)]
 pub enum AccordionVariant {
     Arrow,
     Plus,
@@ -35,7 +34,7 @@ impl Default for AccordionVariant {
 
 #[component]
 pub fn Accordion(
-    #[prop(optional)] variant: AccordionVariant,
+    #[prop(optional)] _variant: AccordionVariant,
     #[prop(optional, into)] class: String,
     children: Children,
 ) -> impl IntoView {
@@ -61,15 +60,16 @@ pub fn AccordionItem(
     children: Children,
 ) -> impl IntoView {
     let internal_open = signal(false);
-    let (is_open, set_is_open) = if let (Some(open_signal), Some(set_open_signal)) = (open, set_open) {
-        (open_signal, set_open_signal)
-    } else {
-        internal_open
-    };
+    let (is_open, set_is_open) =
+        if let (Some(open_signal), Some(set_open_signal)) = (open, set_open) {
+            (open_signal, set_open_signal)
+        } else {
+            internal_open
+        };
 
-    let handle_toggle = move |_| {
+    let _handle_toggle = move |_: ()| {
         if let Some(callback) = on_toggle.clone() {
-            (callback)(());
+            callback.run(());
         }
         if open.is_none() {
             set_is_open.set(!is_open.get());
@@ -116,7 +116,7 @@ pub fn AccordionHeader(
 
     let handle_click = move |ev: MouseEvent| {
         if let Some(cb) = on_click.clone() {
-            (cb)(ev);
+            cb.run(ev);
         }
     };
 
@@ -147,4 +147,3 @@ pub fn AccordionContent(
         </div>
     }
 }
-

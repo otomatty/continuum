@@ -1,5 +1,5 @@
-use leptos::prelude::*;
 use leptos::ev::InputEvent;
+use leptos::prelude::*;
 
 #[derive(Clone, Copy, PartialEq)]
 pub enum RangeVariant {
@@ -44,12 +44,12 @@ pub fn Range(
         format!("range {} {}", variant_class, class)
     };
 
-    let handle_input = move |ev: web_sys::Event| {
+    let handle_input = move |ev: leptos::web_sys::Event| {
         if let Some(cb) = on_input.clone() {
-            use wasm_bindgen::JsCast;
-            if let Ok(input_ev) = ev.dyn_into::<web_sys::InputEvent>() {
-                let leptos_input_ev = InputEvent::new(&input_ev);
-                (cb)(leptos_input_ev);
+            use leptos::wasm_bindgen::JsCast;
+            if let Ok(input_ev) = ev.dyn_into::<leptos::web_sys::InputEvent>() {
+                let leptos_input_ev = InputEvent::from(input_ev);
+                cb.run(leptos_input_ev);
             }
         }
     };
@@ -66,4 +66,3 @@ pub fn Range(
         />
     }
 }
-

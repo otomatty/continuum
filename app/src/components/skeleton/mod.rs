@@ -13,7 +13,6 @@
  *   ├─ Spec: ./skeleton.spec.md
  *   └─ Module: ../mod.rs
  */
-
 use leptos::prelude::*;
 
 #[component]
@@ -29,12 +28,7 @@ pub fn Skeleton(
 
     view! {
         <div class=skeleton_class>
-            {if let Some(children) = children {
-                children().into_view()
-            } else {
-                view! {}.into_view()
-            }}
+            {children.map(|c| c().into_view().into_any()).unwrap_or_else(|| view! { <span></span> }.into_view().into_any())}
         </div>
     }
 }
-

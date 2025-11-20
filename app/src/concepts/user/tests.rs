@@ -18,7 +18,6 @@
 mod tests {
     use super::super::actions::*;
     use super::super::state::*;
-    use chrono::{DateTime, Utc};
 
     #[test]
     fn test_initialize_mock_users() {
@@ -40,9 +39,9 @@ mod tests {
             joined_at: None,
             left_at: None,
         };
-        
+
         let result = add_user(state, new_user.clone());
-        
+
         assert_eq!(result.users.len(), 1);
         assert_eq!(result.users[0].username, "test-user");
     }
@@ -50,7 +49,7 @@ mod tests {
     #[test]
     fn test_find_user_by_username() {
         let state = initialize_mock_users();
-        
+
         let user = find_user_by_username(&state, "alice-dev");
         assert!(user.is_some());
         assert_eq!(user.unwrap().username, "alice-dev");
@@ -59,7 +58,7 @@ mod tests {
     #[test]
     fn test_find_user_by_username_not_found() {
         let state = initialize_mock_users();
-        
+
         let user = find_user_by_username(&state, "nonexistent");
         assert!(user.is_none());
     }
@@ -67,10 +66,9 @@ mod tests {
     #[test]
     fn test_get_user_by_username() {
         let state = initialize_mock_users();
-        
+
         let user = get_user_by_username(&state, "bob-engineer");
         assert!(user.is_some());
         assert_eq!(user.unwrap().username, "bob-engineer");
     }
 }
-

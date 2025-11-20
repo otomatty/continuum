@@ -33,7 +33,7 @@ pub fn Rating(
         if !readonly {
             let new_value = (index + 1) as f64;
             if let Some(callback) = on_change.clone() {
-                (callback)(new_value);
+                callback.run(new_value);
             }
         }
     };

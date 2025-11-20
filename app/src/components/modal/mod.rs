@@ -39,7 +39,7 @@ pub fn Modal(
 
     let handle_backdrop_click = move |_| {
         if let Some(callback) = on_close.clone() {
-            (callback)(());
+            callback.run(());
         }
     };
 
@@ -137,7 +137,7 @@ pub fn ModalAction(
 
     let handle_click = move |ev: MouseEvent| {
         if let Some(cb) = on_click.clone() {
-            (cb)(ev);
+            cb.run(ev);
         }
     };
 

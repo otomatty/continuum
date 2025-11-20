@@ -1,3 +1,4 @@
+use leptos::ev::MouseEvent;
 /**
  * Dropdown Component
  *
@@ -13,9 +14,7 @@
  *   ├─ Spec: ./dropdown.spec.md
  *   └─ Module: ../mod.rs
  */
-
 use leptos::prelude::*;
-use leptos::ev::MouseEvent;
 
 #[derive(Clone, Copy, PartialEq)]
 pub enum DropdownVariant {
@@ -71,15 +70,17 @@ pub fn DropdownButton(
     #[prop(optional, into)] on_click: Option<Callback<MouseEvent>>,
     children: Children,
 ) -> impl IntoView {
-    let open = use_context::<ReadSignal<bool>>().expect("DropdownButton must be used within Dropdown");
-    let on_toggle = use_context::<Option<Callback<()>>>().expect("DropdownButton must be used within Dropdown");
+    let _open =
+        use_context::<ReadSignal<bool>>().expect("DropdownButton must be used within Dropdown");
+    let on_toggle =
+        use_context::<Option<Callback<()>>>().expect("DropdownButton must be used within Dropdown");
 
     let handle_click = move |ev: MouseEvent| {
         if let Some(callback) = on_toggle.clone() {
-            (callback)(());
+            callback.run(());
         }
         if let Some(click_callback) = on_click.clone() {
-            (click_callback)(ev);
+            click_callback.run(ev);
         }
     };
 
@@ -97,14 +98,14 @@ pub fn DropdownButton(
 }
 
 #[component]
-pub fn DropdownMenu(
-    #[prop(optional, into)] class: String,
-    children: Children,
-) -> impl IntoView {
+pub fn DropdownMenu(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
     let menu_class = if class.is_empty() {
         "dropdown-content menu bg-base-200 rounded-box z-[1] w-52 p-2 shadow".to_string()
     } else {
-        format!("dropdown-content menu bg-base-200 rounded-box z-[1] w-52 p-2 shadow {}", class)
+        format!(
+            "dropdown-content menu bg-base-200 rounded-box z-[1] w-52 p-2 shadow {}",
+            class
+        )
     };
 
     view! {
@@ -129,28 +130,24 @@ pub fn DropdownItem(
 
     let handle_click = move |ev: MouseEvent| {
         if let Some(cb) = on_click.clone() {
-            (cb)(ev);
+            cb.run(ev);
         }
     };
 
     view! {
         <li class=item_class>
-            {move || {
-                if let Some(link) = href {
-                    view! {
-                        <a href=link on:click=handle_click>
-                            {children()}
-                        </a>
-                    }.into_view()
-                } else {
-                    view! {
-                        <a on:click=handle_click>
-                            {children()}
-                        </a>
-                    }.into_view()
-                }
+            {match href {
+                Some(link) => view! {
+                    <a href=link on:click=handle_click>
+                        {children()}
+                    </a>
+                }.into_any(),
+                None => view! {
+                    <a href="#".to_string() on:click=handle_click>
+                        {children()}
+                    </a>
+                }.into_any(),
             }}
         </li>
     }
 }
-

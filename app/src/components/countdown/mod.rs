@@ -39,7 +39,7 @@ pub fn Countdown(
             set_remaining_seconds.set(0);
             set_is_complete.set(true);
             if let Some(callback) = on_complete.clone() {
-                (callback)(());
+                callback.run(());
             }
         } else {
             set_remaining_seconds.set(remaining);
