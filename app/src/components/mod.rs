@@ -11,4 +11,9 @@ pub mod checkbox;
 pub mod radio;
 pub mod toggle;
 pub mod range;
+pub mod alert;
+pub mod progress;
+pub mod loading;
+pub mod skeleton;
+pub mod divider;
 
