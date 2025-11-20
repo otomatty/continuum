@@ -66,28 +66,52 @@ pub fn Countdown(
     }
 
     let countdown_class = if class.is_empty() {
-        "countdown".to_string()
+        "countdown font-mono text-2xl".to_string()
     } else {
-        format!("countdown {}", class)
+        format!("countdown font-mono text-2xl {}", class)
     };
 
-    let display_value = move || {
-        if is_complete.get() {
-            0
-        } else {
-            remaining_seconds.get()
-        }
+    let hours = move || {
+        let seconds = remaining_seconds.get();
+        seconds / 3600
+    };
+
+    let minutes = move || {
+        let seconds = remaining_seconds.get();
+        (seconds % 3600) / 60
+    };
+
+    let seconds = move || {
+        let secs = remaining_seconds.get();
+        secs % 60
     };
 
     view! {
-        <span class=countdown_class data-value=display_value>
-            {move || {
-                let seconds = remaining_seconds.get();
-                let hours = seconds / 3600;
-                let minutes = (seconds % 3600) / 60;
-                let secs = seconds % 60;
-                format!("{:02}:{:02}:{:02}", hours, minutes, secs)
-            }}
+        <span class=countdown_class>
+            <span
+                style=move || format!("--value:{};", hours())
+                aria-live="polite"
+                aria-label=move || hours().to_string()
+            >
+                {move || format!("{}", hours())}
+            </span>
+            "h "
+            <span
+                style=move || format!("--value:{}; --digits: 2;", minutes())
+                aria-live="polite"
+                aria-label=move || minutes().to_string()
+            >
+                {move || format!("{:02}", minutes())}
+            </span>
+            "m "
+            <span
+                style=move || format!("--value:{}; --digits: 2;", seconds())
+                aria-live="polite"
+                aria-label=move || seconds().to_string()
+            >
+                {move || format!("{:02}", seconds())}
+            </span>
+            "s"
         </span>
     }
 }

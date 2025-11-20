@@ -298,7 +298,17 @@ pub fn ComponentsPage() -> impl IntoView {
                         <CardTitle>"Skeleton"</CardTitle>
                         <CardBody>
                             <p class="text-sm text-gray-600 mb-4">"Loading skeleton"</p>
-                            <Skeleton />
+                            <div class="flex w-full flex-col gap-4">
+                                <div class="flex items-center gap-4">
+                                    <Skeleton class="h-16 w-16 shrink-0 rounded-full" />
+                                    <div class="flex flex-col gap-4">
+                                        <Skeleton class="h-4 w-20" />
+                                        <Skeleton class="h-4 w-28" />
+                                    </div>
+                                </div>
+                                <Skeleton class="h-32 w-full" />
+                                <Skeleton text="AI is thinking harder..." />
+                            </div>
                         </CardBody>
                     </Card>
 
