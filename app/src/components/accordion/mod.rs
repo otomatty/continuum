@@ -4,12 +4,10 @@
  * DEPENDENCY MAP:
  *
  * Parents (Files that import this Component):
- *   └─ (To be added when used)
+ *   └─ app/src/pages/components/mod.rs
  *
  * Dependencies (External files that this Component imports):
  *   └─ leptos::prelude
- *   └─ leptos::web_sys
- *   └─ leptos::wasm_bindgen::JsCast
  *
  * Related Documentation:
  *   ├─ Spec: ./accordion.spec.md
