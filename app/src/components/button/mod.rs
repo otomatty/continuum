@@ -33,10 +33,16 @@ pub fn Button(
         format!("btn {} {}", variant_class, class)
     };
 
+    let handle_click = move |ev: MouseEvent| {
+        if let Some(cb) = on_click {
+            (cb)(ev);
+        }
+    };
+
     view! {
         <button 
             class=combined_class
-            on:click=on_click
+            on:click=handle_click
         >
             {children()}
         </button>

@@ -75,11 +75,11 @@ pub fn DropdownButton(
     let on_toggle = use_context::<Option<Callback<()>>>().expect("DropdownButton must be used within Dropdown");
 
     let handle_click = move |ev: MouseEvent| {
-        if let Some(callback) = on_toggle {
-            callback.call(());
+        if let Some(callback) = on_toggle.clone() {
+            (callback)(());
         }
-        if let Some(click_callback) = on_click {
-            click_callback.call(ev);
+        if let Some(click_callback) = on_click.clone() {
+            (click_callback)(ev);
         }
     };
 
@@ -127,20 +127,28 @@ pub fn DropdownItem(
         class
     };
 
+    let handle_click = move |ev: MouseEvent| {
+        if let Some(cb) = on_click.clone() {
+            (cb)(ev);
+        }
+    };
+
     view! {
         <li class=item_class>
-            {if let Some(link) = href {
-                view! {
-                    <a href=link on:click=on_click>
-                        {children()}
-                    </a>
-                }.into_view()
-            } else {
-                view! {
-                    <a on:click=on_click>
-                        {children()}
-                    </a>
-                }.into_view()
+            {move || {
+                if let Some(link) = href {
+                    view! {
+                        <a href=link on:click=handle_click>
+                            {children()}
+                        </a>
+                    }.into_view()
+                } else {
+                    view! {
+                        <a on:click=handle_click>
+                            {children()}
+                        </a>
+                    }.into_view()
+                }
             }}
         </li>
     }

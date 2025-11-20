@@ -32,7 +32,7 @@ pub fn Skeleton(
             {if let Some(children) = children {
                 children().into_view()
             } else {
-                ().into_view()
+                view! {}.into_view()
             }}
         </div>
     }

@@ -91,7 +91,7 @@ pub fn add_user(state: UserState, user: User) -> UserState {
 }
 
 /// Find a user by username
-pub fn find_user_by_username(state: &UserState, username: &str) -> Option<&User> {
+pub fn find_user_by_username<'a>(state: &'a UserState, username: &'a str) -> Option<&'a User> {
     state.users.iter().find(|u| u.username == username)
 }
 

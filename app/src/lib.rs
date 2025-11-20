@@ -1,7 +1,7 @@
 pub mod github;
 pub mod components;
 pub mod pages;
-pub mod mock;
+// pub mod mock; // Removed: mock module not found
 pub mod concepts;
 pub mod synchronizations;
 

@@ -15,7 +15,6 @@
  */
 
 use leptos::prelude::*;
-use leptos::ev::MouseEvent;
 
 #[component]
 pub fn Popover(
@@ -39,8 +38,8 @@ pub fn Popover(
     };
 
     let handle_toggle = move |_| {
-        if let Some(callback) = on_toggle {
-            callback.call(());
+        if let Some(callback) = on_toggle.clone() {
+            (callback)(());
         }
     };
 

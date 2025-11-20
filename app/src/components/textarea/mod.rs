@@ -53,13 +53,23 @@ pub fn Textarea(
         format!("{} {}", base_class, class)
     };
 
+    let handle_input = move |ev: web_sys::Event| {
+        if let Some(cb) = on_input.clone() {
+            use wasm_bindgen::JsCast;
+            if let Ok(input_ev) = ev.dyn_into::<web_sys::InputEvent>() {
+                let leptos_input_ev = InputEvent::new(&input_ev);
+                (cb)(leptos_input_ev);
+            }
+        }
+    };
+
     view! {
         <textarea
             class=combined_class
             placeholder=placeholder
             rows=rows.map(|r| r.to_string())
-            value=move || value.map(|v| v.get()).unwrap_or_default()
-            on:input=on_input
+            prop:value=move || value.map(|v| v.get()).unwrap_or_default()
+            on:input=handle_input
         ></textarea>
     }
 }

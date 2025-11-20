@@ -20,7 +20,7 @@
  *   └─ Plan: docs/03_plans/continuum/legible-architecture-refactoring.md
  */
 
-use crate::concepts::user::{UserState, User};
+use crate::concepts::user::UserState;
 use crate::concepts::activity::{ActivityState, ActivityType};
 use crate::concepts::ranking::{RankingEntry, RankingState, calculate_score, sort_by_score};
 use crate::concepts::organization::Period;
@@ -75,7 +75,7 @@ fn calculate_ranking_by_period(
     }
 
     // Create ranking entries
-    let mut entries: Vec<RankingEntry> = user_state.users.iter()
+    let entries: Vec<RankingEntry> = user_state.users.iter()
         .filter_map(|user| {
             if let Some((commits, prs, reviews)) = user_stats.get(&user.username) {
                 Some(RankingEntry {

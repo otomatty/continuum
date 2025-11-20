@@ -36,7 +36,7 @@ pub fn Tabs(
     #[prop(optional, into)] class: String,
     children: Children,
 ) -> impl IntoView {
-    let (active_index, set_active_index) = create_signal(default_active.unwrap_or(0));
+    let (active_index, set_active_index) = signal(default_active.unwrap_or(0));
 
     let variant_class = match variant {
         TabsVariant::Bordered => "tabs tabs-bordered",
@@ -104,8 +104,8 @@ pub fn Tab(
 
     let handle_click = move |ev: MouseEvent| {
         set_active_index.set(index);
-        if let Some(callback) = on_click {
-            callback.call(ev);
+        if let Some(callback) = on_click.clone() {
+            (callback)(ev);
         }
     };
 

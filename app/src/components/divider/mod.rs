@@ -32,7 +32,7 @@ pub fn Divider(
             {if let Some(text) = text {
                 text.into_view()
             } else {
-                ().into_view()
+                view! {}.into_view()
             }}
         </div>
     }

@@ -83,8 +83,8 @@ pub fn DrawerSide(
     };
 
     let handle_backdrop_click = move |_| {
-        if let Some(callback) = on_close {
-            callback.call(());
+        if let Some(callback) = on_close.clone() {
+            (callback)(());
         }
     };
 
@@ -126,11 +126,11 @@ pub fn DrawerToggle(
     let on_close = use_context::<Option<Callback<()>>>().expect("DrawerToggle must be used within Drawer");
 
     let handle_click = move |ev: MouseEvent| {
-        if let Some(callback) = on_close {
-            callback.call(());
+        if let Some(callback) = on_close.clone() {
+            (callback)(());
         }
-        if let Some(click_callback) = on_click {
-            click_callback.call(ev);
+        if let Some(click_callback) = on_click.clone() {
+            (click_callback)(ev);
         }
     };
 

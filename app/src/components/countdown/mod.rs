@@ -15,6 +15,8 @@
  */
 
 use leptos::prelude::*;
+
+#[cfg(feature = "hydrate")]
 use js_sys::Date;
 
 #[component]
@@ -23,18 +25,21 @@ pub fn Countdown(
     #[prop(optional, into)] on_complete: Option<Callback<()>>,
     #[prop(optional, into)] class: String,
 ) -> impl IntoView {
-    let (remaining_seconds, set_remaining_seconds) = create_signal(0i64);
-    let (is_complete, set_is_complete) = create_signal(false);
+    let (remaining_seconds, set_remaining_seconds) = signal(0i64);
+    let (is_complete, set_is_complete) = signal(false);
 
     let update_countdown = move || {
+        #[cfg(feature = "hydrate")]
         let now = Date::now() as i64 / 1000;
+        #[cfg(not(feature = "hydrate"))]
+        let now = 0i64;
         let remaining = target_date - now;
         
         if remaining <= 0 {
             set_remaining_seconds.set(0);
             set_is_complete.set(true);
-            if let Some(callback) = on_complete {
-                callback.call(());
+            if let Some(callback) = on_complete.clone() {
+                (callback)(());
             }
         } else {
             set_remaining_seconds.set(remaining);

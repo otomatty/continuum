@@ -38,8 +38,8 @@ pub fn Modal(
     };
 
     let handle_backdrop_click = move |_| {
-        if let Some(callback) = on_close {
-            callback.call(());
+        if let Some(callback) = on_close.clone() {
+            (callback)(());
         }
     };
 
@@ -135,8 +135,14 @@ pub fn ModalAction(
         format!("btn {}", class)
     };
 
+    let handle_click = move |ev: MouseEvent| {
+        if let Some(cb) = on_click.clone() {
+            (cb)(ev);
+        }
+    };
+
     view! {
-        <button class=action_class on:click=on_click>
+        <button class=action_class on:click=handle_click>
             {children()}
         </button>
     }

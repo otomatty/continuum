@@ -130,7 +130,7 @@ pub fn add_repository(state: RepositoryState, repository: Repository) -> Reposit
 }
 
 /// Find a repository by name
-pub fn find_repository_by_name(state: &RepositoryState, name: &str) -> Option<&Repository> {
+pub fn find_repository_by_name<'a>(state: &'a RepositoryState, name: &'a str) -> Option<&'a Repository> {
     state.repositories.iter().find(|r| r.name == name)
 }
 

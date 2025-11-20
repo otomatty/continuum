@@ -92,7 +92,7 @@ pub fn add_activity(state: ActivityState, activity: Activity) -> ActivityState {
 }
 
 /// Find an activity by ID
-pub fn find_activity_by_id(state: &ActivityState, id: &str) -> Option<&Activity> {
+pub fn find_activity_by_id<'a>(state: &'a ActivityState, id: &'a str) -> Option<&'a Activity> {
     state.activities.iter().find(|a| a.id == id)
 }
 

@@ -1,5 +1,5 @@
 use leptos::prelude::*;
-use leptos::ev::ChangeEvent;
+use leptos::ev::Event;
 
 #[derive(Clone, Copy, PartialEq)]
 pub enum SelectVariant {
@@ -24,7 +24,7 @@ impl Default for SelectVariant {
 pub fn Select(
     #[prop(optional)] variant: SelectVariant,
     #[prop(optional, into)] value: Option<ReadSignal<String>>,
-    #[prop(optional, into)] on_change: Option<Callback<ChangeEvent>>,
+    #[prop(optional, into)] on_change: Option<Callback<Event>>,
     #[prop(optional, into)] class: String,
     children: Children,
 ) -> impl IntoView {
@@ -52,11 +52,17 @@ pub fn Select(
         format!("{} {}", base_class, class)
     };
 
+    let handle_change = move |ev: web_sys::Event| {
+        if let Some(cb) = on_change.clone() {
+            (cb)(ev);
+        }
+    };
+
     view! {
         <select
             class=combined_class
-            value=move || value.map(|v| v.get()).unwrap_or_default()
-            on:change=on_change
+            prop:value=move || value.map(|v| v.get()).unwrap_or_default()
+            on:change=handle_change
         >
             {children()}
         </select>

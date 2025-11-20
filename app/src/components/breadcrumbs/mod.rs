@@ -50,18 +50,20 @@ pub fn BreadcrumbItem(
 
     view! {
         <li class=item_class>
-            {if let Some(link) = href {
-                view! {
-                    <a href=link>
-                        {children()}
-                    </a>
-                }.into_view()
-            } else {
-                view! {
-                    <span>
-                        {children()}
-                    </span>
-                }.into_view()
+            {move || {
+                if let Some(link) = href {
+                    view! {
+                        <a href=link>
+                            {children()}
+                        </a>
+                    }.into_view()
+                } else {
+                    view! {
+                        <span>
+                            {children()}
+                        </span>
+                    }.into_view()
+                }
             }}
         </li>
     }

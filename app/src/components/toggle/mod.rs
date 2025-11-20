@@ -1,5 +1,5 @@
 use leptos::prelude::*;
-use leptos::ev::ChangeEvent;
+use leptos::ev::Event;
 
 #[derive(Clone, Copy, PartialEq)]
 pub enum ToggleVariant {
@@ -22,7 +22,7 @@ impl Default for ToggleVariant {
 pub fn Toggle(
     #[prop(optional)] variant: ToggleVariant,
     #[prop(optional, into)] checked: Option<ReadSignal<bool>>,
-    #[prop(optional, into)] on_change: Option<Callback<ChangeEvent>>,
+    #[prop(optional, into)] on_change: Option<Callback<Event>>,
     #[prop(optional, into)] class: String,
 ) -> impl IntoView {
     let variant_class = match variant {
@@ -41,12 +41,18 @@ pub fn Toggle(
         format!("toggle {} {}", variant_class, class)
     };
 
+    let handle_change = move |ev: web_sys::Event| {
+        if let Some(cb) = on_change.clone() {
+            (cb)(ev);
+        }
+    };
+
     view! {
         <input
             type="checkbox"
             class=combined_class
             checked=move || checked.map(|c| c.get()).unwrap_or(false)
-            on:change=on_change
+            on:change=handle_change
         />
     }
 }

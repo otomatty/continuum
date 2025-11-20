@@ -15,11 +15,15 @@
  */
 
 use leptos::prelude::*;
-use leptos::ev::MouseEvent;
-use wasm_bindgen::prelude::*;
+
+#[cfg(feature = "hydrate")]
+use wasm_bindgen_futures::spawn_local;
+#[cfg(feature = "hydrate")]
 use wasm_bindgen_futures::JsFuture;
+#[cfg(feature = "hydrate")]
 use js_sys::Promise;
-use web_sys::window;
+#[cfg(feature = "hydrate")]
+use web_sys;
 
 #[derive(Clone, Copy, PartialEq)]
 pub enum ToastVariant {
@@ -57,17 +61,18 @@ pub fn Toast(
     };
 
     let handle_close = move |_| {
-        if let Some(callback) = on_close {
-            callback.call(());
+        if let Some(callback) = on_close.clone() {
+            (callback)(());
         }
     };
 
+    #[cfg(feature = "hydrate")]
     if let Some(dur) = duration {
         let callback = on_close.clone();
         spawn_local(async move {
             let dur_ms = dur * 1000;
             let promise = Promise::new(&mut |resolve, _| {
-                if let Some(window) = window() {
+                if let Some(window) = web_sys::window() {
                     let _ = window.set_timeout_with_callback_and_timeout_and_arguments_0(
                         &resolve,
                         dur_ms as i32,
@@ -76,7 +81,7 @@ pub fn Toast(
             });
             let _ = JsFuture::from(promise).await;
             if let Some(cb) = callback {
-                cb.call(());
+                (cb)(());
             }
         });
     }
@@ -84,14 +89,16 @@ pub fn Toast(
     view! {
         <div class=toast_class role="alert">
             <span>{message}</span>
-            {if on_close.is_some() {
-                view! {
-                    <button class="btn btn-sm btn-circle" on:click=handle_close>
-                        "✕"
-                    </button>
-                }.into_view()
-            } else {
-                view! {}.into_view()
+            {move || {
+                if on_close.is_some() {
+                    view! {
+                        <button class="btn btn-sm btn-circle" on:click=handle_close>
+                            "✕"
+                        </button>
+                    }.into_view()
+                } else {
+                    view! {}.into_view()
+                }
             }}
         </div>
     }
