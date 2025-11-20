@@ -19,6 +19,9 @@ pub fn Navbar() -> impl IntoView {
                 <a href="/portfolio/alice-dev" class="btn btn-ghost">
                     "Portfolio"
                 </a>
+                <a href="/components" class="btn btn-ghost">
+                    "Components"
+                </a>
             </div>
         </nav>
     }

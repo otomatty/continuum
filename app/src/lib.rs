@@ -12,7 +12,7 @@ use leptos_router::{
     StaticSegment,
 };
 use components::navbar::Navbar;
-use pages::{HomePage, DashboardPage, PortfolioPage};
+use pages::{HomePage, DashboardPage, PortfolioPage, ComponentsPage};
 
 pub fn shell(options: LeptosOptions) -> impl IntoView {
     view! {
@@ -51,6 +51,7 @@ pub fn App() -> impl IntoView {
                     <Route path=StaticSegment("") view=HomePage/>
                     <Route path=StaticSegment("dashboard") view=DashboardPage/>
                     <Route path=StaticSegment("portfolio") view=PortfolioPage/>
+                    <Route path=StaticSegment("components") view=ComponentsPage/>
                 </Routes>
             </main>
         </Router>
