@@ -3386,8 +3386,14 @@
   .h-10 {
     height: calc(var(--spacing) * 10);
   }
+  .h-16 {
+    height: calc(var(--spacing) * 16);
+  }
   .h-24 {
     height: calc(var(--spacing) * 24);
+  }
+  .h-32 {
+    height: calc(var(--spacing) * 32);
   }
   .min-h-full {
     min-height: 100%;
@@ -3446,8 +3452,17 @@
   .w-12 {
     width: calc(var(--spacing) * 12);
   }
+  .w-16 {
+    width: calc(var(--spacing) * 16);
+  }
+  .w-20 {
+    width: calc(var(--spacing) * 20);
+  }
   .w-24 {
     width: calc(var(--spacing) * 24);
+  }
+  .w-28 {
+    width: calc(var(--spacing) * 28);
   }
   .w-32 {
     width: calc(var(--spacing) * 32);
@@ -3469,6 +3484,9 @@
   }
   .flex-1 {
     flex: 1;
+  }
+  .shrink-0 {
+    flex-shrink: 0;
   }
   .transform {
     transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
@@ -3732,6 +3750,17 @@
   .bg-red-50 {
     background-color: var(--color-red-50);
   }
+  .skeleton-text {
+    @layer daisyui.l1.l2 {
+      background-clip: text;
+      webkit-background-clip: text;
+      color: transparent;
+      background-image: linear-gradient( 105deg, color-mix(in srgb, #1f2937 20%, transparent) 0% 40%, var(--color-base-content) 50%, color-mix(in srgb, #1f2937 20%, transparent) 60% 100% );
+      @supports (color: color-mix(in lab, red, red)) {
+        background-image: linear-gradient( 105deg, color-mix(in oklab, var(--color-base-content) 20%, transparent) 0% 40%, var(--color-base-content) 50%, color-mix(in oklab, var(--color-base-content) 20%, transparent) 60% 100% );
+      }
+    }
+  }
   .loading-ball {
     @layer daisyui.l1.l2 {
       mask-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cellipse cx='12' cy='5' rx='4' ry='4'%3E%3Canimate attributeName='cy' values='5;20;20.5;20;5' keyTimes='0;0.469;0.5;0.531;1' dur='.8s' repeatCount='indefinite' keySplines='.33,0,.66,.33;.33,.66,.66,1'/%3E%3Canimate attributeName='rx' values='4;4;4.8;4;4' keyTimes='0;0.469;0.5;0.531;1' dur='.8s' repeatCount='indefinite'/%3E%3Canimate attributeName='ry' values='4;4;3;4;4' keyTimes='0;0.469;0.5;0.531;1' dur='.8s' repeatCount='indefinite'/%3E%3C/ellipse%3E%3C/svg%3E");
@@ -3797,6 +3826,9 @@
   }
   .text-right {
     text-align: right;
+  }
+  .font-mono {
+    font-family: var(--font-mono);
   }
   .text-2xl {
     font-size: var(--text-2xl);
