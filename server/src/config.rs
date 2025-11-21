@@ -1,4 +1,3 @@
-#[cfg(not(test))]
 use dotenv::dotenv;
 use serde::Deserialize;
 use std::env;

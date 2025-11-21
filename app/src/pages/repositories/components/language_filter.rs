@@ -1,5 +1,8 @@
+use crate::components::{
+    card::{Card, CardBody, CardTitle},
+    checkbox::Checkbox,
+};
 use leptos::prelude::*;
-use crate::components::{card::{Card, CardTitle, CardBody}, checkbox::Checkbox};
 
 /**
  * LanguageFilter Component
@@ -27,7 +30,7 @@ pub fn LanguageFilter(
             current.push(lang);
         }
         selected_languages.set(current.clone());
-        on_change.call(current);
+        on_change(current);
     };
 
     view! {
@@ -53,4 +56,3 @@ pub fn LanguageFilter(
         </Card>
     }
 }
-

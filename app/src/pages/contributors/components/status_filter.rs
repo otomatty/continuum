@@ -21,7 +21,7 @@ pub fn StatusFilter(
 ) -> impl IntoView {
     let handle_change = move |role: Option<UserRole>| {
         selected_status.set(role.clone());
-        on_change.call(role);
+        on_change(role);
     };
 
     let current_checked = move || selected_status.get() == Some(UserRole::CurrentEmployee);

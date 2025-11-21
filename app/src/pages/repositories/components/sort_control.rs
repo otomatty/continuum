@@ -1,5 +1,5 @@
-use leptos::prelude::*;
 use crate::components::select::{Select, SelectOption};
+use leptos::prelude::*;
 
 /**
  * SortOption enum for repository sorting
@@ -69,7 +69,7 @@ pub fn SortControl(
     let handle_change = move |value: String| {
         if let Some(sort_option) = SortOption::from_string(&value) {
             sort_by.set(sort_option.clone());
-            on_change.call(sort_option);
+            on_change(sort_option);
         }
     };
 
@@ -92,4 +92,3 @@ pub fn SortControl(
         </div>
     }
 }
-

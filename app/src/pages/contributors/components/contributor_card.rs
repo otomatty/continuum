@@ -1,6 +1,10 @@
-use leptos::prelude::*;
-use crate::components::{card::{Card, CardBody}, badge::{Badge, BadgeVariant}, avatar::Avatar};
+use crate::components::{
+    avatar::Avatar,
+    badge::{Badge, BadgeVariant},
+    card::{Card, CardBody},
+};
 use crate::concepts::user::{User, UserRole};
+use leptos::prelude::*;
 
 /**
  * ContributorCard Component
@@ -26,7 +30,7 @@ pub fn ContributorCard(
         UserRole::Alumni => BadgeVariant::Info,
         UserRole::ExternalContributor => BadgeVariant::Accent,
     };
-    
+
     let role_label = match user.role {
         UserRole::CurrentEmployee => "Current",
         UserRole::Alumni => "Alumni",
@@ -35,7 +39,7 @@ pub fn ContributorCard(
 
     let handle_click = move |_| {
         if let Some(callback) = on_click.as_ref() {
-            callback.call(user.username.clone());
+            callback(user.username.clone());
         }
     };
 
@@ -43,9 +47,9 @@ pub fn ContributorCard(
         <Card class="cursor-pointer hover:shadow-lg transition-shadow" on:click=handle_click>
             <CardBody>
                 <div class="flex flex-col items-center text-center gap-3">
-                    <Avatar 
-                        src=user.avatar_url.clone() 
-                        alt=user.display_name.clone() 
+                    <Avatar
+                        src=user.avatar_url.clone()
+                        alt=user.display_name.clone()
                         class="w-20 h-20"
                     />
                     <div class="w-full">
@@ -53,9 +57,9 @@ pub fn ContributorCard(
                         <p class="text-sm text-gray-600 mb-2">"@" {user.username.clone()}</p>
                         <Badge variant=role_badge_variant>{role_label}</Badge>
                     </div>
-                    <a 
-                        href=user.github_url.clone() 
-                        target="_blank" 
+                    <a
+                        href=user.github_url.clone()
+                        target="_blank"
                         class="text-sm text-blue-600 hover:underline"
                         on:click=|ev| ev.stop_propagation()
                     >
@@ -66,4 +70,3 @@ pub fn ContributorCard(
         </Card>
     }
 }
-
