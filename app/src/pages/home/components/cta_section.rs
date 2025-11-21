@@ -1,8 +1,8 @@
-use leptos::prelude::*;
 use crate::components::{
     button::{Button, ButtonVariant},
     hero::{Hero, HeroContent},
 };
+use leptos::prelude::*;
 
 /**
  * CTASection Component
@@ -39,4 +39,3 @@ pub fn CTASection(
         </Hero>
     }
 }
-

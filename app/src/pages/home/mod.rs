@@ -1,11 +1,7 @@
 mod components;
 
+use components::{CTASection, StatisticsPreview, ValuePropositionCard};
 use leptos::prelude::*;
-use components::{
-    CTASection,
-    StatisticsPreview,
-    ValuePropositionCard,
-};
 
 /**
  * HomePage Component

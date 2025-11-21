@@ -1,5 +1,5 @@
+use crate::components::stats::{StatDescription, StatItem, StatTitle, StatValue, Stats};
 use leptos::prelude::*;
-use crate::components::stats::{Stats, StatItem, StatTitle, StatValue, StatDescription};
 
 /**
  * StatisticsPreview Component
@@ -38,4 +38,3 @@ pub fn StatisticsPreview(
         </Stats>
     }
 }
-

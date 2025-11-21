@@ -1,5 +1,5 @@
-use leptos::prelude::*;
 use crate::components::card::{Card, CardBody, CardTitle};
+use leptos::prelude::*;
 
 /**
  * ValuePropositionCard Component
@@ -32,4 +32,3 @@ pub fn ValuePropositionCard(
         </Card>
     }
 }
-
