@@ -120,6 +120,37 @@ PRDで定義されているが未実装のページ：
 
 **備考:** 各コンポーネントは個別ファイルに分割され、`components/mod.rs`で再エクスポートされています。HomePageもPRD準拠のレイアウトに更新済み。
 
+### ✅ 実装済み (コントリビューター一覧ページ用)
+
+| コンポーネント | ファイル | 説明 |
+|-------------|---------|------|
+| **ContributorCard** | `app/src/pages/contributors/components/contributor_card.rs` | コントリビューターカード |
+| **ContributorGrid** | `app/src/pages/contributors/components/contributor_grid.rs` | グリッドレイアウト |
+| **StatusFilter** | `app/src/pages/contributors/components/status_filter.rs` | ステータスフィルター (Current/Alumni/External) |
+
+**備考:** 各コンポーネントは個別ファイルに分割され、`components/mod.rs`で再エクスポートされています。
+
+### ✅ 実装済み (リポジトリ一覧ページ用)
+
+| コンポーネント | ファイル | 説明 |
+|-------------|---------|------|
+| **RepositoryTable** | `app/src/pages/repositories/components/repository_table.rs` | リポジトリテーブル（高機能版） |
+| **LanguageFilter** | `app/src/pages/repositories/components/language_filter.rs` | 言語フィルター |
+| **SortControl** | `app/src/pages/repositories/components/sort_control.rs` | ソートコントロール |
+
+**備考:** 各コンポーネントは個別ファイルに分割され、`components/mod.rs`で再エクスポートされています。
+
+### ✅ 実装済み (リポジトリ詳細ページ用)
+
+| コンポーネント | ファイル | 説明 |
+|-------------|---------|------|
+| **ContributorPieChart** | `app/src/pages/repository/components/contributor_pie_chart.rs` | コントリビューター構成円グラフ |
+| **TopContributorsList** | `app/src/pages/repository/components/top_contributors_list.rs` | トップコントリビューター一覧 |
+| **LanguageBarChart** | `app/src/pages/repository/components/language_bar_chart.rs` | 言語構成バーチャート |
+| **RepositoryHeader** | `app/src/pages/repository/components/repository_header.rs` | リポジトリヘッダー |
+
+**備考:** 各コンポーネントは個別ファイルに分割され、`components/mod.rs`で再エクスポートされています。チャートはCSS/SVGベースで実装されています。
+
 ### ❌ 未実装 (今後必要になるページ専用コンポーネント)
 
 #### 知見共有ページ用
@@ -133,22 +164,6 @@ PRDで定義されているが未実装のページ：
 - [ ] **CommentSection** - コメントセクション
 - [ ] **ReactionButtons** - リアクションボタン
 - [ ] **RelatedArticles** - 関連記事
-
-#### コントリビューター一覧ページ用
-- [ ] **ContributorCard** - コントリビューターカード
-- [ ] **ContributorGrid** - グリッドレイアウト
-- [ ] **StatusFilter** - ステータスフィルター (Current/Alumni/External)
-
-#### リポジトリ一覧ページ用
-- [ ] **RepositoryTable** - リポジトリテーブル（高機能版）
-- [ ] **LanguageFilter** - 言語フィルター
-- [ ] **SortControl** - ソートコントロール
-
-#### リポジトリ詳細ページ用
-- [ ] **ContributorPieChart** - コントリビューター構成円グラフ
-- [ ] **TopContributorsList** - トップコントリビューター一覧
-- [ ] **LanguageBarChart** - 言語構成バーチャート
-- [ ] **RepositoryHeader** - リポジトリヘッダー
 
 #### 設定ページ用
 - [ ] **ProfileSettingsForm** - プロフィール設定フォーム
@@ -302,7 +317,9 @@ PRDで定義されているが未実装のページ：
 
 #### 2.2 コントリビューター機能
 - [ ] コントリビューター一覧ページ (`/contributors`)
-- [ ] ContributorCard コンポーネント
+- [x] ContributorCard コンポーネント
+- [x] ContributorGrid コンポーネント
+- [x] StatusFilter コンポーネント
 - [ ] Search Concept 実装
 - [ ] Filter Concept 実装
 - [ ] 検索・フィルター機能
@@ -310,9 +327,13 @@ PRDで定義されているが未実装のページ：
 #### 2.3 リポジトリ機能
 - [ ] リポジトリ一覧ページ (`/repositories`)
 - [ ] リポジトリ詳細ページ (`/repository/:owner/:repo`)
-- [ ] RepositoryTable コンポーネント
-- [ ] ContributorPieChart コンポーネント
-- [ ] LanguageBarChart コンポーネント
+- [x] RepositoryTable コンポーネント
+- [x] LanguageFilter コンポーネント
+- [x] SortControl コンポーネント
+- [x] ContributorPieChart コンポーネント
+- [x] TopContributorsList コンポーネント
+- [x] LanguageBarChart コンポーネント
+- [x] RepositoryHeader コンポーネント
 
 **完了条件:** 全てのリポジトリとコントリビューターを閲覧・検索できる
 
@@ -408,7 +429,7 @@ PRDで定義されているが未実装のページ：
 |---------|---------|--------|--------|
 | **ページ** | 4 | 9 | 31% |
 | **基本UIコンポーネント** | 36 | 0 | 100% |
-| **ページ専用コンポーネント** | 11 | 22+ | 33% |
+| **ページ専用コンポーネント** | 21 | 8 | 72% |
 | **Concepts** | 6 | 7 | 46% |
 | **Synchronizations** | 1 | 4 | 20% |
 | **GitHub API連携** | 0 (構造のみ) | 6 | 0% |
@@ -416,7 +437,7 @@ PRDで定義されているが未実装のページ：
 
 ### 全体進捗率
 
-**約 37%** (基本UIコンポーネントを除くと約 27%)
+**約 44%** (基本UIコンポーネントを除くと約 35%)
 
 ### 次のアクションアイテム
 
@@ -428,11 +449,13 @@ PRDで定義されているが未実装のページ：
 4. ⬜ **動的ルーティング対応**
 5. ⬜ **404/Auth Error ページ実装**
 
-**Phase 2 の準備:**
+**Phase 2 の進捗:**
 
-- GitHub API クライアント実装計画
-- キャッシュ戦略の設計
-- データモデルの見直し
+- ✅ **ページ専用コンポーネント実装完了** (ContributorCard, ContributorGrid, StatusFilter, RepositoryTable, LanguageFilter, SortControl, ContributorPieChart, TopContributorsList, LanguageBarChart, RepositoryHeader)
+- ⬜ **GitHub API クライアント実装** (リポジトリ一覧取得、ユーザー情報取得、コントリビューション取得)
+- ⬜ **キャッシュ機構実装** (Cloudflare KV)
+- ⬜ **ページ実装** (コントリビューター一覧、リポジトリ一覧、リポジトリ詳細)
+- ⬜ **Search/Filter Concept 実装**
 
 ---
 
@@ -446,10 +469,11 @@ PRDで定義されているが未実装のページ：
 
 ---
 
-**Document Version:** 1.2  
+**Document Version:** 1.3  
 **Last Updated:** 2025-11-21
 
 **更新履歴:**
+- v1.3 (2025-11-21): Phase 2ページ専用コンポーネント実装完了を反映。コントリビューター一覧ページ用（3個）、リポジトリ一覧ページ用（3個）、リポジトリ詳細ページ用（4個）の計10個のコンポーネントを実装済みに更新。ページ専用コンポーネント進捗率を33%→72%に更新。全体進捗率を37%→44%に更新。
 - v1.2 (2025-11-21): Phase 1ランディングページ用コンポーネント実装完了（ValuePropositionCard, StatisticsPreview, CTASection）を反映。ページ専用コンポーネント進捗率を24%→33%に更新。
 - v1.1 (2025-11-21): ページ専用コンポーネントのファイルパスを更新（個別ファイル分割を反映）
 
