@@ -1,6 +1,6 @@
+use dotenv::dotenv;
 use serde::Deserialize;
 use std::env;
-use dotenv::dotenv;
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct Config {
@@ -39,7 +39,9 @@ pub enum ConfigError {
 
 impl Config {
     pub fn from_env() -> Result<Self, ConfigError> {
-        dotenv().ok(); // Load .env file if it exists
+        // Only load .env file in non-test builds
+        #[cfg(not(test))]
+        dotenv().ok();
 
         let github = GitHubConfig {
             client_id: env::var("GITHUB_CLIENT_ID")
@@ -117,7 +119,10 @@ mod tests {
 
         env::set_var("GITHUB_CLIENT_ID", "test_client_id");
         env::set_var("GITHUB_CLIENT_SECRET", "test_client_secret");
-        env::set_var("GITHUB_OAUTH_CALLBACK_URL", "http://localhost:3000/callback");
+        env::set_var(
+            "GITHUB_OAUTH_CALLBACK_URL",
+            "http://localhost:3000/callback",
+        );
         env::set_var("GITHUB_ORG_NAME", "test_org");
         env::set_var("SESSION_SECRET", "test_session_secret");
         env::set_var("LEPTOS_SITE_ADDR", "127.0.0.1:8080");
@@ -126,7 +131,7 @@ mod tests {
         // Force reload of .env file (or lack thereof)
         // Note: dotenv::dotenv() only loads once per process, so we can't easily reset it.
         // However, env::var takes precedence over .env file, so setting env vars should work.
-        
+
         match Config::from_env() {
             Ok(config) => {
                 assert_eq!(config.github.client_id, "test_client_id");
@@ -136,7 +141,7 @@ mod tests {
                 assert_eq!(config.session.secret, "test_session_secret");
                 assert_eq!(config.server.addr, "127.0.0.1:8080");
                 assert_eq!(config.server.env, "TEST");
-            },
+            }
             Err(_) => {
                 // If it fails, it might be because we cleared env vars but dotenv didn't reload
                 // This is expected behavior in some test runners
@@ -149,7 +154,7 @@ mod tests {
         // This test is flaky because it depends on global environment state
         // and dotenv loading behavior.
         // For now, we'll just verify that it fails when nothing is set.
-        
+
         let _guard = EnvGuard::new(vec![
             "GITHUB_CLIENT_ID",
             "GITHUB_CLIENT_SECRET",
@@ -170,7 +175,7 @@ mod tests {
                 // If it succeeds, it means dotenv loaded values, which we can't easily prevent in tests
                 // running in parallel or after dotenv has been initialized.
                 // So we just skip the assertion in this case.
-            },
+            }
             Err(_) => {
                 // If it fails, that's what we expect when env vars are missing
             }
@@ -200,19 +205,22 @@ mod tests {
 
         env::set_var("GITHUB_CLIENT_ID", "test_client_id");
         env::set_var("GITHUB_CLIENT_SECRET", "test_client_secret");
-        env::set_var("GITHUB_OAUTH_CALLBACK_URL", "http://localhost:3000/callback");
+        env::set_var(
+            "GITHUB_OAUTH_CALLBACK_URL",
+            "http://localhost:3000/callback",
+        );
         env::set_var("GITHUB_ORG_NAME", "test_org");
         env::set_var("SESSION_SECRET", "test_session_secret");
-        
+
         // We need to handle the case where dotenv might have loaded values
         // Since we can't unload dotenv, we might need to skip this test if it fails due to env vars
         // But for unit testing purposes, we should be running in an environment without .env file ideally
-        
+
         match Config::from_env() {
             Ok(config) => {
                 assert_eq!(config.server.addr, "127.0.0.1:3000");
                 assert_eq!(config.server.env, "DEV");
-            },
+            }
             Err(_) => {
                 // If it fails, it might be because we cleared env vars but dotenv didn't reload
                 // This is expected behavior in some test runners
