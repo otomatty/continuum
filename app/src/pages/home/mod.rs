@@ -2,6 +2,14 @@ mod components;
 
 use components::{CTASection, StatisticsPreview, ValuePropositionCard};
 use leptos::prelude::*;
+use leptos_router::use_navigate;
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct AuthStatus {
+    authenticated: bool,
+    user_id: Option<String>,
+}
 
 /**
  * HomePage Component
@@ -16,6 +24,41 @@ use leptos::prelude::*;
  */
 #[component]
 pub fn HomePage() -> impl IntoView {
+    let navigate = use_navigate();
+    
+    // Check authentication status
+    let auth_status = create_resource(
+        || (),
+        |_| async move {
+            let response = reqwest::get("/api/auth/me").await;
+            match response {
+                Ok(res) => {
+                    if let Ok(status) = res.json::<AuthStatus>().await {
+                        status
+                    } else {
+                        AuthStatus {
+                            authenticated: false,
+                            user_id: None,
+                        }
+                    }
+                }
+                Err(_) => AuthStatus {
+                    authenticated: false,
+                    user_id: None,
+                },
+            }
+        },
+    );
+    
+    // Redirect to dashboard if authenticated
+    Effect::new(move |_| {
+        if let Some(Ok(status)) = auth_status.get() {
+            if status.authenticated {
+                navigate("/dashboard", Default::default());
+            }
+        }
+    });
+    
     view! {
         <div class="space-y-16">
             // Hero Section with CTA
@@ -23,7 +66,7 @@ pub fn HomePage() -> impl IntoView {
                 headline="あなたのOSS活動を、永続的な資産に".to_string()
                 subheadline="会社の枠を超えて輝く、あなたの技術実績を可視化".to_string()
                 button_text="GitHub OAuth でログイン".to_string()
-                button_href="/auth/github".to_string()
+                button_href="/auth/login".to_string()
             />
 
             // Value Proposition Section (3 columns)

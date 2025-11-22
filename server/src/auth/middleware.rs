@@ -26,7 +26,8 @@ where
         || path.starts_with("/api/public/")
         || path.starts_with("/favicon.ico")
         || path == "/components"
-        || path == "/dashboard"
+        // /dashboard を削除（認証必須にする）
+        // /portfolio/ は公開ページとして残す（個人のポートフォリオは公開）
         || path.starts_with("/portfolio/")
     {
         return next.run(request).await;
