@@ -2,17 +2,14 @@ use leptos::ev::MouseEvent;
 use leptos::prelude::*;
 
 #[derive(Clone, Copy, PartialEq)]
+#[derive(Default)]
 pub enum ButtonVariant {
+    #[default]
     Primary,
     Secondary,
     Ghost,
 }
 
-impl Default for ButtonVariant {
-    fn default() -> Self {
-        ButtonVariant::Primary
-    }
-}
 
 #[component]
 pub fn Button(

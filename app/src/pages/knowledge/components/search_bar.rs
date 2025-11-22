@@ -29,7 +29,7 @@ pub fn SearchBar(
             .unwrap()
             .value();
         set_search_value.set(value.clone());
-        if let Some(callback) = on_search.clone() {
+        if let Some(callback) = on_search {
             callback.run(value);
         }
     };

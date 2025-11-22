@@ -65,11 +65,11 @@ pub fn initialize_mock_repository_contributions(username: &str) -> Vec<Repositor
         .iter()
         .map(|repo| RepositoryContribution {
             repository: repo.clone(),
-            commits: (repo.stars / 10) as u32,
-            prs: (repo.stars / 20) as u32,
-            reviews: (repo.stars / 30) as u32,
-            lines_added: (repo.stars * 5) as u32,
-            lines_deleted: (repo.stars * 2) as u32,
+            commits: (repo.stars / 10),
+            prs: (repo.stars / 20),
+            reviews: (repo.stars / 30),
+            lines_added: (repo.stars * 5),
+            lines_deleted: (repo.stars * 2),
             percentage: repo
                 .contributors
                 .iter()

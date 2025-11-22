@@ -16,7 +16,9 @@
 use leptos::prelude::*;
 
 #[derive(Clone, Copy, PartialEq)]
+#[derive(Default)]
 pub enum StepStatus {
+    #[default]
     Default,
     Primary,
     Success,
@@ -24,11 +26,6 @@ pub enum StepStatus {
     Error,
 }
 
-impl Default for StepStatus {
-    fn default() -> Self {
-        StepStatus::Default
-    }
-}
 
 #[component]
 pub fn Steps(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
@@ -65,12 +62,10 @@ pub fn StepItem(
         } else {
             format!("step {}", class)
         }
+    } else if class.is_empty() {
+        format!("step {}", status_class)
     } else {
-        if class.is_empty() {
-            format!("step {}", status_class)
-        } else {
-            format!("step {} {}", status_class, class)
-        }
+        format!("step {} {}", status_class, class)
     };
 
     view! {

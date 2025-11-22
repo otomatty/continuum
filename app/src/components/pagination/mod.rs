@@ -29,7 +29,7 @@ pub fn Pagination(
     };
 
     let handle_page_change = move |page: usize| {
-        if let Some(callback) = on_page_change.clone() {
+        if let Some(callback) = on_page_change {
             callback.run(page);
         }
     };

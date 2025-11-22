@@ -17,16 +17,13 @@ use leptos::ev::MouseEvent;
 use leptos::prelude::*;
 
 #[derive(Clone, Copy, PartialEq)]
+#[derive(Default)]
 pub enum TabsVariant {
+    #[default]
     Bordered,
     Lifted,
 }
 
-impl Default for TabsVariant {
-    fn default() -> Self {
-        TabsVariant::Bordered
-    }
-}
 
 #[component]
 pub fn Tabs(
@@ -97,7 +94,7 @@ pub fn Tab(
 
     let handle_click = move |ev: MouseEvent| {
         set_active_index.set(index);
-        if let Some(callback) = on_click.clone() {
+        if let Some(callback) = on_click {
             callback.run(ev);
         }
     };

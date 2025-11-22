@@ -16,18 +16,15 @@
 use leptos::prelude::*;
 
 #[derive(Clone, Copy, PartialEq)]
+#[derive(Default)]
 pub enum AlertVariant {
+    #[default]
     Info,
     Success,
     Warning,
     Error,
 }
 
-impl Default for AlertVariant {
-    fn default() -> Self {
-        AlertVariant::Info
-    }
-}
 
 #[component]
 pub fn Alert(

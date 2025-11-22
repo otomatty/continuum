@@ -20,17 +20,14 @@ use leptos::prelude::*;
 mod tests;
 
 #[derive(Clone, Copy, PartialEq, Debug)]
+#[derive(Default)]
 pub enum AccordionVariant {
     Arrow,
     Plus,
+    #[default]
     None,
 }
 
-impl Default for AccordionVariant {
-    fn default() -> Self {
-        AccordionVariant::None
-    }
-}
 
 #[component]
 pub fn Accordion(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
@@ -75,7 +72,7 @@ pub fn AccordionItem(
         }
 
         // コールバックを呼び出す
-        if let Some(callback) = on_toggle.clone() {
+        if let Some(callback) = on_toggle {
             callback.run(checked);
         }
     };

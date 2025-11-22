@@ -25,18 +25,15 @@ use wasm_bindgen_futures::spawn_local;
 use wasm_bindgen_futures::JsFuture;
 
 #[derive(Clone, Copy, PartialEq)]
+#[derive(Default)]
 pub enum ToastVariant {
+    #[default]
     Info,
     Success,
     Warning,
     Error,
 }
 
-impl Default for ToastVariant {
-    fn default() -> Self {
-        ToastVariant::Info
-    }
-}
 
 #[component]
 pub fn Toast(
@@ -62,14 +59,14 @@ pub fn Toast(
     };
 
     let handle_close = move |_| {
-        if let Some(callback) = on_close.clone() {
+        if let Some(callback) = on_close {
             callback.run(());
         }
     };
 
     #[cfg(feature = "hydrate")]
     if let Some(dur) = duration {
-        let callback = on_close.clone();
+        let callback = on_close;
         spawn_local(async move {
             let dur_ms = dur * 1000;
             let promise = Promise::new(&mut |resolve, _| {

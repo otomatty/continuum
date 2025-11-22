@@ -2,7 +2,9 @@ use leptos::ev::Event;
 use leptos::prelude::*;
 
 #[derive(Clone, Copy, PartialEq)]
+#[derive(Default)]
 pub enum RadioVariant {
+    #[default]
     Primary,
     Secondary,
     Accent,
@@ -12,11 +14,6 @@ pub enum RadioVariant {
     Info,
 }
 
-impl Default for RadioVariant {
-    fn default() -> Self {
-        RadioVariant::Primary
-    }
-}
 
 #[component]
 pub fn Radio(
@@ -44,7 +41,7 @@ pub fn Radio(
     };
 
     let handle_change = move |ev: leptos::web_sys::Event| {
-        if let Some(cb) = on_change.clone() {
+        if let Some(cb) = on_change {
             cb.run(ev);
         }
     };

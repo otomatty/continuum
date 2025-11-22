@@ -31,7 +31,7 @@ pub fn Rating(
     let handle_click = move |index: usize| {
         if !readonly {
             let new_value = (index + 1) as f64;
-            if let Some(callback) = on_change.clone() {
+            if let Some(callback) = on_change {
                 callback.run(new_value);
             }
         }

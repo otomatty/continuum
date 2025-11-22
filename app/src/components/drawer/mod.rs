@@ -17,16 +17,13 @@ use leptos::ev::MouseEvent;
 use leptos::prelude::*;
 
 #[derive(Clone, Copy, PartialEq)]
+#[derive(Default)]
 pub enum DrawerSide {
+    #[default]
     Left,
     Right,
 }
 
-impl Default for DrawerSide {
-    fn default() -> Self {
-        DrawerSide::Left
-    }
-}
 
 #[component]
 pub fn Drawer(
@@ -80,7 +77,7 @@ pub fn DrawerSide(#[prop(optional, into)] class: String, children: Children) -> 
     };
 
     let handle_backdrop_click = move |_| {
-        if let Some(callback) = on_close.clone() {
+        if let Some(callback) = on_close {
             callback.run(());
         }
     };
@@ -121,10 +118,10 @@ pub fn DrawerToggle(
         use_context::<Option<Callback<()>>>().expect("DrawerToggle must be used within Drawer");
 
     let handle_click = move |ev: MouseEvent| {
-        if let Some(callback) = on_close.clone() {
+        if let Some(callback) = on_close {
             callback.run(());
         }
-        if let Some(click_callback) = on_click.clone() {
+        if let Some(click_callback) = on_click {
             click_callback.run(ev);
         }
     };

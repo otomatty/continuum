@@ -2,6 +2,7 @@ use leptos::ev::Event;
 use leptos::prelude::*;
 
 #[derive(Clone, Copy, PartialEq)]
+#[derive(Default)]
 pub enum SelectVariant {
     Primary,
     Secondary,
@@ -11,14 +12,10 @@ pub enum SelectVariant {
     Warning,
     Info,
     Ghost,
+    #[default]
     Bordered,
 }
 
-impl Default for SelectVariant {
-    fn default() -> Self {
-        SelectVariant::Bordered
-    }
-}
 
 #[component]
 pub fn Select(
@@ -53,7 +50,7 @@ pub fn Select(
     };
 
     let handle_change = move |ev: leptos::web_sys::Event| {
-        if let Some(cb) = on_change.clone() {
+        if let Some(cb) = on_change {
             cb.run(ev);
         }
     };

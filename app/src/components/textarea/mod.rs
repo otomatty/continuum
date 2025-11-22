@@ -2,6 +2,7 @@ use leptos::ev::InputEvent;
 use leptos::prelude::*;
 
 #[derive(Clone, Copy, PartialEq)]
+#[derive(Default)]
 pub enum TextareaVariant {
     Primary,
     Secondary,
@@ -11,14 +12,10 @@ pub enum TextareaVariant {
     Warning,
     Info,
     Ghost,
+    #[default]
     Bordered,
 }
 
-impl Default for TextareaVariant {
-    fn default() -> Self {
-        TextareaVariant::Bordered
-    }
-}
 
 #[component]
 pub fn Textarea(
@@ -54,10 +51,10 @@ pub fn Textarea(
     };
 
     let handle_input = move |ev: leptos::web_sys::Event| {
-        if let Some(cb) = on_input.clone() {
+        if let Some(cb) = on_input {
             use leptos::wasm_bindgen::JsCast;
             if let Ok(input_ev) = ev.dyn_into::<leptos::web_sys::InputEvent>() {
-                let leptos_input_ev = InputEvent::from(input_ev);
+                let leptos_input_ev = input_ev;
                 cb.run(leptos_input_ev);
             }
         }

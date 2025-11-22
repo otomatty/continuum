@@ -16,18 +16,15 @@
 use leptos::prelude::*;
 
 #[derive(Clone, Copy, PartialEq)]
+#[derive(Default)]
 pub enum ProgressVariant {
+    #[default]
     Primary,
     Success,
     Warning,
     Error,
 }
 
-impl Default for ProgressVariant {
-    fn default() -> Self {
-        ProgressVariant::Primary
-    }
-}
 
 #[component]
 pub fn Progress(
