@@ -15,8 +15,7 @@
  */
 use leptos::prelude::*;
 
-#[derive(Clone, Copy, PartialEq)]
-#[derive(Default)]
+#[derive(Clone, Copy, PartialEq, Default)]
 pub enum TooltipPosition {
     #[default]
     Top,
@@ -24,7 +23,6 @@ pub enum TooltipPosition {
     Left,
     Right,
 }
-
 
 #[component]
 pub fn Tooltip(

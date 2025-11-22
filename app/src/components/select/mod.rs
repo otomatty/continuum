@@ -1,8 +1,7 @@
 use leptos::ev::Event;
 use leptos::prelude::*;
 
-#[derive(Clone, Copy, PartialEq)]
-#[derive(Default)]
+#[derive(Clone, Copy, PartialEq, Default)]
 pub enum SelectVariant {
     Primary,
     Secondary,
@@ -15,7 +14,6 @@ pub enum SelectVariant {
     #[default]
     Bordered,
 }
-
 
 #[component]
 pub fn Select(

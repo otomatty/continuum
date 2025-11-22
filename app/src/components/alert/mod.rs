@@ -15,8 +15,7 @@
  */
 use leptos::prelude::*;
 
-#[derive(Clone, Copy, PartialEq)]
-#[derive(Default)]
+#[derive(Clone, Copy, PartialEq, Default)]
 pub enum AlertVariant {
     #[default]
     Info,
@@ -24,7 +23,6 @@ pub enum AlertVariant {
     Warning,
     Error,
 }
-
 
 #[component]
 pub fn Alert(

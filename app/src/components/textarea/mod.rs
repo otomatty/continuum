@@ -1,8 +1,7 @@
 use leptos::ev::InputEvent;
 use leptos::prelude::*;
 
-#[derive(Clone, Copy, PartialEq)]
-#[derive(Default)]
+#[derive(Clone, Copy, PartialEq, Default)]
 pub enum TextareaVariant {
     Primary,
     Secondary,
@@ -15,7 +14,6 @@ pub enum TextareaVariant {
     #[default]
     Bordered,
 }
-
 
 #[component]
 pub fn Textarea(

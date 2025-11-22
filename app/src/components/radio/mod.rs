@@ -1,8 +1,7 @@
 use leptos::ev::Event;
 use leptos::prelude::*;
 
-#[derive(Clone, Copy, PartialEq)]
-#[derive(Default)]
+#[derive(Clone, Copy, PartialEq, Default)]
 pub enum RadioVariant {
     #[default]
     Primary,
@@ -13,7 +12,6 @@ pub enum RadioVariant {
     Error,
     Info,
 }
-
 
 #[component]
 pub fn Radio(

@@ -16,14 +16,12 @@ use leptos::ev::MouseEvent;
  */
 use leptos::prelude::*;
 
-#[derive(Clone, Copy, PartialEq)]
-#[derive(Default)]
+#[derive(Clone, Copy, PartialEq, Default)]
 pub enum DrawerSide {
     #[default]
     Left,
     Right,
 }
-
 
 #[component]
 pub fn Drawer(

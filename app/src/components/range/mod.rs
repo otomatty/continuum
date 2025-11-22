@@ -1,8 +1,7 @@
 use leptos::ev::InputEvent;
 use leptos::prelude::*;
 
-#[derive(Clone, Copy, PartialEq)]
-#[derive(Default)]
+#[derive(Clone, Copy, PartialEq, Default)]
 pub enum RangeVariant {
     #[default]
     Primary,
@@ -13,7 +12,6 @@ pub enum RangeVariant {
     Error,
     Info,
 }
-
 
 #[component]
 pub fn Range(

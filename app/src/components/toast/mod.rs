@@ -24,8 +24,7 @@ use wasm_bindgen_futures::spawn_local;
 #[cfg(feature = "hydrate")]
 use wasm_bindgen_futures::JsFuture;
 
-#[derive(Clone, Copy, PartialEq)]
-#[derive(Default)]
+#[derive(Clone, Copy, PartialEq, Default)]
 pub enum ToastVariant {
     #[default]
     Info,
@@ -33,7 +32,6 @@ pub enum ToastVariant {
     Warning,
     Error,
 }
-
 
 #[component]
 pub fn Toast(

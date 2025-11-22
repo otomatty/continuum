@@ -15,8 +15,7 @@
  */
 use leptos::prelude::*;
 
-#[derive(Clone, Copy, PartialEq)]
-#[derive(Default)]
+#[derive(Clone, Copy, PartialEq, Default)]
 pub enum LoadingVariant {
     #[default]
     Spinner,
@@ -27,9 +26,7 @@ pub enum LoadingVariant {
     Infinity,
 }
 
-
-#[derive(Clone, Copy, PartialEq)]
-#[derive(Default)]
+#[derive(Clone, Copy, PartialEq, Default)]
 pub enum LoadingSize {
     Xs,
     Sm,
@@ -37,7 +34,6 @@ pub enum LoadingSize {
     Md,
     Lg,
 }
-
 
 #[component]
 pub fn Loading(

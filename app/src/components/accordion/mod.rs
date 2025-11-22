@@ -19,15 +19,13 @@ use leptos::prelude::*;
 #[cfg(test)]
 mod tests;
 
-#[derive(Clone, Copy, PartialEq, Debug)]
-#[derive(Default)]
+#[derive(Clone, Copy, PartialEq, Debug, Default)]
 pub enum AccordionVariant {
     Arrow,
     Plus,
     #[default]
     None,
 }
-
 
 #[component]
 pub fn Accordion(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
