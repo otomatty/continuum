@@ -36,6 +36,7 @@ hotfix/* (緊急修正ブランチ、mainから直接作成)
    - ✅ 有効化
    - Required number of approvals: `1`
    - Dismiss stale pull request approvals when new commits are pushed: ✅ 有効化
+   - **Do not allow bypassing the above settings**: ✅ 有効化（バイパス権限を無効化）
 
 2. **Require status checks to pass before merging**
    - ✅ 有効化
@@ -69,6 +70,7 @@ hotfix/* (緊急修正ブランチ、mainから直接作成)
    - ✅ 有効化
    - Required number of approvals: `1`
    - Dismiss stale pull request approvals when new commits are pushed: ✅ 有効化
+   - **Do not allow bypassing the above settings**: ✅ 有効化（バイパス権限を無効化）
 
 2. **Require status checks to pass before merging**
    - ✅ 有効化
