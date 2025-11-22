@@ -1,3 +1,4 @@
+use leptos::ev::MouseEvent;
 /**
  * Tabs Component
  *
@@ -13,9 +14,7 @@
  *   ├─ Spec: ./tabs.spec.md
  *   └─ Module: ../mod.rs
  */
-
 use leptos::prelude::*;
-use leptos::ev::MouseEvent;
 
 #[derive(Clone, Copy, PartialEq)]
 pub enum TabsVariant {
@@ -60,10 +59,7 @@ pub fn Tabs(
 }
 
 #[component]
-pub fn TabList(
-    #[prop(optional, into)] class: String,
-    children: Children,
-) -> impl IntoView {
+pub fn TabList(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
     let list_class = if class.is_empty() {
         "".to_string()
     } else {
@@ -85,16 +81,13 @@ pub fn Tab(
     children: Children,
 ) -> impl IntoView {
     let active_index = use_context::<ReadSignal<usize>>().expect("Tab must be used within Tabs");
-    let set_active_index = use_context::<WriteSignal<usize>>().expect("Tab must be used within Tabs");
+    let set_active_index =
+        use_context::<WriteSignal<usize>>().expect("Tab must be used within Tabs");
 
     let is_active = move || active_index.get() == index;
 
     let tab_class = move || {
-        let base = if is_active() {
-            "tab tab-active"
-        } else {
-            "tab"
-        };
+        let base = if is_active() { "tab tab-active" } else { "tab" };
         if class.is_empty() {
             base.to_string()
         } else {
@@ -127,7 +120,8 @@ pub fn TabPanel(
     #[prop(optional, into)] class: String,
     children: Children,
 ) -> impl IntoView {
-    let active_index = use_context::<ReadSignal<usize>>().expect("TabPanel must be used within Tabs");
+    let active_index =
+        use_context::<ReadSignal<usize>>().expect("TabPanel must be used within Tabs");
 
     let is_active = move || active_index.get() == index;
 
@@ -147,4 +141,3 @@ pub fn TabPanel(
         </div>
     }
 }
-

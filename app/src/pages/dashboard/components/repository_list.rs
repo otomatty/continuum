@@ -1,6 +1,10 @@
-use leptos::prelude::*;
-use crate::components::{card::{Card, CardBody}, badge::{Badge, BadgeVariant}, avatar::Avatar};
+use crate::components::{
+    avatar::Avatar,
+    badge::{Badge, BadgeVariant},
+    card::{Card, CardBody},
+};
 use crate::concepts::repository::Repository;
+use leptos::prelude::*;
 
 /**
  * RepositoryList Component
@@ -17,9 +21,7 @@ use crate::concepts::repository::Repository;
  *   └─ app/src/concepts/repository/mod.rs
  */
 #[component]
-pub fn RepositoryList(
-    repositories: Vec<Repository>,
-) -> impl IntoView {
+pub fn RepositoryList(repositories: Vec<Repository>) -> impl IntoView {
     view! {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             {repositories.into_iter().map(|repo| {
@@ -71,4 +73,3 @@ pub fn RepositoryList(
         </div>
     }
 }
-

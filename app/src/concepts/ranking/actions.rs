@@ -14,7 +14,6 @@
  *   ├─ Spec: ./ranking.spec.md
  *   └─ Plan: docs/03_plans/continuum/legible-architecture-refactoring.md
  */
-
 use super::state::{RankingEntry, RankingState};
 
 /// Add a ranking entry to the state
@@ -41,4 +40,3 @@ pub fn sort_by_score(mut state: RankingState) -> RankingState {
     }
     state
 }
-

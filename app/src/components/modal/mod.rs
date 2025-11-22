@@ -1,3 +1,4 @@
+use leptos::ev::MouseEvent;
 /**
  * Modal Component
  *
@@ -13,9 +14,7 @@
  *   ├─ Spec: ./modal.spec.md
  *   └─ Module: ../mod.rs
  */
-
 use leptos::prelude::*;
-use leptos::ev::MouseEvent;
 
 #[component]
 pub fn Modal(
@@ -52,10 +51,7 @@ pub fn Modal(
 }
 
 #[component]
-pub fn ModalBox(
-    #[prop(optional, into)] class: String,
-    children: Children,
-) -> impl IntoView {
+pub fn ModalBox(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
     let box_class = if class.is_empty() {
         "modal-box".to_string()
     } else {
@@ -70,10 +66,7 @@ pub fn ModalBox(
 }
 
 #[component]
-pub fn ModalHeader(
-    #[prop(optional, into)] class: String,
-    children: Children,
-) -> impl IntoView {
+pub fn ModalHeader(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
     let header_class = if class.is_empty() {
         "font-bold text-lg mb-4".to_string()
     } else {
@@ -88,10 +81,7 @@ pub fn ModalHeader(
 }
 
 #[component]
-pub fn ModalBody(
-    #[prop(optional, into)] class: String,
-    children: Children,
-) -> impl IntoView {
+pub fn ModalBody(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
     let body_class = if class.is_empty() {
         "py-4".to_string()
     } else {
@@ -106,10 +96,7 @@ pub fn ModalBody(
 }
 
 #[component]
-pub fn ModalFooter(
-    #[prop(optional, into)] class: String,
-    children: Children,
-) -> impl IntoView {
+pub fn ModalFooter(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
     let footer_class = if class.is_empty() {
         "modal-action".to_string()
     } else {
@@ -147,4 +134,3 @@ pub fn ModalAction(
         </button>
     }
 }
-

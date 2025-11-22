@@ -13,7 +13,6 @@
  *   ├─ Spec: ./pagination.spec.md
  *   └─ Module: ../mod.rs
  */
-
 use leptos::prelude::*;
 
 #[component]
@@ -82,4 +81,3 @@ pub fn Pagination(
         </div>
     }
 }
-

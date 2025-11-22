@@ -1,3 +1,6 @@
+use crate::concepts::activity::{ActivityState, ActivityType};
+use crate::concepts::organization::Period;
+use crate::concepts::ranking::{calculate_score, sort_by_score, RankingEntry, RankingState};
 /**
  * Ranking Synchronization
  *
@@ -19,12 +22,8 @@
  *   │   └─ Organization: src/concepts/organization/organization.spec.md
  *   └─ Plan: docs/03_plans/continuum/legible-architecture-refactoring.md
  */
-
 use crate::concepts::user::UserState;
-use crate::concepts::activity::{ActivityState, ActivityType};
-use crate::concepts::ranking::{RankingEntry, RankingState, calculate_score, sort_by_score};
-use crate::concepts::organization::Period;
-use chrono::{DateTime, Utc, Duration};
+use chrono::{DateTime, Duration, Utc};
 
 /// Calculate weekly ranking from User and Activity states
 /// when: 期間がWeeklyに指定されたら
@@ -56,15 +55,20 @@ fn calculate_ranking_by_period(
     let cutoff_date = match period {
         Period::Weekly => now - Duration::try_days(7).unwrap(),
         Period::Monthly => now - Duration::try_days(30).unwrap(),
-        Period::All => DateTime::parse_from_rfc3339("1970-01-01T00:00:00Z").unwrap().with_timezone(&Utc),
+        Period::All => DateTime::parse_from_rfc3339("1970-01-01T00:00:00Z")
+            .unwrap()
+            .with_timezone(&Utc),
     };
 
     // Aggregate activities by user
-    let mut user_stats: std::collections::HashMap<String, (u32, u32, u32)> = std::collections::HashMap::new();
+    let mut user_stats: std::collections::HashMap<String, (u32, u32, u32)> =
+        std::collections::HashMap::new();
 
     for activity in &activity_state.activities {
         if activity.created_at >= cutoff_date {
-            let stats = user_stats.entry(activity.user.username.clone()).or_insert((0, 0, 0));
+            let stats = user_stats
+                .entry(activity.user.username.clone())
+                .or_insert((0, 0, 0));
             match activity.activity_type {
                 ActivityType::Commit => stats.0 += 1,
                 ActivityType::PullRequest => stats.1 += 1,
@@ -75,7 +79,9 @@ fn calculate_ranking_by_period(
     }
 
     // Create ranking entries
-    let entries: Vec<RankingEntry> = user_state.users.iter()
+    let entries: Vec<RankingEntry> = user_state
+        .users
+        .iter()
         .filter_map(|user| {
             if let Some((commits, prs, reviews)) = user_stats.get(&user.username) {
                 Some(RankingEntry {
@@ -97,4 +103,3 @@ fn calculate_ranking_by_period(
     let sorted_state = sort_by_score(ranking_state);
     sorted_state.entries
 }
-

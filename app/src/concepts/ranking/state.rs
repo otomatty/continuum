@@ -15,8 +15,7 @@
  *   ├─ Spec: ./ranking.spec.md
  *   └─ Plan: docs/03_plans/continuum/legible-architecture-refactoring.md
  */
-
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 // Note: User型はuser conceptから参照するが、Conceptの独立性を保つため、
 // このファイルでは型定義のみを行い、ロジックは持たない
@@ -36,4 +35,3 @@ pub struct RankingEntry {
 pub struct RankingState {
     pub entries: Vec<RankingEntry>,
 }
-

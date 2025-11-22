@@ -1,5 +1,5 @@
-use leptos::prelude::*;
 use crate::components::card::{Card, CardBody};
+use leptos::prelude::*;
 
 /**
  * StatsCard Component
@@ -32,4 +32,3 @@ pub fn StatsCard(
         </Card>
     }
 }
-

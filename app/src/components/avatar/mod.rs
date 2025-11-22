@@ -11,7 +11,7 @@ pub fn Avatar(
     } else {
         format!("avatar {}", class)
     };
-    
+
     view! {
         <div class=avatar_class>
             <div class="w-12 rounded-full">
@@ -22,20 +22,16 @@ pub fn Avatar(
 }
 
 #[component]
-pub fn AvatarGroup(
-    #[prop(optional, into)] class: String,
-    children: Children,
-) -> impl IntoView {
+pub fn AvatarGroup(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
     let group_class = if class.is_empty() {
         "avatar-group -space-x-6".to_string()
     } else {
         format!("avatar-group -space-x-6 {}", class)
     };
-    
+
     view! {
         <div class=group_class>
             {children()}
         </div>
     }
 }
-

@@ -1,18 +1,18 @@
-pub mod github;
 pub mod components;
+pub mod github;
 pub mod pages;
 // pub mod mock; // Removed: mock module not found
 pub mod concepts;
 pub mod synchronizations;
 
+use components::navbar::Navbar;
 use leptos::prelude::*;
 use leptos_meta::{provide_meta_context, MetaTags, Stylesheet, Title};
 use leptos_router::{
     components::{Route, Router, Routes},
     StaticSegment,
 };
-use components::navbar::Navbar;
-use pages::{HomePage, DashboardPage, PortfolioPage, ComponentsPage, KnowledgePage, SettingsPage};
+use pages::{ComponentsPage, DashboardPage, HomePage, KnowledgePage, PortfolioPage, SettingsPage};
 
 pub fn shell(options: LeptosOptions) -> impl IntoView {
     view! {

@@ -1,6 +1,6 @@
-use leptos::prelude::*;
-use crate::components::card::{Card, CardTitle, CardBody};
+use crate::components::card::{Card, CardBody, CardTitle};
 use crate::concepts::contribution::RepositoryContribution;
+use leptos::prelude::*;
 
 /**
  * ContributionHighlights Component
@@ -15,9 +15,7 @@ use crate::concepts::contribution::RepositoryContribution;
  *   └─ app/src/concepts/contribution/mod.rs
  */
 #[component]
-pub fn ContributionHighlights(
-    contributions: Vec<RepositoryContribution>,
-) -> impl IntoView {
+pub fn ContributionHighlights(contributions: Vec<RepositoryContribution>) -> impl IntoView {
     let (total_commits, total_prs, total_reviews, total_lines_added, total_lines_deleted) =
         contributions.iter().fold((0, 0, 0, 0, 0), |acc, c| {
             (
@@ -28,7 +26,7 @@ pub fn ContributionHighlights(
                 acc.4 + c.lines_deleted,
             )
         });
-    
+
     view! {
         <Card>
             <CardTitle>"Organization Contribution Highlights"</CardTitle>
@@ -59,4 +57,3 @@ pub fn ContributionHighlights(
         </Card>
     }
 }
-

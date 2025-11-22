@@ -13,7 +13,6 @@
  *   ├─ Spec: ./progress.spec.md
  *   └─ Module: ../mod.rs
  */
-
 use leptos::prelude::*;
 
 #[derive(Clone, Copy, PartialEq)]
@@ -63,4 +62,3 @@ pub fn Progress(
         />
     }
 }
-

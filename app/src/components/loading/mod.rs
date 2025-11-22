@@ -13,7 +13,6 @@
  *   ├─ Spec: ./loading.spec.md
  *   └─ Module: ../mod.rs
  */
-
 use leptos::prelude::*;
 
 #[derive(Clone, Copy, PartialEq)]
@@ -78,4 +77,3 @@ pub fn Loading(
         <span class=combined_class></span>
     }
 }
-

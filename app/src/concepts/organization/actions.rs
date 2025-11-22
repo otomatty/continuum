@@ -15,8 +15,7 @@
  *   ├─ Spec: ./organization.spec.md
  *   └─ Plan: docs/03_plans/continuum/legible-architecture-refactoring.md
  */
-
-use super::state::{OrganizationStats, OrganizationState, Period};
+use super::state::{OrganizationState, OrganizationStats, Period};
 
 /// Initialize mock organization stats for development/testing
 pub fn initialize_mock_organization_stats(period: Period) -> OrganizationStats {
@@ -30,11 +29,11 @@ pub fn initialize_mock_organization_stats(period: Period) -> OrganizationStats {
 }
 
 /// Add organization stats to the state
-pub fn add_organization_stats(state: OrganizationState, stats: OrganizationStats) -> OrganizationState {
+pub fn add_organization_stats(
+    state: OrganizationState,
+    stats: OrganizationStats,
+) -> OrganizationState {
     let mut new_stats = state.stats;
     new_stats.push(stats);
-    OrganizationState {
-        stats: new_stats,
-    }
+    OrganizationState { stats: new_stats }
 }
-

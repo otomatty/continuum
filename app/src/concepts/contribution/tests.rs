@@ -44,11 +44,10 @@ mod tests {
             data: vec![],
             period: Period::Weekly,
         };
-        
+
         let result = add_contribution_graph(state, graph.clone());
-        
+
         assert_eq!(result.graphs.len(), 1);
         assert_eq!(result.graphs[0].user.username, user.username);
     }
 }
-

@@ -1,6 +1,9 @@
-use leptos::prelude::*;
-use crate::components::{badge::{Badge, BadgeVariant}, avatar::Avatar};
+use crate::components::{
+    avatar::Avatar,
+    badge::{Badge, BadgeVariant},
+};
 use crate::concepts::activity::{Activity, ActivityType};
+use leptos::prelude::*;
 
 /**
  * ActivityTimeline Component
@@ -16,9 +19,7 @@ use crate::concepts::activity::{Activity, ActivityType};
  *   └─ app/src/concepts/activity/mod.rs
  */
 #[component]
-pub fn ActivityTimeline(
-    activities: Vec<Activity>,
-) -> impl IntoView {
+pub fn ActivityTimeline(activities: Vec<Activity>) -> impl IntoView {
     view! {
         <div class="space-y-4">
             {activities.into_iter().map(|activity| {
@@ -29,7 +30,7 @@ pub fn ActivityTimeline(
                     ActivityType::Issue => BadgeVariant::Warning,
                     ActivityType::Discussion => BadgeVariant::Accent,
                 };
-                
+
                 let activity_type_label = match activity.activity_type {
                     ActivityType::Commit => "Commit",
                     ActivityType::PullRequest => "PR",
@@ -37,14 +38,14 @@ pub fn ActivityTimeline(
                     ActivityType::Issue => "Issue",
                     ActivityType::Discussion => "Discussion",
                 };
-                
+
                 let display_name = activity.user.display_name.clone();
                 let avatar_url = activity.user.avatar_url.clone();
                 let repo_name = activity.repository.name.clone();
                 let url = activity.url.clone();
                 let title = activity.title.clone();
                 let created_at = activity.created_at.format("%Y-%m-%d %H:%M").to_string();
-                
+
                 view! {
                     <div class="flex gap-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
                         <Avatar src=avatar_url alt=display_name.clone() class="w-10 h-10" />
@@ -67,4 +68,3 @@ pub fn ActivityTimeline(
         </div>
     }
 }
-

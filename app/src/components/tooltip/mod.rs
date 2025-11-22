@@ -13,7 +13,6 @@
  *   ├─ Spec: ./tooltip.spec.md
  *   └─ Module: ../mod.rs
  */
-
 use leptos::prelude::*;
 
 #[derive(Clone, Copy, PartialEq)]
@@ -56,4 +55,3 @@ pub fn Tooltip(
         </div>
     }
 }
-

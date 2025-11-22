@@ -1,6 +1,6 @@
-use leptos::prelude::*;
-use crate::components::card::{Card, CardTitle, CardBody};
+use crate::components::card::{Card, CardBody, CardTitle};
 use crate::concepts::contribution::RepositoryContribution;
+use leptos::prelude::*;
 
 /**
  * RepositoryContributionList Component
@@ -15,9 +15,7 @@ use crate::concepts::contribution::RepositoryContribution;
  *   └─ app/src/concepts/contribution/mod.rs
  */
 #[component]
-pub fn RepositoryContributionList(
-    contributions: Vec<RepositoryContribution>,
-) -> impl IntoView {
+pub fn RepositoryContributionList(contributions: Vec<RepositoryContribution>) -> impl IntoView {
     view! {
         <Card>
             <CardTitle>"Repository Contributions"</CardTitle>
@@ -70,4 +68,3 @@ pub fn RepositoryContributionList(
         </Card>
     }
 }
-

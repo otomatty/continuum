@@ -1,3 +1,4 @@
+pub mod actions;
 /**
  * Ranking Concept
  *
@@ -16,12 +17,9 @@
  *   ├─ Tests: ./tests.rs
  *   └─ Plan: docs/03_plans/continuum/legible-architecture-refactoring.md
  */
-
 pub mod state;
-pub mod actions;
 #[cfg(test)]
 mod tests;
 
-pub use state::*;
 pub use actions::*;
-
+pub use state::*;

@@ -13,14 +13,10 @@
  *   ├─ Spec: ./footer.spec.md
  *   └─ Module: ../mod.rs
  */
-
 use leptos::prelude::*;
 
 #[component]
-pub fn Footer(
-    #[prop(optional, into)] class: String,
-    children: Children,
-) -> impl IntoView {
+pub fn Footer(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
     let footer_class = if class.is_empty() {
         "footer".to_string()
     } else {
@@ -33,4 +29,3 @@ pub fn Footer(
         </footer>
     }
 }
-

@@ -28,17 +28,16 @@ pub fn Badge(
         BadgeVariant::Info => "badge-info",
         BadgeVariant::Ghost => "badge-ghost",
     };
-    
+
     let badge_class = if class.is_empty() {
         format!("badge {}", variant_class)
     } else {
         format!("badge {} {}", variant_class, class)
     };
-    
+
     view! {
         <span class=badge_class>
             {children()}
         </span>
     }
 }
-

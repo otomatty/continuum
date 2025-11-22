@@ -13,7 +13,6 @@
  *   ├─ Spec: ./steps.spec.md
  *   └─ Module: ../mod.rs
  */
-
 use leptos::prelude::*;
 
 #[derive(Clone, Copy, PartialEq)]
@@ -32,10 +31,7 @@ impl Default for StepStatus {
 }
 
 #[component]
-pub fn Steps(
-    #[prop(optional, into)] class: String,
-    children: Children,
-) -> impl IntoView {
+pub fn Steps(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
     let steps_class = if class.is_empty() {
         "steps".to_string()
     } else {
@@ -83,4 +79,3 @@ pub fn StepItem(
         </li>
     }
 }
-

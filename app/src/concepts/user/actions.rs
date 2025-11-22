@@ -16,8 +16,7 @@
  *   ├─ Spec: ./user.spec.md
  *   └─ Plan: docs/03_plans/continuum/legible-architecture-refactoring.md
  */
-
-use super::state::{User, UserState, UserRole};
+use super::state::{User, UserRole, UserState};
 use chrono::{DateTime, Utc};
 use once_cell::sync::Lazy;
 
@@ -30,7 +29,11 @@ static MOCK_USERS: Lazy<Vec<User>> = Lazy::new(|| {
             avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=alice".to_string(),
             github_url: "https://github.com/alice-dev".to_string(),
             role: UserRole::CurrentEmployee,
-            joined_at: Some(DateTime::parse_from_rfc3339("2022-01-15T00:00:00Z").unwrap().with_timezone(&Utc)),
+            joined_at: Some(
+                DateTime::parse_from_rfc3339("2022-01-15T00:00:00Z")
+                    .unwrap()
+                    .with_timezone(&Utc),
+            ),
             left_at: None,
         },
         User {
@@ -39,7 +42,11 @@ static MOCK_USERS: Lazy<Vec<User>> = Lazy::new(|| {
             avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=bob".to_string(),
             github_url: "https://github.com/bob-engineer".to_string(),
             role: UserRole::CurrentEmployee,
-            joined_at: Some(DateTime::parse_from_rfc3339("2021-06-01T00:00:00Z").unwrap().with_timezone(&Utc)),
+            joined_at: Some(
+                DateTime::parse_from_rfc3339("2021-06-01T00:00:00Z")
+                    .unwrap()
+                    .with_timezone(&Utc),
+            ),
             left_at: None,
         },
         User {
@@ -48,8 +55,16 @@ static MOCK_USERS: Lazy<Vec<User>> = Lazy::new(|| {
             avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=charlie".to_string(),
             github_url: "https://github.com/charlie-coder".to_string(),
             role: UserRole::Alumni,
-            joined_at: Some(DateTime::parse_from_rfc3339("2020-03-10T00:00:00Z").unwrap().with_timezone(&Utc)),
-            left_at: Some(DateTime::parse_from_rfc3339("2023-12-31T00:00:00Z").unwrap().with_timezone(&Utc)),
+            joined_at: Some(
+                DateTime::parse_from_rfc3339("2020-03-10T00:00:00Z")
+                    .unwrap()
+                    .with_timezone(&Utc),
+            ),
+            left_at: Some(
+                DateTime::parse_from_rfc3339("2023-12-31T00:00:00Z")
+                    .unwrap()
+                    .with_timezone(&Utc),
+            ),
         },
         User {
             username: "diana-hacker".to_string(),
@@ -66,7 +81,11 @@ static MOCK_USERS: Lazy<Vec<User>> = Lazy::new(|| {
             avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=eve".to_string(),
             github_url: "https://github.com/eve-maker".to_string(),
             role: UserRole::CurrentEmployee,
-            joined_at: Some(DateTime::parse_from_rfc3339("2023-02-20T00:00:00Z").unwrap().with_timezone(&Utc)),
+            joined_at: Some(
+                DateTime::parse_from_rfc3339("2023-02-20T00:00:00Z")
+                    .unwrap()
+                    .with_timezone(&Utc),
+            ),
             left_at: None,
         },
     ]
@@ -97,8 +116,5 @@ pub fn find_user_by_username<'a>(state: &'a UserState, username: &'a str) -> Opt
 
 /// Get a user by username (cloned)
 pub fn get_user_by_username(state: &UserState, username: &str) -> Option<User> {
-    state.users.iter()
-        .find(|u| u.username == username)
-        .cloned()
+    state.users.iter().find(|u| u.username == username).cloned()
 }
-

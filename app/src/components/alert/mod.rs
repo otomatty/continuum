@@ -13,7 +13,6 @@
  *   ├─ Spec: ./alert.spec.md
  *   └─ Module: ../mod.rs
  */
-
 use leptos::prelude::*;
 
 #[derive(Clone, Copy, PartialEq)]
@@ -57,10 +56,7 @@ pub fn Alert(
 }
 
 #[component]
-pub fn AlertTitle(
-    #[prop(optional, into)] class: String,
-    children: Children,
-) -> impl IntoView {
+pub fn AlertTitle(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
     let title_class = if class.is_empty() {
         "font-bold".to_string()
     } else {
@@ -91,4 +87,3 @@ pub fn AlertDescription(
         </div>
     }
 }
-
