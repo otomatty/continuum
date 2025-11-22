@@ -42,7 +42,11 @@ impl Session {
     }
 }
 
-pub fn create_session_cookie(session: &Session, secure: bool, duration_secs: i64) -> Result<Cookie<'static>, serde_json::Error> {
+pub fn create_session_cookie(
+    session: &Session,
+    secure: bool,
+    duration_secs: i64,
+) -> Result<Cookie<'static>, serde_json::Error> {
     let value = session.to_cookie_value()?;
     Ok(Cookie::build(("session", value))
         .path("/")
@@ -102,7 +106,7 @@ mod tests {
     fn test_session_serialization() {
         let session = Session::new("user123".to_string(), "token123".to_string(), 3600);
         let cookie_value = session.to_cookie_value().unwrap();
-        
+
         let deserialized_session = Session::from_cookie_value(&cookie_value).unwrap();
         assert_eq!(deserialized_session.user_id, session.user_id);
         assert_eq!(deserialized_session.access_token, session.access_token);
@@ -113,7 +117,7 @@ mod tests {
     fn test_create_session_cookie() {
         let session = Session::new("user123".to_string(), "token123".to_string(), 3600);
         let cookie = create_session_cookie(&session, true, 3600).unwrap();
-        
+
         assert_eq!(cookie.name(), "session");
         assert_eq!(cookie.path(), Some("/"));
         assert_eq!(cookie.http_only(), Some(true));
@@ -124,7 +128,7 @@ mod tests {
     #[test]
     fn test_create_logout_cookie() {
         let cookie = create_logout_cookie(true);
-        
+
         assert_eq!(cookie.name(), "session");
         assert_eq!(cookie.value(), "");
         assert_eq!(cookie.path(), Some("/"));

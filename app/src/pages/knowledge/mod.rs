@@ -146,7 +146,7 @@ pub fn KnowledgePage() -> impl IntoView {
                     view! {
                     <KnowledgeCard
                         item=item.clone()
-                        on_click=Callback::new(handle_card_click.clone())
+                        on_click=Callback::new(handle_card_click)
                     />
                     }
                 }).collect_view()}

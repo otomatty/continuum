@@ -1,3 +1,4 @@
+use leptos::ev::MouseEvent;
 /**
  * Drawer Component
  *
@@ -13,20 +14,13 @@
  *   ├─ Spec: ./drawer.spec.md
  *   └─ Module: ../mod.rs
  */
-
 use leptos::prelude::*;
-use leptos::ev::MouseEvent;
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Default)]
 pub enum DrawerSide {
+    #[default]
     Left,
     Right,
-}
-
-impl Default for DrawerSide {
-    fn default() -> Self {
-        DrawerSide::Left
-    }
 }
 
 #[component]
@@ -62,13 +56,11 @@ pub fn Drawer(
 }
 
 #[component]
-pub fn DrawerSide(
-    #[prop(optional, into)] class: String,
-    children: Children,
-) -> impl IntoView {
+pub fn DrawerSide(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
     let side = use_context::<DrawerSide>().expect("DrawerSide must be used within Drawer");
     let _open = use_context::<ReadSignal<bool>>().expect("DrawerSide must be used within Drawer");
-    let on_close = use_context::<Option<Callback<()>>>().expect("DrawerSide must be used within Drawer");
+    let on_close =
+        use_context::<Option<Callback<()>>>().expect("DrawerSide must be used within Drawer");
 
     let side_class = move || {
         let base = match side {
@@ -83,7 +75,7 @@ pub fn DrawerSide(
     };
 
     let handle_backdrop_click = move |_| {
-        if let Some(callback) = on_close.clone() {
+        if let Some(callback) = on_close {
             callback.run(());
         }
     };
@@ -99,10 +91,7 @@ pub fn DrawerSide(
 }
 
 #[component]
-pub fn DrawerContent(
-    #[prop(optional, into)] class: String,
-    children: Children,
-) -> impl IntoView {
+pub fn DrawerContent(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
     let content_class = if class.is_empty() {
         "drawer-content".to_string()
     } else {
@@ -123,13 +112,14 @@ pub fn DrawerToggle(
     children: Children,
 ) -> impl IntoView {
     let _open = use_context::<ReadSignal<bool>>().expect("DrawerToggle must be used within Drawer");
-    let on_close = use_context::<Option<Callback<()>>>().expect("DrawerToggle must be used within Drawer");
+    let on_close =
+        use_context::<Option<Callback<()>>>().expect("DrawerToggle must be used within Drawer");
 
     let handle_click = move |ev: MouseEvent| {
-        if let Some(callback) = on_close.clone() {
+        if let Some(callback) = on_close {
             callback.run(());
         }
-        if let Some(click_callback) = on_click.clone() {
+        if let Some(click_callback) = on_click {
             click_callback.run(ev);
         }
     };
@@ -146,4 +136,3 @@ pub fn DrawerToggle(
         </label>
     }
 }
-

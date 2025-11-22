@@ -1,16 +1,16 @@
-use axum::{Router, middleware};
+use app::*;
+use axum::{middleware, Router};
+use axum_extra::extract::cookie::Key;
+use leptos::logging::log;
 use leptos::prelude::*;
 use leptos_axum::{generate_route_list, LeptosRoutes};
-use app::*;
-use leptos::logging::log;
-use axum_extra::extract::cookie::Key;
 
-mod config;
 mod auth;
+mod config;
 mod state;
-use config::Config;
-use auth::oauth::{auth_routes, create_auth_state};
 use auth::middleware::auth_middleware;
+use auth::oauth::{auth_routes, create_auth_state};
+use config::Config;
 use state::AppState;
 
 #[tokio::main]
@@ -36,7 +36,7 @@ async fn main() {
         key_bytes.truncate(64);
     }
     let key = Key::from(&key_bytes);
-    
+
     // Create auth state
     let auth_state = create_auth_state(&config);
 
@@ -54,7 +54,10 @@ async fn main() {
             move || shell(leptos_options.clone())
         })
         .merge(auth_routes())
-        .layer(middleware::from_fn_with_state(app_state.clone(), auth_middleware::<AppState>))
+        .layer(middleware::from_fn_with_state(
+            app_state.clone(),
+            auth_middleware::<AppState>,
+        ))
         .fallback(leptos_axum::file_and_error_handler::<AppState, _>(shell))
         .with_state(app_state);
 

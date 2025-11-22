@@ -174,6 +174,7 @@ pub fn ProfileSettingsForm(
 }
 
 #[derive(Clone)]
+#[allow(dead_code)]
 pub struct ProfileData {
     pub display_name: String,
     pub avatar_url: String,

@@ -1,6 +1,10 @@
-use leptos::prelude::*;
-use crate::components::{badge::{Badge, BadgeVariant}, avatar::Avatar, table::{Table, TableHead, TableBody, TableRow, TableHeader, TableCell}};
+use crate::components::{
+    avatar::Avatar,
+    badge::{Badge, BadgeVariant},
+    table::{Table, TableBody, TableCell, TableHead, TableHeader, TableRow},
+};
 use crate::concepts::ranking::RankingEntry;
+use leptos::prelude::*;
 
 /**
  * RankingTable Component
@@ -17,9 +21,7 @@ use crate::concepts::ranking::RankingEntry;
  *   └─ app/src/concepts/ranking/mod.rs
  */
 #[component]
-pub fn RankingTable(
-    rankings: Vec<RankingEntry>,
-) -> impl IntoView {
+pub fn RankingTable(rankings: Vec<RankingEntry>) -> impl IntoView {
     view! {
         <Table class="w-full">
             <TableHead>
@@ -63,4 +65,3 @@ pub fn RankingTable(
         </Table>
     }
 }
-

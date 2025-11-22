@@ -1,13 +1,13 @@
 mod components;
 
-use leptos::prelude::*;
-use crate::components::card::{Card, CardTitle, CardBody};
-use crate::concepts::organization::{initialize_mock_organization_stats, Period};
-use crate::concepts::user::initialize_mock_users;
+use crate::components::card::{Card, CardBody, CardTitle};
 use crate::concepts::activity::initialize_mock_activities;
+use crate::concepts::organization::{initialize_mock_organization_stats, Period};
 use crate::concepts::repository::initialize_mock_repositories;
-use crate::synchronizations::{calculate_weekly_ranking, calculate_monthly_ranking};
-use components::{StatsCard, RankingTable, ActivityTimeline, RepositoryList};
+use crate::concepts::user::initialize_mock_users;
+use crate::synchronizations::{calculate_monthly_ranking, calculate_weekly_ranking};
+use components::{ActivityTimeline, RankingTable, RepositoryList, StatsCard};
+use leptos::prelude::*;
 
 /**
  * Dashboard Page
@@ -34,20 +34,20 @@ use components::{StatsCard, RankingTable, ActivityTimeline, RepositoryList};
 #[component]
 pub fn DashboardPage() -> impl IntoView {
     let weekly_stats = initialize_mock_organization_stats(Period::Weekly);
-    
+
     // Initialize Concept states
     let user_state = initialize_mock_users();
     let activity_state = initialize_mock_activities();
-    
+
     // Use Synchronization to calculate rankings
     let weekly_ranking = calculate_weekly_ranking(&user_state, &activity_state);
     let monthly_ranking = calculate_monthly_ranking(&user_state, &activity_state);
-    
+
     let activities = activity_state.activities;
     let repositories = initialize_mock_repositories().repositories;
-    
+
     let (selected_period, set_selected_period) = signal(Period::Weekly);
-    
+
     view! {
         <div class="space-y-8">
             <div>
@@ -57,22 +57,22 @@ pub fn DashboardPage() -> impl IntoView {
 
             // Stats Cards
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <StatsCard 
+                <StatsCard
                     title="Total Contributors".to_string()
                     value=weekly_stats.total_contributors.to_string()
                     description="Active this week"
                 />
-                <StatsCard 
+                <StatsCard
                     title="Total Repositories".to_string()
                     value=weekly_stats.total_repositories.to_string()
                     description="Public repositories"
                 />
-                <StatsCard 
+                <StatsCard
                     title="External PRs".to_string()
                     value=weekly_stats.external_prs_count.to_string()
                     description="This week"
                 />
-                <StatsCard 
+                <StatsCard
                     title="Total Commits".to_string()
                     value=weekly_stats.total_commits.to_string()
                     description="This week"
@@ -135,4 +135,3 @@ pub fn DashboardPage() -> impl IntoView {
         </div>
     }
 }
-

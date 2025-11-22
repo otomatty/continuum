@@ -13,14 +13,14 @@
  * Related Documentation:
  *   └─ Spec: ./activity.spec.md
  */
-
 #[cfg(test)]
+#[allow(clippy::module_inception)]
 mod tests {
     use super::super::actions::*;
     use super::super::state::*;
-    use chrono::{DateTime, Utc};
-    use crate::concepts::user::state::{User, UserRole};
     use crate::concepts::repository::state::Repository;
+    use crate::concepts::user::state::{User, UserRole};
+    use chrono::{DateTime, Utc};
 
     #[test]
     fn test_initialize_mock_activities() {
@@ -47,7 +47,9 @@ mod tests {
             description: None,
             stars: 0,
             language: None,
-            updated_at: DateTime::parse_from_rfc3339("2024-01-01T00:00:00Z").unwrap().with_timezone(&Utc),
+            updated_at: DateTime::parse_from_rfc3339("2024-01-01T00:00:00Z")
+                .unwrap()
+                .with_timezone(&Utc),
             contributors: vec![],
         };
         let new_activity = Activity {
@@ -56,12 +58,14 @@ mod tests {
             user: user.clone(),
             repository: repo.clone(),
             title: "Test commit".to_string(),
-            created_at: DateTime::parse_from_rfc3339("2024-01-01T00:00:00Z").unwrap().with_timezone(&Utc),
+            created_at: DateTime::parse_from_rfc3339("2024-01-01T00:00:00Z")
+                .unwrap()
+                .with_timezone(&Utc),
             url: "https://github.com/test".to_string(),
         };
-        
+
         let result = add_activity(state, new_activity.clone());
-        
+
         assert_eq!(result.activities.len(), 1);
         assert_eq!(result.activities[0].id, "test-1");
     }
@@ -69,10 +73,9 @@ mod tests {
     #[test]
     fn test_find_activity_by_id() {
         let state = initialize_mock_activities();
-        
+
         let activity = find_activity_by_id(&state, "1");
         assert!(activity.is_some());
         assert_eq!(activity.unwrap().id, "1");
     }
 }
-

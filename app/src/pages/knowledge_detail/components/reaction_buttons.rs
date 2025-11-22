@@ -32,7 +32,7 @@ pub fn ReactionButtons(
                 let count = reaction.count;
                 let active = reaction.active;
                 let handle_click = move |_| {
-                    if let Some(callback) = on_reaction.clone() {
+                    if let Some(callback) = on_reaction {
                         callback.run(emoji_clone.clone());
                     }
                 };

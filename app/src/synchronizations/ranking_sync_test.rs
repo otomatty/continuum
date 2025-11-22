@@ -15,8 +15,8 @@
  * Related Documentation:
  *   └─ Spec: ./ranking.spec.md
  */
-
 #[cfg(test)]
+#[allow(clippy::module_inception)]
 mod tests {
     use super::super::ranking_sync::*;
     use crate::concepts::activity::{Activity, ActivityState, ActivityType};

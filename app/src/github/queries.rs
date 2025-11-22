@@ -88,4 +88,3 @@ query Contributions($login: String!, $from: DateTime!, $to: DateTime!) {
   }
 }
 "#;
-

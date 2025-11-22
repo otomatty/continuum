@@ -1,8 +1,8 @@
-use reqwest::{Client, header};
-use serde::Deserialize;
-use serde_json::json;
 use crate::github::queries::*;
 use crate::github::types::*;
+use reqwest::{header, Client};
+use serde::Deserialize;
+use serde_json::json;
 
 #[derive(Debug, thiserror::Error)]
 pub enum GitHubError {
@@ -28,15 +28,22 @@ impl GitHubClient {
     }
 
     pub fn new_with_base_url(token: String, base_url: String) -> Result<Self, GitHubError> {
-        let client = Client::builder()
-            .user_agent("continuum/1.0")
-            .build()?;
-        
-        Ok(Self { client, token, base_url })
+        let client = Client::builder().user_agent("continuum/1.0").build()?;
+
+        Ok(Self {
+            client,
+            token,
+            base_url,
+        })
     }
 
-    async fn execute_query<T: for<'de> Deserialize<'de>>(&self, query: &str, variables: serde_json::Value) -> Result<T, GitHubError> {
-        let res = self.client
+    async fn execute_query<T: for<'de> Deserialize<'de>>(
+        &self,
+        query: &str,
+        variables: serde_json::Value,
+    ) -> Result<T, GitHubError> {
+        let res = self
+            .client
             .post(&self.base_url)
             .header(header::AUTHORIZATION, format!("Bearer {}", self.token))
             .json(&json!({
@@ -51,7 +58,7 @@ impl GitHubClient {
         }
 
         let mut body: serde_json::Value = res.json().await?;
-        
+
         if let Some(errors) = body.get("errors") {
             return Err(GitHubError::GraphQL(errors.to_string()));
         }
@@ -60,7 +67,9 @@ impl GitHubClient {
             let result: T = serde_json::from_value(data)?;
             Ok(result)
         } else {
-            Err(GitHubError::GraphQL("No data found in response".to_string()))
+            Err(GitHubError::GraphQL(
+                "No data found in response".to_string(),
+            ))
         }
     }
 
@@ -75,7 +84,12 @@ impl GitHubClient {
         Ok(data.organization)
     }
 
-    pub async fn get_repositories(&self, login: &str, first: i64, after: Option<String>) -> Result<RepositoryConnection, GitHubError> {
+    pub async fn get_repositories(
+        &self,
+        login: &str,
+        first: i64,
+        after: Option<String>,
+    ) -> Result<RepositoryConnection, GitHubError> {
         #[derive(Deserialize)]
         struct Response {
             organization: OrganizationData,
@@ -106,7 +120,12 @@ impl GitHubClient {
         Ok(data.user)
     }
 
-    pub async fn get_contributions(&self, login: &str, from: &str, to: &str) -> Result<ContributionCollection, GitHubError> {
+    pub async fn get_contributions(
+        &self,
+        login: &str,
+        from: &str,
+        to: &str,
+    ) -> Result<ContributionCollection, GitHubError> {
         #[derive(Deserialize)]
         struct Response {
             user: UserData,
@@ -131,13 +150,14 @@ impl GitHubClient {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use wiremock::matchers::{method, path, body_json};
+    use wiremock::matchers::{body_json, method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     #[tokio::test]
     async fn test_get_organization() {
         let mock_server = MockServer::start().await;
-        let client = GitHubClient::new_with_base_url("test_token".to_string(), mock_server.uri()).unwrap();
+        let client =
+            GitHubClient::new_with_base_url("test_token".to_string(), mock_server.uri()).unwrap();
 
         let mock_response = json!({
             "data": {
@@ -172,7 +192,8 @@ mod tests {
     #[tokio::test]
     async fn test_api_error() {
         let mock_server = MockServer::start().await;
-        let client = GitHubClient::new_with_base_url("test_token".to_string(), mock_server.uri()).unwrap();
+        let client =
+            GitHubClient::new_with_base_url("test_token".to_string(), mock_server.uri()).unwrap();
 
         Mock::given(method("POST"))
             .respond_with(ResponseTemplate::new(500))
@@ -186,7 +207,8 @@ mod tests {
     #[tokio::test]
     async fn test_graphql_error() {
         let mock_server = MockServer::start().await;
-        let client = GitHubClient::new_with_base_url("test_token".to_string(), mock_server.uri()).unwrap();
+        let client =
+            GitHubClient::new_with_base_url("test_token".to_string(), mock_server.uri()).unwrap();
 
         let mock_response = json!({
             "errors": [

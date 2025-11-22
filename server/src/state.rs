@@ -1,7 +1,7 @@
-use axum_extra::extract::cookie::Key;
-use leptos::prelude::LeptosOptions;
 use crate::auth::oauth::AuthState;
 use crate::config::Config;
+use axum_extra::extract::cookie::Key;
+use leptos::prelude::LeptosOptions;
 
 #[derive(Clone, axum::extract::FromRef)]
 pub struct AppState {
@@ -13,7 +13,12 @@ pub struct AppState {
 }
 
 impl AppState {
-    pub fn new(leptos_options: LeptosOptions, key: Key, auth_state: AuthState, config: Config) -> Self {
+    pub fn new(
+        leptos_options: LeptosOptions,
+        key: Key,
+        auth_state: AuthState,
+        config: Config,
+    ) -> Self {
         Self {
             leptos_options,
             key,
@@ -23,4 +28,3 @@ impl AppState {
         }
     }
 }
-

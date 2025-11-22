@@ -1,16 +1,13 @@
 use leptos::prelude::*;
 
 #[component]
-pub fn Table(
-    #[prop(optional, into)] class: String,
-    children: Children,
-) -> impl IntoView {
+pub fn Table(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
     let table_class = if class.is_empty() {
         "table".to_string()
     } else {
         format!("table {}", class)
     };
-    
+
     view! {
         <table class=table_class>
             {children()}
@@ -19,10 +16,7 @@ pub fn Table(
 }
 
 #[component]
-pub fn TableHead(
-    #[prop(optional, into)] class: String,
-    children: Children,
-) -> impl IntoView {
+pub fn TableHead(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
     view! {
         <thead class=class>
             {children()}
@@ -31,10 +25,7 @@ pub fn TableHead(
 }
 
 #[component]
-pub fn TableBody(
-    #[prop(optional, into)] class: String,
-    children: Children,
-) -> impl IntoView {
+pub fn TableBody(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
     view! {
         <tbody class=class>
             {children()}
@@ -43,10 +34,7 @@ pub fn TableBody(
 }
 
 #[component]
-pub fn TableRow(
-    #[prop(optional, into)] class: String,
-    children: Children,
-) -> impl IntoView {
+pub fn TableRow(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
     view! {
         <tr class=class>
             {children()}
@@ -55,10 +43,7 @@ pub fn TableRow(
 }
 
 #[component]
-pub fn TableHeader(
-    #[prop(optional, into)] class: String,
-    children: Children,
-) -> impl IntoView {
+pub fn TableHeader(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
     view! {
         <th class=class>
             {children()}
@@ -67,14 +52,10 @@ pub fn TableHeader(
 }
 
 #[component]
-pub fn TableCell(
-    #[prop(optional, into)] class: String,
-    children: Children,
-) -> impl IntoView {
+pub fn TableCell(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
     view! {
         <td class=class>
             {children()}
         </td>
     }
 }
-

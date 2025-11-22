@@ -13,21 +13,15 @@
  *   ├─ Spec: ./progress.spec.md
  *   └─ Module: ../mod.rs
  */
-
 use leptos::prelude::*;
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Default)]
 pub enum ProgressVariant {
+    #[default]
     Primary,
     Success,
     Warning,
     Error,
-}
-
-impl Default for ProgressVariant {
-    fn default() -> Self {
-        ProgressVariant::Primary
-    }
 }
 
 #[component]
@@ -63,4 +57,3 @@ pub fn Progress(
         />
     }
 }
-

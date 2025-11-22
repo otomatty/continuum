@@ -13,8 +13,8 @@
  * Related Documentation:
  *   └─ Spec: ./repository.spec.md
  */
-
 #[cfg(test)]
+#[allow(clippy::module_inception)]
 mod tests {
     use super::super::actions::*;
     use super::super::state::*;

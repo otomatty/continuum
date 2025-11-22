@@ -8,8 +8,8 @@
  *   ├─ Implementation: ./mod.rs
  *   └─ Module: ../mod.rs
  */
-
 #[cfg(test)]
+#[allow(clippy::module_inception)]
 mod tests {
     use crate::components::accordion::AccordionVariant;
 
@@ -26,8 +26,8 @@ mod tests {
         // TC-002: Arrowバリアントの適用
         let variant = AccordionVariant::Arrow;
         match variant {
-            AccordionVariant::Arrow => assert!(true),
-            _ => assert!(false, "Expected Arrow variant"),
+            AccordionVariant::Arrow => {}
+            _ => panic!("Expected Arrow variant"),
         }
     }
 
@@ -36,8 +36,8 @@ mod tests {
         // TC-003: Plusバリアントの適用
         let variant = AccordionVariant::Plus;
         match variant {
-            AccordionVariant::Plus => assert!(true),
-            _ => assert!(false, "Expected Plus variant"),
+            AccordionVariant::Plus => {}
+            _ => panic!("Expected Plus variant"),
         }
     }
 
@@ -46,8 +46,8 @@ mod tests {
         // Noneバリアント（アイコンなし）
         let variant = AccordionVariant::None;
         match variant {
-            AccordionVariant::None => assert!(true),
-            _ => assert!(false, "Expected None variant"),
+            AccordionVariant::None => {}
+            _ => panic!("Expected None variant"),
         }
     }
 

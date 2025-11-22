@@ -15,8 +15,7 @@
  *   ├─ Spec: ./organization.spec.md
  *   └─ Plan: docs/03_plans/continuum/legible-architecture-refactoring.md
  */
-
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum Period {
@@ -38,4 +37,3 @@ pub struct OrganizationStats {
 pub struct OrganizationState {
     pub stats: Vec<OrganizationStats>,
 }
-

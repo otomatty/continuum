@@ -127,6 +127,7 @@ pub fn NotificationSettings(
 }
 
 #[derive(Clone)]
+#[allow(dead_code)]
 pub struct NotificationData {
     pub email_notifications: bool,
     pub notify_commits: bool,

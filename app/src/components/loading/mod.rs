@@ -13,11 +13,11 @@
  *   ├─ Spec: ./loading.spec.md
  *   └─ Module: ../mod.rs
  */
-
 use leptos::prelude::*;
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Default)]
 pub enum LoadingVariant {
+    #[default]
     Spinner,
     Dots,
     Ring,
@@ -26,24 +26,13 @@ pub enum LoadingVariant {
     Infinity,
 }
 
-impl Default for LoadingVariant {
-    fn default() -> Self {
-        LoadingVariant::Spinner
-    }
-}
-
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Default)]
 pub enum LoadingSize {
     Xs,
     Sm,
+    #[default]
     Md,
     Lg,
-}
-
-impl Default for LoadingSize {
-    fn default() -> Self {
-        LoadingSize::Md
-    }
 }
 
 #[component]
@@ -78,4 +67,3 @@ pub fn Loading(
         <span class=combined_class></span>
     }
 }
-

@@ -29,7 +29,7 @@ pub fn AuthorFilter(
             .unwrap()
             .value();
         set_selected_author.set(value.clone());
-        if let Some(callback) = on_change.clone() {
+        if let Some(callback) = on_change {
             callback.run(value);
         }
     };

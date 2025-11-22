@@ -3,7 +3,6 @@
     "main",
     "develop"
   ],
-  "git.branchProtectionPrompt": "alwaysPrompt",
   "git.confirmSync": true,
   "git.enableSmartCommit": false,
   "git.confirmEmptyCommits": true,

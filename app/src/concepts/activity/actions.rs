@@ -17,20 +17,19 @@
  *   ├─ Spec: ./activity.spec.md
  *   └─ Plan: docs/03_plans/continuum/legible-architecture-refactoring.md
  */
-
 use super::state::{Activity, ActivityState, ActivityType};
 use chrono::{DateTime, Utc};
 
 // Note: モックデータ生成のため、userとrepository conceptのinitialize関数を使用
 // これは初期化時のみの依存で、通常のアクションでは他のConceptを参照しない
-use crate::concepts::user::actions::initialize_mock_users;
 use crate::concepts::repository::actions::initialize_mock_repositories;
+use crate::concepts::user::actions::initialize_mock_users;
 
 /// Initialize mock activities for development/testing
 pub fn initialize_mock_activities() -> ActivityState {
     let users = initialize_mock_users().users;
     let repos = initialize_mock_repositories().repositories;
-    
+
     ActivityState {
         activities: vec![
             Activity {
@@ -39,7 +38,9 @@ pub fn initialize_mock_activities() -> ActivityState {
                 user: users[0].clone(),
                 repository: repos[0].clone(),
                 title: "Add new feature for async processing".to_string(),
-                created_at: DateTime::parse_from_rfc3339("2024-01-15T10:30:00Z").unwrap().with_timezone(&Utc),
+                created_at: DateTime::parse_from_rfc3339("2024-01-15T10:30:00Z")
+                    .unwrap()
+                    .with_timezone(&Utc),
                 url: "https://github.com/org/awesome-rust/commit/abc123".to_string(),
             },
             Activity {
@@ -48,7 +49,9 @@ pub fn initialize_mock_activities() -> ActivityState {
                 user: users[1].clone(),
                 repository: repos[1].clone(),
                 title: "Improve error handling".to_string(),
-                created_at: DateTime::parse_from_rfc3339("2024-01-14T15:20:00Z").unwrap().with_timezone(&Utc),
+                created_at: DateTime::parse_from_rfc3339("2024-01-14T15:20:00Z")
+                    .unwrap()
+                    .with_timezone(&Utc),
                 url: "https://github.com/org/web-framework/pull/42".to_string(),
             },
             Activity {
@@ -57,7 +60,9 @@ pub fn initialize_mock_activities() -> ActivityState {
                 user: users[2].clone(),
                 repository: repos[0].clone(),
                 title: "Reviewed PR #123".to_string(),
-                created_at: DateTime::parse_from_rfc3339("2024-01-14T11:15:00Z").unwrap().with_timezone(&Utc),
+                created_at: DateTime::parse_from_rfc3339("2024-01-14T11:15:00Z")
+                    .unwrap()
+                    .with_timezone(&Utc),
                 url: "https://github.com/org/awesome-rust/pull/123".to_string(),
             },
             Activity {
@@ -66,7 +71,9 @@ pub fn initialize_mock_activities() -> ActivityState {
                 user: users[3].clone(),
                 repository: repos[3].clone(),
                 title: "Fix memory leak in data processor".to_string(),
-                created_at: DateTime::parse_from_rfc3339("2024-01-13T09:15:00Z").unwrap().with_timezone(&Utc),
+                created_at: DateTime::parse_from_rfc3339("2024-01-13T09:15:00Z")
+                    .unwrap()
+                    .with_timezone(&Utc),
                 url: "https://github.com/org/data-processor/commit/def456".to_string(),
             },
             Activity {
@@ -75,7 +82,9 @@ pub fn initialize_mock_activities() -> ActivityState {
                 user: users[4].clone(),
                 repository: repos[2].clone(),
                 title: "Add new CLI command".to_string(),
-                created_at: DateTime::parse_from_rfc3339("2024-01-12T14:45:00Z").unwrap().with_timezone(&Utc),
+                created_at: DateTime::parse_from_rfc3339("2024-01-12T14:45:00Z")
+                    .unwrap()
+                    .with_timezone(&Utc),
                 url: "https://github.com/org/cli-tool/pull/56".to_string(),
             },
         ],
@@ -95,4 +104,3 @@ pub fn add_activity(state: ActivityState, activity: Activity) -> ActivityState {
 pub fn find_activity_by_id<'a>(state: &'a ActivityState, id: &'a str) -> Option<&'a Activity> {
     state.activities.iter().find(|a| a.id == id)
 }
-

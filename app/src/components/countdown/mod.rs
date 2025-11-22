@@ -25,7 +25,7 @@ pub fn Countdown(
     #[prop(optional, into)] class: String,
 ) -> impl IntoView {
     let (remaining_seconds, set_remaining_seconds) = signal(0i64);
-    let (is_complete, set_is_complete) = signal(false);
+    let (_is_complete, set_is_complete) = signal(false);
 
     let update_countdown = move || {
         #[cfg(feature = "hydrate")]
@@ -37,7 +37,7 @@ pub fn Countdown(
         if remaining <= 0 {
             set_remaining_seconds.set(0);
             set_is_complete.set(true);
-            if let Some(callback) = on_complete.clone() {
+            if let Some(callback) = on_complete {
                 callback.run(());
             }
         } else {

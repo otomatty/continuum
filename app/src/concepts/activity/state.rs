@@ -16,14 +16,13 @@
  *   ├─ Spec: ./activity.spec.md
  *   └─ Plan: docs/03_plans/continuum/legible-architecture-refactoring.md
  */
-
 use chrono::{DateTime, Utc};
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 // Note: User型とRepository型は他のConceptから参照するが、
 // Conceptの独立性を保つため、このファイルでは型定義のみを行い、ロジックは持たない
-use crate::concepts::user::state::User;
 use crate::concepts::repository::state::Repository;
+use crate::concepts::user::state::User;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum ActivityType {
@@ -49,4 +48,3 @@ pub struct Activity {
 pub struct ActivityState {
     pub activities: Vec<Activity>,
 }
-

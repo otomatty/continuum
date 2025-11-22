@@ -28,7 +28,7 @@ pub fn RelatedArticles(
                 view! {
                     <div class="space-y-4">
                         {articles.into_iter().map(|article| {
-                            let on_click_clone = on_click.clone();
+                            let on_click_clone = on_click;
                             if let Some(callback) = on_click_clone {
                                 view! {
                                     <KnowledgeCard

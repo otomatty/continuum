@@ -1,6 +1,10 @@
-use leptos::prelude::*;
-use crate::components::{card::{Card, CardBody}, badge::{Badge, BadgeVariant}, avatar::Avatar};
+use crate::components::{
+    avatar::Avatar,
+    badge::{Badge, BadgeVariant},
+    card::{Card, CardBody},
+};
 use crate::concepts::user::{User, UserRole};
+use leptos::prelude::*;
 
 /**
  * UserProfile Component
@@ -17,21 +21,19 @@ use crate::concepts::user::{User, UserRole};
  *   └─ app/src/concepts/user/mod.rs
  */
 #[component]
-pub fn UserProfile(
-    user: User,
-) -> impl IntoView {
+pub fn UserProfile(user: User) -> impl IntoView {
     let role_badge_variant = match user.role {
         UserRole::CurrentEmployee => BadgeVariant::Success,
         UserRole::Alumni => BadgeVariant::Info,
         UserRole::ExternalContributor => BadgeVariant::Accent,
     };
-    
+
     let role_label = match user.role {
         UserRole::CurrentEmployee => "Current Employee",
         UserRole::Alumni => "Alumni",
         UserRole::ExternalContributor => "External Contributor",
     };
-    
+
     view! {
         <Card>
             <CardBody>
@@ -66,4 +68,3 @@ pub fn UserProfile(
         </Card>
     }
 }
-

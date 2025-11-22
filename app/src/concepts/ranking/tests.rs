@@ -13,8 +13,8 @@
  * Related Documentation:
  *   └─ Spec: ./ranking.spec.md
  */
-
 #[cfg(test)]
+#[allow(clippy::module_inception)]
 mod tests {
     use super::super::actions::*;
     use super::super::state::*;
@@ -40,9 +40,9 @@ mod tests {
             score: 205,
             rank: 1,
         };
-        
+
         let result = add_ranking_entry(state, entry.clone());
-        
+
         assert_eq!(result.entries.len(), 1);
         assert_eq!(result.entries[0].commits, 10);
     }
@@ -74,7 +74,7 @@ mod tests {
             joined_at: None,
             left_at: None,
         };
-        
+
         let state = RankingState {
             entries: vec![
                 RankingEntry {
@@ -95,13 +95,12 @@ mod tests {
                 },
             ],
         };
-        
+
         let result = sort_by_score(state);
-        
+
         assert_eq!(result.entries[0].score, 245);
         assert_eq!(result.entries[0].rank, 1);
         assert_eq!(result.entries[1].score, 100);
         assert_eq!(result.entries[1].rank, 2);
     }
 }
-

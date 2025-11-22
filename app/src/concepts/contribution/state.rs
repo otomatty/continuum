@@ -18,15 +18,14 @@
  *   ├─ Spec: ./contribution.spec.md
  *   └─ Plan: docs/03_plans/continuum/legible-architecture-refactoring.md
  */
-
 use chrono::NaiveDate;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 // Note: User型、Repository型、Period型は他のConceptから参照するが、
 // Conceptの独立性を保つため、このファイルでは型定義のみを行い、ロジックは持たない
-use crate::concepts::user::state::User;
-use crate::concepts::repository::state::Repository;
 use crate::concepts::organization::state::Period;
+use crate::concepts::repository::state::Repository;
+use crate::concepts::user::state::User;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ContributionDay {
@@ -59,4 +58,3 @@ pub struct ContributionState {
     pub graphs: Vec<ContributionGraph>,
     pub repository_contributions: Vec<RepositoryContribution>,
 }
-

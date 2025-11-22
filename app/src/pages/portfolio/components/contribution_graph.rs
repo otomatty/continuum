@@ -1,7 +1,7 @@
-use leptos::prelude::*;
-use crate::components::card::{Card, CardTitle, CardBody};
+use crate::components::card::{Card, CardBody, CardTitle};
 use crate::concepts::contribution::ContributionGraph;
 use crate::concepts::organization::Period;
+use leptos::prelude::*;
 
 /**
  * ContributionGraph Component
@@ -17,13 +17,11 @@ use crate::concepts::organization::Period;
  *   └─ app/src/concepts/organization/mod.rs
  */
 #[component]
-pub fn ContributionGraph(
-    graph: ContributionGraph,
-) -> impl IntoView {
+pub fn ContributionGraph(graph: ContributionGraph) -> impl IntoView {
     let max_commits = graph.data.iter().map(|d| d.commits).max().unwrap_or(1) as f64;
     let max_prs = graph.data.iter().map(|d| d.prs).max().unwrap_or(1) as f64;
     let max_reviews = graph.data.iter().map(|d| d.reviews).max().unwrap_or(1) as f64;
-    
+
     view! {
         <Card>
             <CardTitle>
@@ -46,11 +44,11 @@ pub fn ContributionGraph(
                                     3 => "bg-green-600",
                                     _ => "bg-green-800",
                                 };
-                                
+
                                 view! {
-                                    <div 
+                                    <div
                                         class=format!("{} w-3 h-3 rounded-sm", bg_color)
-                                        title=format!("{}: {} commits, {} PRs, {} reviews", 
+                                        title=format!("{}: {} commits, {} PRs, {} reviews",
                                             day.date.format("%Y-%m-%d").to_string(),
                                             day.commits,
                                             day.prs,
@@ -77,4 +75,3 @@ pub fn ContributionGraph(
         </Card>
     }
 }
-

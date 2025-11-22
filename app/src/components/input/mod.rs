@@ -1,7 +1,7 @@
 use leptos::ev::InputEvent;
 use leptos::prelude::*;
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Default)]
 pub enum InputVariant {
     Primary,
     Secondary,
@@ -11,13 +11,8 @@ pub enum InputVariant {
     Warning,
     Info,
     Ghost,
+    #[default]
     Bordered,
-}
-
-impl Default for InputVariant {
-    fn default() -> Self {
-        InputVariant::Bordered
-    }
 }
 
 #[component]
@@ -53,10 +48,10 @@ pub fn Input(
     };
 
     let handle_input = move |ev: leptos::web_sys::Event| {
-        if let Some(cb) = on_input.clone() {
+        if let Some(cb) = on_input {
             use leptos::wasm_bindgen::JsCast;
             if let Ok(input_ev) = ev.dyn_into::<leptos::web_sys::InputEvent>() {
-                let leptos_input_ev = InputEvent::from(input_ev);
+                let leptos_input_ev = input_ev;
                 cb.run(leptos_input_ev);
             }
         }

@@ -40,7 +40,7 @@ pub fn CommentSection(
         <div class="space-y-4">
             <h3 class="text-2xl font-bold mb-4">"Comments"</h3>
             {comments.into_iter().map(|comment| {
-                let on_reply_clone = on_reply.clone();
+                let on_reply_clone = on_reply;
                 if let Some(callback) = on_reply_clone {
                     view! {
                         <CommentItem
@@ -69,7 +69,7 @@ fn CommentItem(
     depth: usize,
 ) -> impl IntoView {
     let handle_reply = move |_| {
-        if let Some(callback) = on_reply.clone() {
+        if let Some(callback) = on_reply {
             callback.run(comment.id.clone());
         }
     };
@@ -112,11 +112,11 @@ fn CommentItem(
                         </div>
                         {if !comment.replies.is_empty() {
                             let replies = comment.replies.clone();
-                            let on_reply_clone = on_reply.clone();
+                            let on_reply_clone = on_reply;
                             Some(view! {
                                 <div class="mt-4 space-y-2">
                                     {replies.into_iter().map(|reply| {
-                                        let on_reply_clone2 = on_reply_clone.clone();
+                                        let on_reply_clone2 = on_reply_clone;
                                         if let Some(callback) = on_reply_clone2 {
                                             view! {
                                                 <CommentItem

@@ -1,8 +1,9 @@
 use leptos::ev::InputEvent;
 use leptos::prelude::*;
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Default)]
 pub enum RangeVariant {
+    #[default]
     Primary,
     Secondary,
     Accent,
@@ -10,12 +11,6 @@ pub enum RangeVariant {
     Warning,
     Error,
     Info,
-}
-
-impl Default for RangeVariant {
-    fn default() -> Self {
-        RangeVariant::Primary
-    }
 }
 
 #[component]
@@ -45,10 +40,10 @@ pub fn Range(
     };
 
     let handle_input = move |ev: leptos::web_sys::Event| {
-        if let Some(cb) = on_input.clone() {
+        if let Some(cb) = on_input {
             use leptos::wasm_bindgen::JsCast;
             if let Ok(input_ev) = ev.dyn_into::<leptos::web_sys::InputEvent>() {
-                let leptos_input_ev = InputEvent::from(input_ev);
+                let leptos_input_ev = input_ev;
                 cb.run(leptos_input_ev);
             }
         }

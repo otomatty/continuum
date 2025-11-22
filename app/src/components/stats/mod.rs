@@ -13,14 +13,10 @@
  *   ├─ Spec: ./stats.spec.md
  *   └─ Module: ../mod.rs
  */
-
 use leptos::prelude::*;
 
 #[component]
-pub fn Stats(
-    #[prop(optional, into)] class: String,
-    children: Children,
-) -> impl IntoView {
+pub fn Stats(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
     let stats_class = if class.is_empty() {
         "stats shadow".to_string()
     } else {
@@ -35,10 +31,7 @@ pub fn Stats(
 }
 
 #[component]
-pub fn StatItem(
-    #[prop(optional, into)] class: String,
-    children: Children,
-) -> impl IntoView {
+pub fn StatItem(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
     let stat_class = if class.is_empty() {
         "stat".to_string()
     } else {
@@ -53,10 +46,7 @@ pub fn StatItem(
 }
 
 #[component]
-pub fn StatTitle(
-    #[prop(optional, into)] class: String,
-    children: Children,
-) -> impl IntoView {
+pub fn StatTitle(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
     let title_class = if class.is_empty() {
         "stat-title".to_string()
     } else {
@@ -71,10 +61,7 @@ pub fn StatTitle(
 }
 
 #[component]
-pub fn StatValue(
-    #[prop(optional, into)] class: String,
-    children: Children,
-) -> impl IntoView {
+pub fn StatValue(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
     let value_class = if class.is_empty() {
         "stat-value".to_string()
     } else {
@@ -89,10 +76,7 @@ pub fn StatValue(
 }
 
 #[component]
-pub fn StatDescription(
-    #[prop(optional, into)] class: String,
-    children: Children,
-) -> impl IntoView {
+pub fn StatDescription(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
     let desc_class = if class.is_empty() {
         "stat-desc".to_string()
     } else {
@@ -105,4 +89,3 @@ pub fn StatDescription(
         </div>
     }
 }
-

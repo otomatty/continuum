@@ -13,21 +13,15 @@
  *   ├─ Spec: ./tooltip.spec.md
  *   └─ Module: ../mod.rs
  */
-
 use leptos::prelude::*;
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Default)]
 pub enum TooltipPosition {
+    #[default]
     Top,
     Bottom,
     Left,
     Right,
-}
-
-impl Default for TooltipPosition {
-    fn default() -> Self {
-        TooltipPosition::Top
-    }
 }
 
 #[component]
@@ -56,4 +50,3 @@ pub fn Tooltip(
         </div>
     }
 }
-

@@ -111,6 +111,7 @@ pub fn PrivacySettings(
 }
 
 #[derive(Clone)]
+#[allow(dead_code)]
 pub struct PrivacyData {
     pub portfolio_visibility: PortfolioVisibility,
     pub show_activity: bool,

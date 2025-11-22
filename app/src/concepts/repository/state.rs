@@ -16,9 +16,8 @@
  *   ├─ Spec: ./repository.spec.md
  *   └─ Plan: docs/03_plans/continuum/legible-architecture-refactoring.md
  */
-
 use chrono::{DateTime, Utc};
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 // Note: User型はuser conceptから参照するが、Conceptの独立性を保つため、
 // このファイルでは型定義のみを行い、ロジックは持たない
@@ -46,4 +45,3 @@ pub struct Repository {
 pub struct RepositoryState {
     pub repositories: Vec<Repository>,
 }
-

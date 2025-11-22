@@ -13,7 +13,6 @@
  *   ├─ Spec: ./popover.spec.md
  *   └─ Module: ../mod.rs
  */
-
 use leptos::prelude::*;
 
 #[component]
@@ -38,7 +37,7 @@ pub fn Popover(
     };
 
     let handle_toggle = move |_| {
-        if let Some(callback) = on_toggle.clone() {
+        if let Some(callback) = on_toggle {
             callback.run(());
         }
     };
@@ -54,4 +53,3 @@ pub fn Popover(
         </div>
     }
 }
-

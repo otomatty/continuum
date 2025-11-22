@@ -16,16 +16,11 @@ use leptos::ev::MouseEvent;
  */
 use leptos::prelude::*;
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Default)]
 pub enum DropdownVariant {
     Hover,
+    #[default]
     Click,
-}
-
-impl Default for DropdownVariant {
-    fn default() -> Self {
-        DropdownVariant::Click
-    }
 }
 
 #[component]
@@ -76,10 +71,10 @@ pub fn DropdownButton(
         use_context::<Option<Callback<()>>>().expect("DropdownButton must be used within Dropdown");
 
     let handle_click = move |ev: MouseEvent| {
-        if let Some(callback) = on_toggle.clone() {
+        if let Some(callback) = on_toggle {
             callback.run(());
         }
-        if let Some(click_callback) = on_click.clone() {
+        if let Some(click_callback) = on_click {
             click_callback.run(ev);
         }
     };
@@ -129,7 +124,7 @@ pub fn DropdownItem(
     };
 
     let handle_click = move |ev: MouseEvent| {
-        if let Some(cb) = on_click.clone() {
+        if let Some(cb) = on_click {
             cb.run(ev);
         }
     };

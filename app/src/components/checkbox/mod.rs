@@ -1,8 +1,9 @@
 use leptos::ev::Event;
 use leptos::prelude::*;
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Default)]
 pub enum CheckboxVariant {
+    #[default]
     Primary,
     Secondary,
     Accent,
@@ -10,12 +11,6 @@ pub enum CheckboxVariant {
     Warning,
     Error,
     Info,
-}
-
-impl Default for CheckboxVariant {
-    fn default() -> Self {
-        CheckboxVariant::Primary
-    }
 }
 
 #[component]
@@ -42,7 +37,7 @@ pub fn Checkbox(
     };
 
     let handle_change = move |ev: leptos::web_sys::Event| {
-        if let Some(cb) = on_change.clone() {
+        if let Some(cb) = on_change {
             cb.run(ev);
         }
     };

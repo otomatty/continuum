@@ -13,8 +13,8 @@
  * Related Documentation:
  *   └─ Spec: ./organization.spec.md
  */
-
 #[cfg(test)]
+#[allow(clippy::module_inception)]
 mod tests {
     use super::super::actions::*;
     use super::super::state::*;
@@ -37,11 +37,10 @@ mod tests {
             total_commits: 100,
             period: Period::Monthly,
         };
-        
+
         let result = add_organization_stats(state, stats.clone());
-        
+
         assert_eq!(result.stats.len(), 1);
         assert_eq!(result.stats[0].total_contributors, 10);
     }
 }
-

@@ -17,8 +17,7 @@
  *   ├─ Spec: ./repository.spec.md
  *   └─ Plan: docs/03_plans/continuum/legible-architecture-refactoring.md
  */
-
-use super::state::{Repository, RepositoryState, ContributorStats};
+use super::state::{ContributorStats, Repository, RepositoryState};
 use chrono::{DateTime, Utc};
 use once_cell::sync::Lazy;
 
@@ -36,7 +35,9 @@ static MOCK_REPOSITORIES: Lazy<Vec<Repository>> = Lazy::new(|| {
             description: Some("A curated list of awesome Rust resources".to_string()),
             stars: 1250,
             language: Some("Rust".to_string()),
-            updated_at: DateTime::parse_from_rfc3339("2024-01-15T10:30:00Z").unwrap().with_timezone(&Utc),
+            updated_at: DateTime::parse_from_rfc3339("2024-01-15T10:30:00Z")
+                .unwrap()
+                .with_timezone(&Utc),
             contributors: vec![
                 ContributorStats {
                     user: users[0].clone(),
@@ -56,7 +57,9 @@ static MOCK_REPOSITORIES: Lazy<Vec<Repository>> = Lazy::new(|| {
             description: Some("Modern web framework built with Rust".to_string()),
             stars: 890,
             language: Some("Rust".to_string()),
-            updated_at: DateTime::parse_from_rfc3339("2024-01-14T15:20:00Z").unwrap().with_timezone(&Utc),
+            updated_at: DateTime::parse_from_rfc3339("2024-01-14T15:20:00Z")
+                .unwrap()
+                .with_timezone(&Utc),
             contributors: vec![
                 ContributorStats {
                     user: users[1].clone(),
@@ -76,7 +79,9 @@ static MOCK_REPOSITORIES: Lazy<Vec<Repository>> = Lazy::new(|| {
             description: Some("Command-line tool for developers".to_string()),
             stars: 456,
             language: Some("Rust".to_string()),
-            updated_at: DateTime::parse_from_rfc3339("2024-01-13T09:15:00Z").unwrap().with_timezone(&Utc),
+            updated_at: DateTime::parse_from_rfc3339("2024-01-13T09:15:00Z")
+                .unwrap()
+                .with_timezone(&Utc),
             contributors: vec![
                 ContributorStats {
                     user: users[0].clone(),
@@ -96,7 +101,9 @@ static MOCK_REPOSITORIES: Lazy<Vec<Repository>> = Lazy::new(|| {
             description: Some("High-performance data processing library".to_string()),
             stars: 234,
             language: Some("Rust".to_string()),
-            updated_at: DateTime::parse_from_rfc3339("2024-01-12T14:45:00Z").unwrap().with_timezone(&Utc),
+            updated_at: DateTime::parse_from_rfc3339("2024-01-12T14:45:00Z")
+                .unwrap()
+                .with_timezone(&Utc),
             contributors: vec![
                 ContributorStats {
                     user: users[3].clone(),
@@ -130,7 +137,9 @@ pub fn add_repository(state: RepositoryState, repository: Repository) -> Reposit
 }
 
 /// Find a repository by name
-pub fn find_repository_by_name<'a>(state: &'a RepositoryState, name: &'a str) -> Option<&'a Repository> {
+pub fn find_repository_by_name<'a>(
+    state: &'a RepositoryState,
+    name: &'a str,
+) -> Option<&'a Repository> {
     state.repositories.iter().find(|r| r.name == name)
 }
-

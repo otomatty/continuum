@@ -13,8 +13,8 @@
  * Related Documentation:
  *   └─ Spec: ./contribution.spec.md
  */
-
 #[cfg(test)]
+#[allow(clippy::module_inception)]
 mod tests {
     use super::super::actions::*;
     use super::super::state::*;
@@ -44,11 +44,10 @@ mod tests {
             data: vec![],
             period: Period::Weekly,
         };
-        
+
         let result = add_contribution_graph(state, graph.clone());
-        
+
         assert_eq!(result.graphs.len(), 1);
         assert_eq!(result.graphs[0].user.username, user.username);
     }
 }
-
