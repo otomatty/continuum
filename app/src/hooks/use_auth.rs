@@ -58,7 +58,6 @@ pub fn extract_auth_status_from_cookie(cookie_value: Option<&str>) -> AuthStatus
     }
 }
 
-#[cfg(feature = "ssr")]
 #[server(GetAuthStatus, "/api/auth/status")]
 pub async fn get_auth_status() -> Result<AuthStatus, ServerFnError> {
     // NOTE: Leptos Server Functions cannot directly access PrivateCookieJar
@@ -127,10 +126,10 @@ pub fn provide_auth_context(initial_status: Option<AuthStatus>) -> AuthContext {
     let (status, set_status) = signal(initial_status.clone());
 
     #[cfg(target_arch = "wasm32")]
-    let (cached_status, set_cached_status) = signal(initial_status.clone());
+    let cached_status = RwSignal::new(initial_status.clone());
 
     #[cfg(target_arch = "wasm32")]
-    let (cache_timestamp, set_cache_timestamp) = signal({
+    let cache_timestamp = RwSignal::new({
         if initial_status.is_some() {
             Some(get_current_timestamp())
         } else {
@@ -157,17 +156,10 @@ pub fn provide_auth_context(initial_status: Option<AuthStatus>) -> AuthContext {
 #[cfg(target_arch = "wasm32")]
 fn get_current_timestamp() -> u64 {
     use js_sys::Date;
-    use wasm_bindgen::JsCast;
-    use web_sys::window;
 
-    if let Some(window) = window() {
-        let date = Date::new_0();
-        let timestamp_ms = date.get_time();
-        return (timestamp_ms / 1000.0) as u64;
-    }
-
-    // Fallback: return 0 if we can't get timestamp
-    0
+    let date = Date::new_0();
+    let timestamp_ms = date.get_time();
+    (timestamp_ms / 1000.0) as u64
 }
 
 /// Check if cache is still valid (within 5 minutes)
@@ -185,6 +177,7 @@ fn is_cache_valid(timestamp: Option<u64>) -> bool {
 /// Refresh auth status from server if cache is expired
 #[cfg(target_arch = "wasm32")]
 pub async fn refresh_auth_status_if_needed(context: &AuthContext) -> Result<(), ServerFnError> {
+    use super::get_auth_status;
     use leptos::prelude::ServerFnError;
 
     let should_refresh = {
@@ -223,10 +216,9 @@ pub fn clear_auth_cache(context: &AuthContext) {
 /// This should be called on the client side after hydration
 #[cfg(target_arch = "wasm32")]
 pub fn read_auth_status_from_html() -> Option<AuthStatus> {
-    use wasm_bindgen::JsCast;
     use web_sys::window;
 
-    if let Some(window) = window() {
+    if let Some(_window) = window() {
         if let Some(document) = window.document() {
             if let Some(html_element) = document.document_element() {
                 if let Some(auth_status_attr) = html_element.get_attribute("data-auth-status") {

@@ -36,7 +36,6 @@ pub fn GitHubLoginButton(
     let dashboard_handler = move |_ev: MouseEvent| {
         #[cfg(target_arch = "wasm32")]
         {
-            use wasm_bindgen::JsCast;
             use web_sys::window;
 
             if let Some(window) = window() {
@@ -61,7 +60,6 @@ pub fn GitHubLoginButton(
     let login_callback = Callback::new(move |_ev: MouseEvent| {
         #[cfg(target_arch = "wasm32")]
         {
-            use wasm_bindgen::JsCast;
             use web_sys::window;
 
             if let Some(window) = window() {
@@ -113,13 +111,18 @@ pub fn GitHubLoginButton(
                 }
             }
         >
-            <Button
-                variant=ButtonVariant::Primary
-                class=combined_class.clone()
-                on_click=authenticated_callback
-            >
-                "ダッシュボードへ"
-            </Button>
+            {
+                let class = combined_class.clone();
+                view! {
+                    <Button
+                        variant=ButtonVariant::Primary
+                        class=class
+                        on_click=authenticated_callback
+                    >
+                        "ダッシュボードへ"
+                    </Button>
+                }
+            }
         </Show>
     }
 }

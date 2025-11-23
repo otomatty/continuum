@@ -12,7 +12,6 @@ use crate::hooks::AuthStatus;
  *   ├─ Spec: docs/01_issues/open/2025_11/20251123_01_authentication-state-management.md
  *   └─ Issue: https://github.com/otomatty/continuum/issues/13
  */
-
 /// Check if the user is authenticated based on auth status
 ///
 /// # Arguments
@@ -23,8 +22,8 @@ use crate::hooks::AuthStatus;
 ///
 /// # Examples
 /// ```
-/// use crate::hooks::AuthStatus;
-/// use crate::components::github_login_button::utils::is_authenticated;
+/// use app::hooks::AuthStatus;
+/// use app::components::github_login_button::is_authenticated;
 ///
 /// let authenticated = AuthStatus {
 ///     authenticated: true,

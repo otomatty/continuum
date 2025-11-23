@@ -129,6 +129,8 @@ mod tests {
         // Note: LEPTOS_SITE_ADDR is optional and defaults to "127.0.0.1:3000"
         // We test that the default is used when not set
         env::remove_var("LEPTOS_SITE_ADDR");
+        // Ensure ENV is set to TEST - remove first to avoid any existing value
+        env::remove_var("ENV");
         env::set_var("ENV", "TEST");
 
         // Force reload of .env file (or lack thereof)
@@ -219,6 +221,10 @@ mod tests {
         // We need to handle the case where dotenv might have loaded values
         // Since we can't unload dotenv, we might need to skip this test if it fails due to env vars
         // But for unit testing purposes, we should be running in an environment without .env file ideally
+
+        // Ensure ENV is removed right before calling Config::from_env()
+        // to avoid any interference from parallel test execution
+        env::remove_var("ENV");
 
         match Config::from_env() {
             Ok(config) => {
