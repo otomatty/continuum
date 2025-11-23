@@ -6,6 +6,9 @@ use leptos::prelude::*;
 #[cfg(test)]
 mod tests;
 
+mod utils;
+pub use utils::{get_dashboard_url, get_login_url, is_authenticated};
+
 /**
  * GitHubLoginButton Component
  *
@@ -37,7 +40,7 @@ pub fn GitHubLoginButton(
             use web_sys::window;
 
             if let Some(window) = window() {
-                let _ = window.location().set_href("/dashboard");
+                let _ = window.location().set_href(utils::get_dashboard_url());
             }
         }
         #[cfg(not(target_arch = "wasm32"))]
@@ -62,7 +65,7 @@ pub fn GitHubLoginButton(
             use web_sys::window;
 
             if let Some(window) = window() {
-                let _ = window.location().set_href("/auth/login");
+                let _ = window.location().set_href(utils::get_login_url());
             }
         }
         #[cfg(not(target_arch = "wasm32"))]
@@ -78,7 +81,8 @@ pub fn GitHubLoginButton(
 
     // Create a closure for the when condition - defined outside view! macro
     // ReadSignal is Copy, so we can use move safely
-    let is_authenticated = move || auth_status.get().map(|s| s.authenticated).unwrap_or(false);
+    // This closure takes no arguments as required by Show component's when prop
+    let is_authenticated_closure = move || utils::is_authenticated(auth_status.get());
 
     // Clone values for fallback - clone before move closure to ensure Fn instead of FnOnce
     let fallback_class = combined_class.clone();
@@ -86,7 +90,7 @@ pub fn GitHubLoginButton(
 
     view! {
         <Show
-            when=is_authenticated
+            when=is_authenticated_closure
             fallback=move || {
                 let class = fallback_class.clone();
                 let btn_text = fallback_text.clone();
