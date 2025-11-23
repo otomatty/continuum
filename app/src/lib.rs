@@ -4,9 +4,11 @@ pub mod pages;
 // pub mod mock; // Removed: mock module not found
 pub mod concepts;
 pub mod synchronizations;
+pub mod hooks;
 
 use components::header::{AuthenticatedHeader, PublicHeader};
 use concepts::theme::{Theme, ThemeState};
+use hooks::AuthStatus;
 use leptos::prelude::*;
 use leptos_meta::{provide_meta_context, MetaTags, Stylesheet, Title};
 use leptos_router::{
@@ -51,9 +53,38 @@ fn save_theme_to_storage(theme: Theme) {
 }
 
 pub fn shell(options: LeptosOptions) -> impl IntoView {
+    // Get auth status from cookies (SSR only)
+    // Note: In Leptos shell function, we cannot directly access cookies synchronously
+    // The auth status will be retrieved client-side from the data attribute
+    // For SSR, we'll use a placeholder that will be replaced by client-side code
+    #[cfg(feature = "ssr")]
+    let auth_status = {
+        // Default to unauthenticated in shell function
+        // The actual auth status will be set via Server Function on client-side
+        AuthStatus {
+            authenticated: false,
+            user_id: None,
+        }
+    };
+    
+    #[cfg(not(feature = "ssr"))]
+    let auth_status = AuthStatus {
+        authenticated: false,
+        user_id: None,
+    };
+    
+    // Serialize auth status to JSON for embedding in HTML
+    let auth_status_json = serde_json::to_string(&auth_status).unwrap_or_else(|_| {
+        serde_json::to_string(&AuthStatus {
+            authenticated: false,
+            user_id: None,
+        })
+        .unwrap()
+    });
+    
     view! {
         <!DOCTYPE html>
-        <html lang="en">
+        <html lang="en" data-auth-status=auth_status_json>
             <head>
                 <meta charset="utf-8"/>
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
