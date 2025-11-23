@@ -19,98 +19,28 @@ pub use section_title::SectionTitle;
  *   └─ Spec: ./heading.spec.md
  */
 
-#[component]
-pub fn Heading1(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
-    let default_class = "text-4xl md:text-5xl lg:text-6xl font-bold";
-    let combined_class = if class.is_empty() {
-        default_class.to_string()
-    } else {
-        format!("{} {}", default_class, class)
-    };
+macro_rules! make_heading {
+    ($name:ident, $tag:ident, $default_class:literal) => {
+        #[component]
+        pub fn $name(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
+            let combined_class = if class.is_empty() {
+                $default_class.to_string()
+            } else {
+                format!("{} {}", $default_class, class)
+            };
 
-    view! {
-        <h1 class=combined_class>
-            {children()}
-        </h1>
-    }
+            view! {
+                <$tag class=combined_class>
+                    {children()}
+                </$tag>
+            }
+        }
+    };
 }
 
-#[component]
-pub fn Heading2(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
-    let default_class = "text-3xl font-bold";
-    let combined_class = if class.is_empty() {
-        default_class.to_string()
-    } else {
-        format!("{} {}", default_class, class)
-    };
-
-    view! {
-        <h2 class=combined_class>
-            {children()}
-        </h2>
-    }
-}
-
-#[component]
-pub fn Heading3(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
-    let default_class = "text-2xl font-bold";
-    let combined_class = if class.is_empty() {
-        default_class.to_string()
-    } else {
-        format!("{} {}", default_class, class)
-    };
-
-    view! {
-        <h3 class=combined_class>
-            {children()}
-        </h3>
-    }
-}
-
-#[component]
-pub fn Heading4(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
-    let default_class = "text-xl font-semibold";
-    let combined_class = if class.is_empty() {
-        default_class.to_string()
-    } else {
-        format!("{} {}", default_class, class)
-    };
-
-    view! {
-        <h4 class=combined_class>
-            {children()}
-        </h4>
-    }
-}
-
-#[component]
-pub fn Heading5(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
-    let default_class = "text-lg font-semibold";
-    let combined_class = if class.is_empty() {
-        default_class.to_string()
-    } else {
-        format!("{} {}", default_class, class)
-    };
-
-    view! {
-        <h5 class=combined_class>
-            {children()}
-        </h5>
-    }
-}
-
-#[component]
-pub fn Heading6(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
-    let default_class = "text-base font-semibold";
-    let combined_class = if class.is_empty() {
-        default_class.to_string()
-    } else {
-        format!("{} {}", default_class, class)
-    };
-
-    view! {
-        <h6 class=combined_class>
-            {children()}
-        </h6>
-    }
-}
+make_heading!(Heading1, h1, "text-4xl md:text-5xl lg:text-6xl font-bold");
+make_heading!(Heading2, h2, "text-3xl font-bold");
+make_heading!(Heading3, h3, "text-2xl font-bold");
+make_heading!(Heading4, h4, "text-xl font-semibold");
+make_heading!(Heading5, h5, "text-lg font-semibold");
+make_heading!(Heading6, h6, "text-base font-semibold");

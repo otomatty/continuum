@@ -24,9 +24,9 @@ use leptos::prelude::*;
 #[component]
 pub fn Container(#[prop(optional, into)] class: String, children: Children) -> impl IntoView {
     let container_class = if class.is_empty() {
-        "container max-w-5xl mx-auto px-4 md:px-6 lg:px-8".to_string()
+        "container max-w-7xl mx-auto px-4 md:px-6 lg:px-8".to_string()
     } else {
-        format!("container max-w-5xl mx-auto px-4 md:px-6 lg:px-8 {}", class)
+        format!("container max-w-7xl mx-auto px-4 md:px-6 lg:px-8 {}", class)
     };
 
     view! {

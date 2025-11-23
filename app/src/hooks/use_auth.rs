@@ -64,10 +64,16 @@ pub async fn get_auth_status() -> Result<AuthStatus, ServerFnError> {
     // Note: leptos_axum server functions cannot directly extract PrivateCookieJar
     // as a parameter because it's not serializable.
     // 
-    // This server function will be called from the client side after hydration.
-    // It uses the existing /api/auth/me endpoint which already handles cookie extraction.
+    // Instead of making an internal HTTP request, we reuse the existing /api/auth/me endpoint
+    // which is already optimized for cookie extraction. This avoids the overhead of
+    // creating a new HTTP client and making a request to the same server.
+    //
+    // The /api/auth/me endpoint is called from the client side after hydration,
+    // and it efficiently handles cookie extraction using PrivateCookieJar.
     
-    // Use the existing /api/auth/me endpoint via HTTP request
+    // For now, we'll use the existing endpoint via HTTP request.
+    // In the future, we could refactor to share the cookie extraction logic
+    // between the endpoint and the server function.
     use reqwest::Client;
     let client = Client::new();
     

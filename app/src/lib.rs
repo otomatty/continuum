@@ -23,7 +23,7 @@ use pages::{ComponentsPage, DashboardPage, HomePage, KnowledgePage, PortfolioPag
 use web_sys::window;
 
 #[cfg(target_arch = "wasm32")]
-const THEME_STORAGE_KEY: &str = "continuum-theme";
+const THEME_STORAGE_KEY: &str = "continuum_v1_theme";
 
 #[cfg(target_arch = "wasm32")]
 fn get_theme_from_storage() -> Option<Theme> {

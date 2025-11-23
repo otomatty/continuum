@@ -24,53 +24,20 @@ use leptos::prelude::*;
 pub fn HomePage() -> impl IntoView {
     #[cfg(feature = "hydrate")]
     {
-        // Check authentication status and redirect if authenticated
+        // Check authentication status and redirect if authenticated using use_auth hook
+        use crate::hooks::use_auth;
         use wasm_bindgen::JsCast;
-        use wasm_bindgen_futures::spawn_local;
+        use web_sys::window;
 
-        spawn_local(async move {
-            let window = match web_sys::window() {
-                Some(w) => w,
-                None => return,
-            };
+        let auth = use_auth();
 
-            let response_promise = window.fetch_with_str("/api/auth/me");
-            let resp_value = match wasm_bindgen_futures::JsFuture::from(response_promise).await {
-                Ok(v) => v,
-                Err(_) => return,
-            };
-
-            let resp: web_sys::Response = match resp_value.dyn_into() {
-                Ok(r) => r,
-                Err(_) => return,
-            };
-
-            if resp.status() != 200 {
-                return;
-            }
-
-            let json_promise = match resp.json() {
-                Ok(p) => p,
-                Err(_) => return,
-            };
-
-            let json_value = match wasm_bindgen_futures::JsFuture::from(json_promise).await {
-                Ok(v) => v,
-                Err(_) => return,
-            };
-
-            let json_str = match js_sys::JSON::stringify(&json_value) {
-                Ok(s) => s,
-                Err(_) => return,
-            };
-
-            let json_str = match json_str.as_string() {
-                Some(s) => s,
-                None => return,
-            };
-
-            if json_str.contains("\"authenticated\":true") {
-                let _ = window.location().set_href("/dashboard");
+        Effect::new(move |_| {
+            if let Some(status) = auth.status.get() {
+                if status.authenticated {
+                    if let Some(window) = window() {
+                        let _ = window.location().set_href("/dashboard");
+                    }
+                }
             }
         });
     }

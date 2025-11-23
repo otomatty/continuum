@@ -113,9 +113,9 @@ mod tests {
             
             let invalid_json2 = r#"{"invalid": "structure"}"#;
             let result2 = Session::from_cookie_value(invalid_json2);
-            // This might succeed in parsing but fail validation, or fail parsing
-            // The important thing is that the server function handles it gracefully
-            assert!(result2.is_err() || result2.is_ok());
+            // Invalid JSON structure should fail parsing
+            // Session requires user_id, access_token, and expires_at fields
+            assert!(result2.is_err());
         }
     }
 
