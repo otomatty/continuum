@@ -1,12 +1,10 @@
 #[cfg(test)]
 mod tests {
-    use crate::components::github_login_button::GitHubLoginButton;
     use crate::hooks::AuthStatus;
-    use leptos::prelude::*;
 
     // Note: Component tests require Leptos runtime and DOM, so these are integration tests
     // For unit tests, we test the data structures and logic separately
-    
+
     #[test]
     fn test_tc009_authenticated_button_text() {
         // TC-009: 認証済みの場合、「ダッシュボードへ」ボタンが表示される
@@ -15,7 +13,7 @@ mod tests {
             authenticated: true,
             user_id: Some("user123".to_string()),
         };
-        
+
         // Verify authenticated status
         assert!(auth_status.authenticated);
         assert_eq!(auth_status.user_id, Some("user123".to_string()));
@@ -29,7 +27,7 @@ mod tests {
             authenticated: false,
             user_id: None,
         };
-        
+
         // Verify unauthenticated status
         assert!(!auth_status.authenticated);
         assert_eq!(auth_status.user_id, None);
@@ -43,24 +41,23 @@ mod tests {
             authenticated: false,
             user_id: None,
         };
-        
+
         // Simulate authentication
         auth_status = AuthStatus {
             authenticated: true,
             user_id: Some("user123".to_string()),
         };
-        
+
         assert!(auth_status.authenticated);
         assert_eq!(auth_status.user_id, Some("user123".to_string()));
-        
+
         // Simulate logout
         auth_status = AuthStatus {
             authenticated: false,
             user_id: None,
         };
-        
+
         assert!(!auth_status.authenticated);
         assert_eq!(auth_status.user_id, None);
     }
 }
-

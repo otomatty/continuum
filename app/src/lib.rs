@@ -3,8 +3,8 @@ pub mod github;
 pub mod pages;
 // pub mod mock; // Removed: mock module not found
 pub mod concepts;
-pub mod synchronizations;
 pub mod hooks;
+pub mod synchronizations;
 
 use components::header::{AuthenticatedHeader, PublicHeader};
 use concepts::theme::{Theme, ThemeState};
@@ -69,13 +69,13 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
             user_id: None,
         }
     };
-    
+
     #[cfg(not(feature = "ssr"))]
     let auth_status = AuthStatus {
         authenticated: false,
         user_id: None,
     };
-    
+
     // Serialize auth status to JSON for embedding in HTML
     let auth_status_json = serde_json::to_string(&auth_status).unwrap_or_else(|_| {
         serde_json::to_string(&AuthStatus {
@@ -84,7 +84,7 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
         })
         .unwrap()
     });
-    
+
     view! {
         <!DOCTYPE html>
         <html lang="en" data-auth-status=auth_status_json>
@@ -113,10 +113,10 @@ pub fn App() -> impl IntoView {
         use crate::hooks::read_auth_status_from_html;
         read_auth_status_from_html()
     };
-    
+
     #[cfg(not(target_arch = "wasm32"))]
     let initial_auth_status = None::<crate::hooks::AuthStatus>;
-    
+
     let _auth_context = crate::hooks::provide_auth_context(initial_auth_status);
 
     // Initialize theme state - load from localStorage if available (client-side only)
