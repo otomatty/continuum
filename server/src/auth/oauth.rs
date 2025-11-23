@@ -7,7 +7,7 @@ use axum::{
     extract::{Query, State},
     response::{IntoResponse, Redirect},
     routing::get,
-    Router,
+    Json, Router,
 };
 use axum_extra::extract::cookie::Cookie;
 use axum_extra::extract::cookie::PrivateCookieJar;
@@ -16,7 +16,7 @@ use oauth2::{
     basic::BasicClient, reqwest::async_http_client, AuthUrl, AuthorizationCode, ClientId,
     ClientSecret, CsrfToken, RedirectUrl, Scope, TokenResponse, TokenUrl,
 };
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone)]
 pub struct AuthState {
@@ -29,11 +29,18 @@ pub struct AuthRequest {
     state: String,
 }
 
+#[derive(Debug, Serialize)]
+pub struct AuthStatus {
+    authenticated: bool,
+    user_id: Option<String>,
+}
+
 pub fn auth_routes() -> Router<AppState> {
     Router::new()
         .route("/auth/login", get(login))
         .route("/auth/callback", get(callback))
         .route("/auth/logout", get(logout))
+        .route("/api/auth/me", get(check_auth_status))
 }
 
 pub fn create_auth_state(config: &Config) -> AuthState {
@@ -119,7 +126,8 @@ async fn callback(
 
                             match create_session_cookie(&session, secure, duration_secs) {
                                 Ok(cookie) => {
-                                    return (jar.add(cookie), Redirect::to("/")).into_response();
+                                    return (jar.add(cookie), Redirect::to("/dashboard"))
+                                        .into_response();
                                 }
                                 Err(e) => {
                                     log!("Failed to create session cookie: {}", e);
@@ -147,4 +155,22 @@ async fn callback(
 async fn logout(State(state): State<AppState>, jar: PrivateCookieJar) -> impl IntoResponse {
     let secure = state.config.server.env != "DEV";
     (jar.add(create_logout_cookie(secure)), Redirect::to("/"))
+}
+
+async fn check_auth_status(jar: PrivateCookieJar) -> impl IntoResponse {
+    if let Some(cookie) = jar.get("session") {
+        if let Ok(session) = Session::from_cookie_value(cookie.value()) {
+            if !session.is_expired() {
+                return Json(AuthStatus {
+                    authenticated: true,
+                    user_id: Some(session.user_id),
+                });
+            }
+        }
+    }
+
+    Json(AuthStatus {
+        authenticated: false,
+        user_id: None,
+    })
 }

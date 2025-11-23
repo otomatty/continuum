@@ -4,7 +4,7 @@
  * DEPENDENCY MAP:
  *
  * Parents (Files that import this Component):
- *   └─ (To be added when used)
+ *   └─ app/src/pages/home/components/cta_section.rs
  *
  * Dependencies (External files that this Component imports):
  *   └─ leptos::prelude

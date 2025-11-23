@@ -3,6 +3,7 @@ pub mod contribution;
 pub mod organization;
 pub mod ranking;
 pub mod repository;
+pub mod theme;
 /**
  * Concepts Module
  *
@@ -17,7 +18,8 @@ pub mod repository;
  *   ├─ activity
  *   ├─ organization
  *   ├─ ranking
- *   └─ contribution
+ *   ├─ contribution
+ *   └─ theme
  *
  * Related Documentation:
  *   └─ docs/00_prompts/legible-architecture.md

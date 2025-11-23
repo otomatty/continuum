@@ -16,7 +16,7 @@ use leptos::prelude::*;
 pub fn ValuePropositionCard(
     title: String,
     description: String,
-    #[prop(optional)] icon: Option<String>,
+    #[prop(optional, into)] icon: Option<String>,
 ) -> impl IntoView {
     view! {
         <Card class="h-full">
