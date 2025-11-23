@@ -1,4 +1,5 @@
 #[cfg(test)]
+#[allow(clippy::module_inception)]
 mod tests {
     use crate::hooks::AuthStatus;
     use serde_json;
@@ -137,7 +138,7 @@ mod tests {
         // Verify AuthStatus can be used in Option
         let opt_status = Some(status.clone());
         assert!(opt_status.is_some());
-        assert_eq!(opt_status.unwrap().authenticated, true);
+        assert!(opt_status.as_ref().unwrap().authenticated);
     }
 
     #[test]
@@ -146,13 +147,8 @@ mod tests {
         // This test verifies the data structure supports updates
         use crate::hooks::AuthStatus;
 
-        let mut status = AuthStatus {
-            authenticated: false,
-            user_id: None,
-        };
-
         // Simulate status update
-        status = AuthStatus {
+        let status = AuthStatus {
             authenticated: true,
             user_id: Some("user123".to_string()),
         };
@@ -187,7 +183,7 @@ mod tests {
     fn test_tc012_cache_duration_logic() {
         // TC-012: キャッシュ期間内の場合、追加のAPI呼び出しを行わない
         // This test verifies the cache duration calculation logic
-        use std::time::{Duration, SystemTime, UNIX_EPOCH};
+        use std::time::{Duration, SystemTime};
 
         let cache_duration = Duration::from_secs(300); // 5 minutes
         let now = SystemTime::now();
@@ -203,7 +199,7 @@ mod tests {
     fn test_tc013_cache_expiration_logic() {
         // TC-013: キャッシュ期間を過ぎた場合、再検証が行われる
         // This test verifies the cache expiration logic
-        use std::time::{Duration, SystemTime, UNIX_EPOCH};
+        use std::time::{Duration, SystemTime};
 
         let cache_duration = Duration::from_secs(300); // 5 minutes
         let now = SystemTime::now();
@@ -249,7 +245,7 @@ mod tests {
         let initial_status = Some(ssr_status.clone());
         assert!(initial_status.is_some());
         if let Some(status) = &initial_status {
-            assert_eq!(status.authenticated, true);
+            assert!(status.authenticated);
             assert_eq!(status.user_id, Some("user123".to_string()));
         }
     }

@@ -198,7 +198,7 @@ fn AppHeader() -> impl IntoView {
     let path = move || location.pathname.get();
 
     // 認証が必要なページのリスト
-    let authenticated_paths = vec![
+    let authenticated_paths = [
         "/dashboard",
         "/portfolio",
         "/knowledge",

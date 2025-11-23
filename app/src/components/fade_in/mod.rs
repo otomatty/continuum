@@ -39,15 +39,12 @@ pub fn FadeIn(
         )));
 
         let effect_closure = SendWrapper({
-            let node_ref = node_ref.clone();
-            let set_is_visible = set_is_visible.clone();
             let observer_rc = observer_rc.clone();
             let closure_rc = closure_rc.clone();
 
             move |_| {
                 if let Some(element) = node_ref.get() {
                     let element: &web_sys::Element = element.as_ref();
-                    let set_is_visible = set_is_visible.clone();
 
                     // SAFETY: In WASM, Closure is safe to use even though it contains *mut u8
                     // because WASM is single-threaded. We wrap it to assert Send safety.

@@ -1,4 +1,5 @@
 #[cfg(test)]
+#[allow(clippy::module_inception)]
 mod tests {
     use crate::hooks::AuthStatus;
 
@@ -37,27 +38,22 @@ mod tests {
     fn test_tc011_auth_status_change() {
         // TC-011: 認証状態が変更された場合、ボタンの表示が切り替わる
         // This test verifies the data structure supports status changes
-        let mut auth_status = AuthStatus {
-            authenticated: false,
-            user_id: None,
-        };
-
         // Simulate authentication
-        auth_status = AuthStatus {
+        let authenticated_status = AuthStatus {
             authenticated: true,
             user_id: Some("user123".to_string()),
         };
 
-        assert!(auth_status.authenticated);
-        assert_eq!(auth_status.user_id, Some("user123".to_string()));
+        assert!(authenticated_status.authenticated);
+        assert_eq!(authenticated_status.user_id, Some("user123".to_string()));
 
         // Simulate logout
-        auth_status = AuthStatus {
+        let unauthenticated_status = AuthStatus {
             authenticated: false,
             user_id: None,
         };
 
-        assert!(!auth_status.authenticated);
-        assert_eq!(auth_status.user_id, None);
+        assert!(!unauthenticated_status.authenticated);
+        assert_eq!(unauthenticated_status.user_id, None);
     }
 }

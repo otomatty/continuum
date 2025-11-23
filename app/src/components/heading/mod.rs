@@ -18,7 +18,6 @@ pub use section_title::SectionTitle;
  * Related Documentation:
  *   └─ Spec: ./heading.spec.md
  */
-
 macro_rules! make_heading {
     ($name:ident, $tag:ident, $default_class:literal) => {
         #[component]

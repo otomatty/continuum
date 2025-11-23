@@ -86,8 +86,9 @@ pub async fn get_auth_status() -> Result<AuthStatus, ServerFnError> {
     let base_url =
         std::env::var("LEPTOS_SITE_ADDR").unwrap_or_else(|_| "http://localhost:3000".to_string());
 
+    let url = format!("{}/api/auth/me", base_url);
     let response = client
-        .get(&format!("{}/api/auth/me", base_url))
+        .get(&url)
         .send()
         .await
         .map_err(|e| ServerFnError::new(format!("Failed to fetch auth status: {}", e)))?;

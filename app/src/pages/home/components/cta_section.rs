@@ -18,7 +18,7 @@ use leptos::prelude::*;
  *   └─ app/src/components/github_login_button/mod.rs
  */
 #[component]
-pub fn CTASection(headline: String, subheadline: String, button_text: String) -> impl IntoView {
+pub fn CTASection(headline: String, subheadline: String) -> impl IntoView {
     view! {
         <Hero class="bg-gradient-to-br from-base-200 to-base-300 py-20 md:py-32">
             <HeroContent class="text-center">

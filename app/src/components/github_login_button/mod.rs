@@ -73,9 +73,6 @@ pub fn GitHubLoginButton(
 
     let authenticated_callback = Callback::new(dashboard_handler);
 
-    // Clone values before using in view to avoid FnOnce
-    let authenticated_callback_clone = authenticated_callback.clone();
-
     // Clone auth status before using in closure to ensure Fn instead of FnOnce
     let auth_status = auth.status;
 
@@ -85,7 +82,6 @@ pub fn GitHubLoginButton(
 
     // Clone values for fallback - clone before move closure to ensure Fn instead of FnOnce
     let fallback_class = combined_class.clone();
-    let fallback_callback = login_callback.clone();
     let fallback_text = text.clone();
 
     view! {
@@ -93,13 +89,12 @@ pub fn GitHubLoginButton(
             when=is_authenticated
             fallback=move || {
                 let class = fallback_class.clone();
-                let callback = fallback_callback.clone();
                 let btn_text = fallback_text.clone();
                 view! {
                     <Button
                         variant=ButtonVariant::Primary
                         class=class
-                        on_click=callback
+                        on_click=login_callback
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -117,7 +112,7 @@ pub fn GitHubLoginButton(
             <Button
                 variant=ButtonVariant::Primary
                 class=combined_class.clone()
-                on_click=authenticated_callback_clone
+                on_click=authenticated_callback
             >
                 "ダッシュボードへ"
             </Button>

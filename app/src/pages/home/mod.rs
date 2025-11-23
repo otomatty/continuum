@@ -26,7 +26,6 @@ pub fn HomePage() -> impl IntoView {
     {
         // Check authentication status and redirect if authenticated using use_auth hook
         use crate::hooks::use_auth;
-        use wasm_bindgen::JsCast;
         use web_sys::window;
 
         let auth = use_auth();
@@ -48,7 +47,6 @@ pub fn HomePage() -> impl IntoView {
             <CTASection
                 headline="エンジニアの成長を、組織全体で支援する".to_string()
                 subheadline="OSS活動を通じた実践的な学習と知見共有のプラットフォーム".to_string()
-                button_text="GitHub でログイン".to_string()
             />
 
             // About Continuum Section
