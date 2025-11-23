@@ -71,7 +71,7 @@ pub fn ThemeToggle() -> impl IntoView {
             <div
                 tabindex="0"
                 role="button"
-                class="p-2 rounded-full hover:bg-base-200 cursor-pointer transition-colors"
+                class="p-2 rounded-lg hover:bg-base-200 cursor-pointer transition-colors border border-gray-200"
                 on:click=handle_toggle
             >
                 <svg

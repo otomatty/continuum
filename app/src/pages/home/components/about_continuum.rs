@@ -1,4 +1,4 @@
-use crate::components::{container::Container, heading::SectionTitle};
+use crate::components::{fade_in::FadeIn, heading::SectionTitle, section::Section};
 use leptos::prelude::*;
 
 /**
@@ -11,16 +11,19 @@ use leptos::prelude::*;
  *
  * Dependencies (External files that this component imports):
  *   ├─ leptos::prelude
- *   ├─ app/src/components/container/mod.rs
+ *   ├─ app/src/components/section/mod.rs
+ *   ├─ app/src/components/fade_in/mod.rs
  *   └─ app/src/components/heading/mod.rs
  */
 #[component]
 pub fn AboutContinuum() -> impl IntoView {
     view! {
-        <section class="py-16">
-            <Container>
+        <Section>
+            <FadeIn>
                 <SectionTitle title="Continuumとは".to_string() margin_bottom="mb-12" />
+            </FadeIn>
 
+            <FadeIn delay="200".to_string()>
                 <div class="max-w-3xl mx-auto space-y-6">
                     <p class="text-gray-600">
                         "Continuum（コンティニュアム）は、ラテン語で「連続体」「連続性」を意味する言葉です。"
@@ -33,7 +36,7 @@ pub fn AboutContinuum() -> impl IntoView {
                         好循環を生み出すプラットフォームとして、この名前を選びました。"
                     </p>
                 </div>
-            </Container>
-        </section>
+            </FadeIn>
+        </Section>
     }
 }

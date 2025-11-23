@@ -1,4 +1,7 @@
-use crate::components::stats::{StatDescription, StatItem, StatTitle, StatValue, Stats};
+use crate::components::{
+    fade_in::FadeIn,
+    stats::{StatDescription, StatItem, StatTitle, StatValue, Stats},
+};
 use leptos::prelude::*;
 
 /**
@@ -75,22 +78,24 @@ pub fn StatisticsPreview(
     }
 
     view! {
-        <Stats class="w-full">
-            <StatItem>
-                <StatTitle>"総コントリビューター数"</StatTitle>
-                <StatValue>{move || contributors_display.get().to_string()}</StatValue>
-                <StatDescription>"組織内のアクティブなコントリビューター"</StatDescription>
-            </StatItem>
-            <StatItem>
-                <StatTitle>"アクティブなリポジトリ数"</StatTitle>
-                <StatValue>{move || repositories_display.get().to_string()}</StatValue>
-                <StatDescription>"最近活動のあるリポジトリ"</StatDescription>
-            </StatItem>
-            <StatItem>
-                <StatTitle>"外部からのPR数"</StatTitle>
-                <StatValue>{move || prs_display.get().to_string()}</StatValue>
-                <StatDescription>"今月"</StatDescription>
-            </StatItem>
-        </Stats>
+        <FadeIn>
+            <Stats class="w-full">
+                <StatItem>
+                    <StatTitle>"総コントリビューター数"</StatTitle>
+                    <StatValue>{move || contributors_display.get().to_string()}</StatValue>
+                    <StatDescription>"組織内のアクティブなコントリビューター"</StatDescription>
+                </StatItem>
+                <StatItem>
+                    <StatTitle>"アクティブなリポジトリ数"</StatTitle>
+                    <StatValue>{move || repositories_display.get().to_string()}</StatValue>
+                    <StatDescription>"最近活動のあるリポジトリ"</StatDescription>
+                </StatItem>
+                <StatItem>
+                    <StatTitle>"外部からのPR数"</StatTitle>
+                    <StatValue>{move || prs_display.get().to_string()}</StatValue>
+                    <StatDescription>"今月"</StatDescription>
+                </StatItem>
+            </Stats>
+        </FadeIn>
     }
 }

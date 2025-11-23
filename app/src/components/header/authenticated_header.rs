@@ -1,4 +1,5 @@
 use super::theme_toggle::ThemeToggle;
+use crate::components::container::Container;
 use leptos::prelude::*;
 
 /**
@@ -11,17 +12,18 @@ use leptos::prelude::*;
  *
  * Dependencies (External files that this component imports):
  *   ├─ leptos::prelude
- *   └─ super::theme_toggle::ThemeToggle
+ *   ├─ super::theme_toggle::ThemeToggle
+ *   └─ crate::components::container::Container
  */
 #[component]
 pub fn AuthenticatedHeader() -> impl IntoView {
     let (dropdown_open, set_dropdown_open) = signal(false);
 
     view! {
-        <header class="navbar bg-base-100 shadow-sm sticky top-0 z-50">
-            <div class="container mx-auto px-4">
-                <div class="navbar-start">
-                    <a href="/dashboard" class="btn btn-ghost text-xl font-bold">
+        <header class="bg-base-100 shadow-sm sticky top-0 z-50">
+            <Container class="max-w-full".to_string()>
+                <div class="flex items-center justify-between">
+                    <a href="/dashboard" class="btn btn-ghost text-2xl font-bold">
                         "Continuum"
                     </a>
                 </div>
@@ -115,7 +117,7 @@ pub fn AuthenticatedHeader() -> impl IntoView {
                         </ul>
                     </div>
                 </div>
-            </div>
+            </Container>
         </header>
     }
 }

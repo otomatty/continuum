@@ -8,7 +8,9 @@
  *   ├─ app/src/pages/home/components/feature_showcase.rs
  *   ├─ app/src/pages/home/components/final_cta.rs
  *   ├─ app/src/pages/home/components/home_footer.rs
- *   └─ app/src/pages/home/components/social_proof.rs
+ *   ├─ app/src/pages/home/components/social_proof.rs
+ *   ├─ app/src/components/header/authenticated_header.rs
+ *   └─ app/src/components/header/public_header.rs
  *
  * Dependencies (External files that this Component imports):
  *   └─ leptos::prelude
