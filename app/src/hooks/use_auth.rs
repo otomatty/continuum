@@ -34,9 +34,9 @@ impl Session {
 }
 
 #[cfg(feature = "ssr")]
-use leptos::*;
-#[cfg(feature = "ssr")]
 use leptos::prelude::ServerFnError;
+#[cfg(feature = "ssr")]
+use leptos::*;
 
 // Helper function to extract auth status from cookie value (for use in shell function)
 #[cfg(feature = "ssr")]
@@ -51,7 +51,7 @@ pub fn extract_auth_status_from_cookie(cookie_value: Option<&str>) -> AuthStatus
             }
         }
     }
-    
+
     AuthStatus {
         authenticated: false,
         user_id: None,
@@ -61,38 +61,42 @@ pub fn extract_auth_status_from_cookie(cookie_value: Option<&str>) -> AuthStatus
 #[cfg(feature = "ssr")]
 #[server(GetAuthStatus, "/api/auth/status")]
 pub async fn get_auth_status() -> Result<AuthStatus, ServerFnError> {
-    // Note: leptos_axum server functions cannot directly extract PrivateCookieJar
-    // as a parameter because it's not serializable.
-    // 
-    // Instead of making an internal HTTP request, we reuse the existing /api/auth/me endpoint
-    // which is already optimized for cookie extraction. This avoids the overhead of
-    // creating a new HTTP client and making a request to the same server.
+    // NOTE: Leptos Server Functions cannot directly access PrivateCookieJar
+    // as a parameter because it's not serializable. This is a limitation
+    // of the Server Function architecture.
     //
-    // The /api/auth/me endpoint is called from the client side after hydration,
-    // and it efficiently handles cookie extraction using PrivateCookieJar.
-    
-    // For now, we'll use the existing endpoint via HTTP request.
-    // In the future, we could refactor to share the cookie extraction logic
-    // between the endpoint and the server function.
+    // To work around this limitation, we reuse the existing /api/auth/me endpoint
+    // which already handles cookie extraction efficiently using PrivateCookieJar.
+    // While this creates an internal HTTP request, it's the most practical
+    // solution given the current architecture constraints.
+    //
+    // Alternative approaches considered:
+    // 1. Using RequestParts: Not supported in leptos_axum Server Functions
+    // 2. Sharing cookie extraction logic: Requires refactoring to extract
+    //    cookie parsing logic into a shared module accessible from both
+    //    Server Functions and route handlers
+    //
+    // Future improvement: Consider refactoring to share cookie extraction
+    // logic between Server Functions and route handlers if Leptos adds
+    // support for accessing request context directly in Server Functions.
+
     use reqwest::Client;
     let client = Client::new();
-    
-    // Get the current request's origin to construct the URL
-    // For now, we'll use a default URL. In production, this should be dynamic.
-    let base_url = std::env::var("LEPTOS_SITE_ADDR")
-        .unwrap_or_else(|_| "http://localhost:3000".to_string());
-    
+
+    let base_url =
+        std::env::var("LEPTOS_SITE_ADDR").unwrap_or_else(|_| "http://localhost:3000".to_string());
+
     let response = client
         .get(&format!("{}/api/auth/me", base_url))
         .send()
         .await
         .map_err(|e| ServerFnError::new(format!("Failed to fetch auth status: {}", e)))?;
-    
+
     let auth_status: AuthStatus = response
         .json()
         .await
         .map_err(|e| ServerFnError::new(format!("Failed to parse auth status: {}", e)))?;
-    
+
     Ok(auth_status)
 }
 
@@ -120,10 +124,10 @@ pub fn use_auth() -> AuthContext {
 /// Returns the AuthContext that was created
 pub fn provide_auth_context(initial_status: Option<AuthStatus>) -> AuthContext {
     let (status, set_status) = signal(initial_status.clone());
-    
+
     #[cfg(target_arch = "wasm32")]
     let (cached_status, set_cached_status) = signal(initial_status.clone());
-    
+
     #[cfg(target_arch = "wasm32")]
     let (cache_timestamp, set_cache_timestamp) = signal({
         if initial_status.is_some() {
@@ -132,7 +136,7 @@ pub fn provide_auth_context(initial_status: Option<AuthStatus>) -> AuthContext {
             None
         }
     });
-    
+
     #[cfg(target_arch = "wasm32")]
     let context = AuthContext {
         status,
@@ -140,13 +144,10 @@ pub fn provide_auth_context(initial_status: Option<AuthStatus>) -> AuthContext {
         cached_status,
         cache_timestamp,
     };
-    
+
     #[cfg(not(target_arch = "wasm32"))]
-    let context = AuthContext {
-        status,
-        set_status,
-    };
-    
+    let context = AuthContext { status, set_status };
+
     provide_context(context.clone());
     context
 }
@@ -154,16 +155,16 @@ pub fn provide_auth_context(initial_status: Option<AuthStatus>) -> AuthContext {
 /// Get current timestamp in seconds since Unix epoch
 #[cfg(target_arch = "wasm32")]
 fn get_current_timestamp() -> u64 {
+    use js_sys::Date;
     use wasm_bindgen::JsCast;
     use web_sys::window;
-    use js_sys::Date;
-    
+
     if let Some(window) = window() {
         let date = Date::new_0();
         let timestamp_ms = date.get_time();
         return (timestamp_ms / 1000.0) as u64;
     }
-    
+
     // Fallback: return 0 if we can't get timestamp
     0
 }
@@ -184,15 +185,15 @@ fn is_cache_valid(timestamp: Option<u64>) -> bool {
 #[cfg(target_arch = "wasm32")]
 pub async fn refresh_auth_status_if_needed(context: &AuthContext) -> Result<(), ServerFnError> {
     use leptos::prelude::ServerFnError;
-    
+
     let should_refresh = {
         let cached = context.cached_status.get();
         let timestamp = context.cache_timestamp.get();
-        
+
         // If no cache or cache expired, refresh
         cached.is_none() || !is_cache_valid(timestamp)
     };
-    
+
     if should_refresh {
         match get_auth_status().await {
             Ok(new_status) => {
@@ -205,7 +206,7 @@ pub async fn refresh_auth_status_if_needed(context: &AuthContext) -> Result<(), 
             }
         }
     }
-    
+
     Ok(())
 }
 
@@ -223,7 +224,7 @@ pub fn clear_auth_cache(context: &AuthContext) {
 pub fn read_auth_status_from_html() -> Option<AuthStatus> {
     use wasm_bindgen::JsCast;
     use web_sys::window;
-    
+
     if let Some(window) = window() {
         if let Some(document) = window.document() {
             if let Some(html_element) = document.document_element() {
@@ -235,7 +236,6 @@ pub fn read_auth_status_from_html() -> Option<AuthStatus> {
             }
         }
     }
-    
+
     None
 }
-
