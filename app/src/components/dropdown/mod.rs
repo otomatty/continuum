@@ -113,14 +113,17 @@ pub fn DropdownMenu(#[prop(optional, into)] class: String, children: Children) -
 #[component]
 pub fn DropdownItem(
     #[prop(optional, into)] href: Option<String>,
-    #[prop(optional, into)] class: String,
+    #[prop(optional, into, default = String::new().into())] class: Signal<String>,
     #[prop(optional, into)] on_click: Option<Callback<MouseEvent>>,
     children: Children,
 ) -> impl IntoView {
-    let item_class = if class.is_empty() {
-        "".to_string()
-    } else {
-        class
+    let item_class = move || {
+        let class_str = class.get();
+        if class_str.is_empty() {
+            "".to_string()
+        } else {
+            class_str
+        }
     };
 
     let handle_click = move |ev: MouseEvent| {

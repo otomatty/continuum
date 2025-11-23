@@ -24,13 +24,17 @@ pub fn CTASection(
     button_href: String,
 ) -> impl IntoView {
     view! {
-        <Hero class="bg-base-200 py-16">
+        <Hero class="bg-gradient-to-br from-base-200 to-base-300 py-20 md:py-32">
             <HeroContent class="text-center">
-                <div class="max-w-2xl">
-                    <h1 class="text-5xl font-bold mb-4">{headline}</h1>
-                    <p class="text-xl text-gray-600 mb-8">{subheadline}</p>
-                    <a href=button_href>
-                        <Button variant=ButtonVariant::Primary class="text-lg px-8 py-3">
+                <div class="max-w-3xl mx-auto animate-fade-in">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-base-content">
+                        {headline}
+                    </h1>
+                    <p class="text-lg md:text-xl text-base-content opacity-70 mb-10 leading-relaxed">
+                        {subheadline}
+                    </p>
+                    <a href=button_href class="inline-block transform transition-transform hover:scale-105">
+                        <Button variant=ButtonVariant::Primary class="text-lg px-10 py-4 shadow-lg">
                             {button_text}
                         </Button>
                     </a>

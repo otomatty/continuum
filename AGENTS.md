@@ -518,11 +518,9 @@ Synchronizationファイルの先頭に、依存関係マップを記載して�
  * UserPosts Synchronization
  *
  * DEPENDENCY MAP:
- *
  * Concepts (Concept files that this synchronization imports):
  *   ├─ src/concepts/user/mod.rs
  *   └─ src/concepts/post/mod.rs
- *
  * Related Documentation:
  *   ├─ Spec: ./user_posts.spec.md
  *   ├─ Tests: ./user_posts_sync_test.rs
@@ -553,11 +551,6 @@ Conceptファイルの先頭にも、依存関係マップを記載してくだ�
  *   ├─ src/synchronizations/user_posts_sync.rs
  *   ├─ src/ui/components/post_list.rs
  *   └─ src/ui/pages/post_page.rs
- *
- * Dependencies (External files that this Concept imports):
- *   ├─ ./state.rs
- *   └─ ./actions.rs
- *
  * Related Documentation:
  *   ├─ Spec: ./post.spec.md
  *   ├─ Tests: ./tests.rs

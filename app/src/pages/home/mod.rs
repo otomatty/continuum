@@ -1,15 +1,11 @@
 mod components;
 
-use components::{CTASection, StatisticsPreview, ValuePropositionCard};
+use crate::components::{container::Container, heading::SectionTitle};
+use components::{
+    AboutContinuum, CTASection, FeatureShowcase, FinalCTA, HomeFooter, SocialProof,
+    StatisticsPreview, ValuePropositionCard,
+};
 use leptos::prelude::*;
-use leptos_router::use_navigate;
-use serde::{Deserialize, Serialize};
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-struct AuthStatus {
-    authenticated: bool,
-    user_id: Option<String>,
-}
 
 /**
  * HomePage Component
@@ -20,83 +16,125 @@ struct AuthStatus {
  *   └─ app/src/lib.rs
  *
  * Dependencies (External files that this component imports):
+ *   ├─ app/src/components/container/mod.rs
+ *   ├─ app/src/components/heading/mod.rs
  *   └─ app/src/pages/home/components/mod.rs
  */
 #[component]
 pub fn HomePage() -> impl IntoView {
-    let navigate = use_navigate();
-    
-    // Check authentication status
-    let auth_status = create_resource(
-        || (),
-        |_| async move {
-            let response = reqwest::get("/api/auth/me").await;
-            match response {
-                Ok(res) => {
-                    if let Ok(status) = res.json::<AuthStatus>().await {
-                        status
-                    } else {
-                        AuthStatus {
-                            authenticated: false,
-                            user_id: None,
-                        }
-                    }
-                }
-                Err(_) => AuthStatus {
-                    authenticated: false,
-                    user_id: None,
-                },
+    #[cfg(feature = "hydrate")]
+    {
+        // Check authentication status and redirect if authenticated
+        use wasm_bindgen::JsCast;
+        use wasm_bindgen_futures::spawn_local;
+
+        spawn_local(async move {
+            let window = match web_sys::window() {
+                Some(w) => w,
+                None => return,
+            };
+
+            let response_promise = window.fetch_with_str("/api/auth/me");
+            let resp_value = match wasm_bindgen_futures::JsFuture::from(response_promise).await {
+                Ok(v) => v,
+                Err(_) => return,
+            };
+
+            let resp: web_sys::Response = match resp_value.dyn_into() {
+                Ok(r) => r,
+                Err(_) => return,
+            };
+
+            if resp.status() != 200 {
+                return;
             }
-        },
-    );
-    
-    // Redirect to dashboard if authenticated
-    Effect::new(move |_| {
-        if let Some(Ok(status)) = auth_status.get() {
-            if status.authenticated {
-                navigate("/dashboard", Default::default());
+
+            let json_promise = match resp.json() {
+                Ok(p) => p,
+                Err(_) => return,
+            };
+
+            let json_value = match wasm_bindgen_futures::JsFuture::from(json_promise).await {
+                Ok(v) => v,
+                Err(_) => return,
+            };
+
+            let json_str = match js_sys::JSON::stringify(&json_value) {
+                Ok(s) => s,
+                Err(_) => return,
+            };
+
+            let json_str = match json_str.as_string() {
+                Some(s) => s,
+                None => return,
+            };
+
+            if json_str.contains("\"authenticated\":true") {
+                let _ = window.location().set_href("/dashboard");
             }
-        }
-    });
-    
+        });
+    }
+
     view! {
-        <div class="space-y-16">
+        <main>
             // Hero Section with CTA
             <CTASection
-                headline="あなたのOSS活動を、永続的な資産に".to_string()
-                subheadline="会社の枠を超えて輝く、あなたの技術実績を可視化".to_string()
-                button_text="GitHub OAuth でログイン".to_string()
+                headline="エンジニアの成長を、組織全体で支援する".to_string()
+                subheadline="OSS活動を通じた実践的な学習と知見共有のプラットフォーム".to_string()
+                button_text="GitHub でログイン".to_string()
                 button_href="/auth/login".to_string()
             />
 
+            // About Continuum Section
+            <AboutContinuum />
+
             // Value Proposition Section (3 columns)
-            <section class="container mx-auto px-4">
-                <h2 class="text-3xl font-bold text-center mb-12">"Continuumの価値"</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <ValuePropositionCard
-                        title="永続的な実績の構築".to_string()
-                        description="会社の枠を超えて、あなたのOSS活動を永続的な資産として記録・可視化します。転職や異動があっても、あなたの技術実績は失われません。".to_string()
-                    />
-                    <ValuePropositionCard
-                        title="最先端技術でスキルアップ".to_string()
-                        description="最新のOSSプロジェクトに参加することで、最先端の技術やベストプラクティスを学べます。実践的な経験を通じて、スキルを継続的に向上させることができます。".to_string()
-                    />
-                    <ValuePropositionCard
-                        title="オープンな文化の醸成".to_string()
-                        description="組織全体でOSS活動を促進し、オープンな文化を醸成します。社内外のコントリビューターと協力し、より良いソフトウェアを一緒に作り上げましょう。".to_string()
-                    />
-                </div>
+            <section class="py-16">
+                <Container>
+                    <SectionTitle title="Continuumが提供する価値".to_string() margin_bottom="mb-12" />
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <ValuePropositionCard
+                            title="OSS活動への参加を支援".to_string()
+                            description="会社が支援することで、OSS活動のハードルを下げ、より多くの社員が参加しやすくなります。組織全体でエンジニアの成長を後押しします。".to_string()
+                            icon="🚀".to_string()
+                        />
+                        <ValuePropositionCard
+                            title="実践的な学習の場".to_string()
+                            description="社内エンジニア同士が知見を共有し、実践的な経験を通じてスキルを向上させることができます。最新の技術やベストプラクティスを学べる環境を提供します。".to_string()
+                            icon="📚".to_string()
+                        />
+                        <ValuePropositionCard
+                            title="成長しやすい環境の提供".to_string()
+                            description="エンジニアが働きやすく成長しやすい環境を提供するための一環として、ここでの活動が実績として記録・可視化されます。長く働き続けられる環境づくりを支援します。".to_string()
+                            icon="🌱".to_string()
+                        />
+                    </div>
+                </Container>
             </section>
 
             // Statistics Preview Section
-            <section class="container mx-auto px-4">
-                <h2 class="text-3xl font-bold text-center mb-8">"組織の活動状況"</h2>
-                <StatisticsPreview
-                    total_contributors=127
-                    total_repositories=45
-                    external_prs_this_month=23
-                />
+            <section class="py-16">
+                <Container>
+                    <SectionTitle title="組織の活動状況".to_string() margin_bottom="mb-8" />
+                    <StatisticsPreview
+                        total_contributors=127
+                        total_repositories=45
+                        external_prs_this_month=23
+                    />
+                </Container>
             </section>
-        </div>
+
+            // Feature Showcase Section
+            <FeatureShowcase />
+
+            // Social Proof Section
+            <SocialProof />
+
+            // Final CTA Section
+            <FinalCTA />
+
+            // Footer
+            <HomeFooter />
+        </main>
     }
 }
