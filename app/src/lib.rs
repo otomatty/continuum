@@ -59,7 +59,10 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
     // For SSR, we'll use a placeholder that will be replaced by client-side code
     #[cfg(feature = "ssr")]
     let auth_status = {
-        // Default to unauthenticated in shell function
+        // Try to get auth status from the request context
+        // Since we can't directly access cookies in shell function,
+        // we'll default to unauthenticated and let the client-side code
+        // fetch the actual auth status after hydration
         // The actual auth status will be set via Server Function on client-side
         AuthStatus {
             authenticated: false,
@@ -103,6 +106,18 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
 pub fn App() -> impl IntoView {
     // Provides context that manages stylesheets, titles, meta tags, etc.
     provide_meta_context();
+
+    // Initialize auth context - read from HTML data attribute on client side
+    #[cfg(target_arch = "wasm32")]
+    let initial_auth_status = {
+        use crate::hooks::read_auth_status_from_html;
+        read_auth_status_from_html()
+    };
+    
+    #[cfg(not(target_arch = "wasm32"))]
+    let initial_auth_status = None::<crate::hooks::AuthStatus>;
+    
+    let _auth_context = crate::hooks::provide_auth_context(initial_auth_status);
 
     // Initialize theme state - load from localStorage if available (client-side only)
     let initial_theme_state = {
