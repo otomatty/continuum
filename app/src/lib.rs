@@ -117,7 +117,22 @@ pub fn App() -> impl IntoView {
     #[cfg(not(target_arch = "wasm32"))]
     let initial_auth_status = None::<crate::hooks::AuthStatus>;
 
-    let _auth_context = crate::hooks::provide_auth_context(initial_auth_status);
+    let auth_context = crate::hooks::provide_auth_context(initial_auth_status);
+
+    // Refresh auth status from server on page load (client-side only)
+    // This ensures the auth status is up-to-date after page reload
+    #[cfg(target_arch = "wasm32")]
+    {
+        use crate::hooks::refresh_auth_status_if_needed;
+
+        let context_for_effect = auth_context.clone();
+        Effect::new(move |_| {
+            let context = context_for_effect.clone();
+            spawn_local(async move {
+                let _ = refresh_auth_status_if_needed(&context).await;
+            });
+        });
+    }
 
     // Initialize theme state - load from localStorage if available (client-side only)
     let initial_theme_state = {

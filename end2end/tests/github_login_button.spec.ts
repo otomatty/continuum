@@ -24,38 +24,33 @@ function createSessionCookieValue(userId: string, expiresInSeconds: number = 360
 }
 
 // Helper function to set authenticated session cookie
+// Uses the test endpoint /api/test/auth/set-session to properly set encrypted session cookie
 async function setAuthenticatedSession(
   page: Page,
-  userId: string = "test_user"
+  userId: string = "test_user",
+  expiresInSeconds: number = 3600
 ): Promise<void> {
-  const cookieValue = createSessionCookieValue(userId);
-  await page.context().addCookies([
-    {
-      name: "session",
-      value: cookieValue,
-      domain: "localhost",
-      path: "/",
-      httpOnly: true,
-      secure: false,
-      sameSite: "Lax",
-    },
-  ]);
+  // Use the test endpoint to set session cookie properly (with encryption)
+  const response = await page.request.get(
+    `http://localhost:3000/api/test/auth/set-session?user_id=${userId}&expires_in_seconds=${expiresInSeconds}`
+  );
+  
+  if (!response.ok()) {
+    throw new Error(
+      `Failed to set test session: ${response.status()} ${response.statusText()}`
+    );
+  }
+  
+  // The cookie is automatically set by the server response
+  // Wait a bit for the cookie to be set
+  await page.waitForTimeout(100);
 }
 
 // Helper function to clear session cookie
 async function clearSession(page: Page): Promise<void> {
-  await page.context().addCookies([
-    {
-      name: "session",
-      value: "",
-      domain: "localhost",
-      path: "/",
-      httpOnly: true,
-      secure: false,
-      sameSite: "Lax",
-      expires: Math.floor(Date.now() / 1000) - 1, // Expired
-    },
-  ]);
+  // Use logout endpoint to properly clear the session cookie
+  await page.request.get("http://localhost:3000/auth/logout");
+  await page.waitForTimeout(100);
 }
 
 test.describe("GitHubLoginButton Component", () => {
@@ -73,7 +68,8 @@ test.describe("GitHubLoginButton Component", () => {
 
     // When: Page loads
     // Then: "GitHub でログイン" button should be visible
-    const loginButton = page.getByRole("button", { name: /GitHub.*ログイン/i });
+    // Note: Multiple buttons exist on the page, so we use .first() to select the first one
+    const loginButton = page.getByRole("button", { name: /GitHub.*ログイン/i }).first();
     await expect(loginButton).toBeVisible();
 
     // And: Button should contain GitHub icon (SVG)
@@ -94,13 +90,19 @@ test.describe("GitHubLoginButton Component", () => {
 
     // When: Page loads/reloads with authenticated session
     await page.reload();
+    
+    // Wait for the page to be fully loaded and hydrated
     await page.waitForLoadState("networkidle");
-
-    // Then: "ダッシュボードへ" button should be visible
+    
+    // Wait for auth status to be fetched and UI to update
+    // The client-side code may call get_auth_status() which internally calls /api/auth/me
+    // We wait for either the response or the button to appear
     const dashboardButton = page.getByRole("button", {
       name: /ダッシュボードへ/i,
     });
-    await expect(dashboardButton).toBeVisible();
+    
+    // Wait for the dashboard button to appear (this will wait for auth status to be fetched)
+    await expect(dashboardButton).toBeVisible({ timeout: 15000 });
 
     // And: "GitHub でログイン" button should NOT be visible
     const loginButton = page.getByRole("button", { name: /GitHub.*ログイン/i });
@@ -121,19 +123,22 @@ test.describe("GitHubLoginButton Component", () => {
     await page.waitForLoadState("networkidle");
 
     // Then: Login button should be visible
-    let loginButton = page.getByRole("button", { name: /GitHub.*ログイン/i });
+    // Note: Multiple buttons exist on the page, so we use .first() to select the first one
+    let loginButton = page.getByRole("button", { name: /GitHub.*ログイン/i }).first();
     await expect(loginButton).toBeVisible();
 
     // When: Authentication status changes to authenticated
     await setAuthenticatedSession(page, "test_user_456");
     await page.reload();
+    
     await page.waitForLoadState("networkidle");
 
     // Then: Dashboard button should be visible
+    // Wait for auth status to be fetched and UI to update
     const dashboardButton = page.getByRole("button", {
       name: /ダッシュボードへ/i,
     });
-    await expect(dashboardButton).toBeVisible();
+    await expect(dashboardButton).toBeVisible({ timeout: 15000 });
 
     // And: Login button should NOT be visible
     loginButton = page.getByRole("button", { name: /GitHub.*ログイン/i });
@@ -142,11 +147,14 @@ test.describe("GitHubLoginButton Component", () => {
     // When: Authentication status changes back to unauthenticated
     await clearSession(page);
     await page.reload();
+    
     await page.waitForLoadState("networkidle");
 
     // Then: Login button should be visible again
-    loginButton = page.getByRole("button", { name: /GitHub.*ログイン/i });
-    await expect(loginButton).toBeVisible();
+    // Wait for auth status to be fetched and UI to update
+    // Note: Multiple buttons exist on the page, so we use .first() to select the first one
+    loginButton = page.getByRole("button", { name: /GitHub.*ログイン/i }).first();
+    await expect(loginButton).toBeVisible({ timeout: 15000 });
 
     // And: Dashboard button should NOT be visible
     const dashboardButtonAfterLogout = page.getByRole("button", {
@@ -183,26 +191,18 @@ test.describe("GitHubLoginButton Component", () => {
   test("expired session cookie is treated as unauthenticated", async ({
     page,
   }) => {
-    // Given: User has expired session cookie
-    const expiredCookieValue = createSessionCookieValue("test_user", -3600); // Expired 1 hour ago
-    await page.context().addCookies([
-      {
-        name: "session",
-        value: expiredCookieValue,
-        domain: "localhost",
-        path: "/",
-        httpOnly: true,
-        secure: false,
-        sameSite: "Lax",
-      },
-    ]);
+    // Given: User has expired session cookie (set with negative expires_in_seconds)
+    // Note: We set a session that expires in 1 second, then wait for it to expire
+    await setAuthenticatedSession(page, "test_user", 1);
+    await page.waitForTimeout(2000); // Wait for session to expire
 
     // When: Page loads
     await page.reload();
     await page.waitForLoadState("networkidle");
 
     // Then: Login button should be visible (not dashboard button)
-    const loginButton = page.getByRole("button", { name: /GitHub.*ログイン/i });
+    // Note: Multiple buttons exist on the page, so we use .first() to select the first one
+    const loginButton = page.getByRole("button", { name: /GitHub.*ログイン/i }).first();
     await expect(loginButton).toBeVisible();
 
     const dashboardButton = page.getByRole("button", {
