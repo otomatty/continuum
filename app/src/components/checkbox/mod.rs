@@ -16,7 +16,10 @@ pub enum CheckboxVariant {
 #[component]
 pub fn Checkbox(
     #[prop(optional)] variant: CheckboxVariant,
-    #[prop(optional, into)] checked: Option<ReadSignal<bool>>,
+    /// checkedプロパティはSignal<bool>を受け入れます。
+    /// これにより、ReadSignal, RwSignal, Memo などを柔軟に渡せます。
+    #[prop(optional, into)]
+    checked: Signal<bool>,
     #[prop(optional, into)] on_change: Option<Callback<Event>>,
     #[prop(optional, into)] class: String,
 ) -> impl IntoView {
@@ -46,7 +49,7 @@ pub fn Checkbox(
         <input
             type="checkbox"
             class=combined_class
-            checked=move || checked.map(|c| c.get()).unwrap_or(false)
+            checked=move || checked.get()
             on:change=handle_change
         />
     }

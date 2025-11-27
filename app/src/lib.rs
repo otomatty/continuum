@@ -17,8 +17,8 @@ use leptos_router::{
     path, StaticSegment,
 };
 use pages::{
-    AuthErrorPage, ComponentsPage, DashboardPage, HomePage, KnowledgePage, NotFoundPage,
-    PortfolioPage, SettingsPage,
+    AuthErrorPage, ComponentsPage, ContributorsPage, DashboardPage, HomePage, KnowledgePage,
+    NotFoundPage, PortfolioPage, RepositoriesPage, SettingsPage,
 };
 
 // web_sys::window is only available in WASM targets
@@ -264,6 +264,8 @@ fn MainContent() -> impl IntoView {
                 <Route path=StaticSegment("portfolio") view=PortfolioPage/>
                 <Route path=path!("/portfolio/:username") view=PortfolioPage/>
                 <Route path=StaticSegment("components") view=ComponentsPage/>
+                <Route path=StaticSegment("contributors") view=ContributorsPage/>
+                <Route path=StaticSegment("repositories") view=RepositoriesPage/>
                 <Route path=StaticSegment("knowledge") view=KnowledgePage/>
                 <Route path=StaticSegment("settings") view=SettingsPage/>
                 <Route path=path!("/auth/error") view=AuthErrorPage/>

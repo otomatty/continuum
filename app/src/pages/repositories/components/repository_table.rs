@@ -1,9 +1,9 @@
-use leptos::prelude::*;
 use crate::components::{
-    table::{Table, TableHead, TableBody, TableRow, TableHeader, TableCell},
     badge::{Badge, BadgeVariant},
+    table::{Table, TableBody, TableCell, TableHead, TableHeader, TableRow},
 };
 use crate::concepts::repository::Repository;
+use leptos::prelude::*;
 
 /**
  * RepositoryTable Component
@@ -25,7 +25,7 @@ pub fn RepositoryTable(
 ) -> impl IntoView {
     let handle_click = move |full_name: String| {
         if let Some(callback) = on_repo_click.as_ref() {
-            callback.call(full_name);
+            callback.run(full_name);
         }
     };
 
@@ -45,13 +45,13 @@ pub fn RepositoryTable(
                     {repositories.into_iter().map(|repo| {
                         let full_name = repo.full_name.clone();
                         view! {
-                            <TableRow 
+                            <TableRow
                                 class="cursor-pointer hover:bg-base-200"
                                 on:click=move |_| handle_click(full_name.clone())
                             >
                                 <TableCell>
                                     <div>
-                                        <a 
+                                        <a
                                             href=format!("https://github.com/{}", repo.full_name.clone())
                                             target="_blank"
                                             class="font-semibold hover:underline"
@@ -91,4 +91,3 @@ pub fn RepositoryTable(
         </div>
     }
 }
-

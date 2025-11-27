@@ -25,6 +25,27 @@ pub enum UserRole {
     ExternalContributor,
 }
 
+impl UserRole {
+    /// UserRoleを文字列に変換（Filter Conceptとの統合用）
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            UserRole::CurrentEmployee => "current",
+            UserRole::Alumni => "alumni",
+            UserRole::ExternalContributor => "external",
+        }
+    }
+
+    /// 文字列からUserRoleに変換
+    pub fn parse(s: &str) -> Option<UserRole> {
+        match s {
+            "current" => Some(UserRole::CurrentEmployee),
+            "alumni" => Some(UserRole::Alumni),
+            "external" => Some(UserRole::ExternalContributor),
+            _ => None,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct User {
     pub username: String,
