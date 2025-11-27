@@ -28,7 +28,6 @@ pub fn TopContributorsList(
     #[prop(optional)] limit: Option<usize>,
 ) -> impl IntoView {
     let navigate = use_navigate();
-    let _max_commits = contributors.iter().map(|c| c.commits).max().unwrap_or(1);
     let display_contributors: Vec<_> = if let Some(limit) = limit {
         contributors.into_iter().take(limit).collect()
     } else {

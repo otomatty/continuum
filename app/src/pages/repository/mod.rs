@@ -5,7 +5,7 @@ use crate::components::breadcrumbs::{BreadcrumbItem, Breadcrumbs};
 use crate::components::container::Container;
 use crate::concepts::repository::{ContributorStats, Repository};
 use crate::concepts::user::state::User;
-use chrono::Utc;
+use chrono::{DateTime, Utc};
 use components::{ContributorPieChart, LanguageBarChart, RepositoryHeader, TopContributorsList};
 use leptos::prelude::*;
 use leptos_router::hooks::use_params_map;
@@ -102,15 +102,17 @@ fn RepositoryDetailContent() -> impl IntoView {
         },
     ];
 
-    let mock_repo = Repository {
+    // ルートパラメータ変更時にリアクティブに更新されるようMemoでラップ
+    let mock_contributors_for_repo = mock_contributors.clone();
+    let mock_repo = Memo::new(move |_| Repository {
         name: repo_name(),
         full_name: format!("{}/{}", owner(), repo_name()),
         description: Some("エンジニアの成長を支援するプラットフォーム".to_string()),
         stars: 128,
         language: Some("Rust".to_string()),
-        updated_at: Utc::now(),
-        contributors: mock_contributors.clone(),
-    };
+        updated_at: DateTime::parse_from_rfc3339("2023-10-26T10:00:00Z").unwrap().with_timezone(&Utc),
+        contributors: mock_contributors_for_repo.clone(),
+    });
 
     let mock_languages = vec![
         ("Rust".to_string(), 75.0),
@@ -133,7 +135,7 @@ fn RepositoryDetailContent() -> impl IntoView {
                 </Breadcrumbs>
 
                 // リポジトリヘッダー
-                <RepositoryHeader repository=mock_repo />
+                <RepositoryHeader repository=mock_repo.get() />
 
                 // グラフセクション
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -142,7 +144,7 @@ fn RepositoryDetailContent() -> impl IntoView {
                 </div>
 
                 // トップコントリビューター一覧
-                <TopContributorsList contributors=mock_contributors limit=10 />
+                <TopContributorsList contributors=mock_contributors.clone() limit=10 />
             </div>
         </Container>
     }
