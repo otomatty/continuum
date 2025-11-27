@@ -1,0 +1,37 @@
+name: Rust
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Cache cargo registry and build artifacts
+      uses: Swatinem/rust-cache@v2
+      with:
+        shared-key: "rust-cache"
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@nightly
+      with:
+        targets: wasm32-unknown-unknown
+    - name: Install cargo-leptos
+      run: cargo install cargo-leptos --locked
+    - name: Build
+      run: cargo leptos build --verbose
+    - name: Run unit tests
+      run: cargo test --all --verbose
+    - name: Install Node.js dependencies for e2e tests
+      working-directory: end2end
+      run: npm install
+    - name: Run end-to-end tests
+      run: cargo leptos end-to-end
