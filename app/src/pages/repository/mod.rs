@@ -110,7 +110,9 @@ fn RepositoryDetailContent() -> impl IntoView {
         description: Some("エンジニアの成長を支援するプラットフォーム".to_string()),
         stars: 128,
         language: Some("Rust".to_string()),
-        updated_at: DateTime::parse_from_rfc3339("2023-10-26T10:00:00Z").unwrap().with_timezone(&Utc),
+        updated_at: DateTime::parse_from_rfc3339("2023-10-26T10:00:00Z")
+            .unwrap()
+            .with_timezone(&Utc),
         contributors: mock_contributors_for_repo.clone(),
     });
 

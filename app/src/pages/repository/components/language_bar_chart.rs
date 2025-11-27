@@ -1,5 +1,5 @@
+use crate::components::card::{Card, CardBody, CardTitle};
 use leptos::prelude::*;
-use crate::components::card::{Card, CardTitle, CardBody};
 
 /**
  * LanguageBarChart Component
@@ -13,10 +13,9 @@ use crate::components::card::{Card, CardTitle, CardBody};
  *   └─ app/src/components/card.rs
  */
 #[component]
-pub fn LanguageBarChart(
-    languages: Vec<(String, f64)>,
-) -> impl IntoView {
-    let max_percentage = languages.iter()
+pub fn LanguageBarChart(languages: Vec<(String, f64)>) -> impl IntoView {
+    let max_percentage = languages
+        .iter()
         .map(|(_, p)| *p)
         .max_by(|a, b| a.partial_cmp(b).unwrap())
         .unwrap_or(100.0);
@@ -33,7 +32,10 @@ pub fn LanguageBarChart(
         ("C".to_string(), "#a8b9cc"),
         ("Ruby".to_string(), "#cc342d"),
         ("PHP".to_string(), "#777bb4"),
-    ].iter().cloned().collect();
+    ]
+    .iter()
+    .cloned()
+    .collect();
 
     view! {
         <Card>
@@ -45,7 +47,7 @@ pub fn LanguageBarChart(
                             .copied()
                             .unwrap_or("#6b7280");
                         let bar_width = (percentage / max_percentage * 100.0).min(100.0);
-                        
+
                         view! {
                             <div>
                                 <div class="flex items-center justify-between mb-1">
@@ -53,7 +55,7 @@ pub fn LanguageBarChart(
                                     <span class="text-sm text-gray-600">{format!("{:.1}%", percentage)}</span>
                                 </div>
                                 <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
-                                    <div 
+                                    <div
                                         class="h-full transition-all duration-300"
                                         style=format!("width: {}%; background-color: {}", bar_width, color)
                                     ></div>
@@ -66,4 +68,3 @@ pub fn LanguageBarChart(
         </Card>
     }
 }
-

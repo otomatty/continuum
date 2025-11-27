@@ -1,11 +1,11 @@
-use leptos::prelude::*;
-use leptos_router::hooks::use_navigate;
 use crate::components::{
-    card::{Card, CardTitle, CardBody},
     avatar::Avatar,
+    card::{Card, CardBody, CardTitle},
     progress::Progress,
 };
 use crate::concepts::repository::ContributorStats;
+use leptos::prelude::*;
+use leptos_router::hooks::use_navigate;
 
 /**
  * TopContributorsList Component
@@ -48,15 +48,15 @@ pub fn TopContributorsList(
                             let username = username.clone();
                             navigate(&format!("/portfolio/{}", username), Default::default());
                         };
-                        
+
                         view! {
-                            <div 
+                            <div
                                 class="flex items-center gap-4 p-2 rounded-lg hover:bg-base-200 cursor-pointer transition-colors"
                                 on:click=handle_click
                             >
-                                <Avatar 
-                                    src=contrib.user.avatar_url.clone() 
-                                    alt=contrib.user.display_name.clone() 
+                                <Avatar
+                                    src=contrib.user.avatar_url.clone()
+                                    alt=contrib.user.display_name.clone()
                                     class="w-12 h-12"
                                 />
                                 <div class="flex-1">
@@ -66,7 +66,7 @@ pub fn TopContributorsList(
                                             {format!("{:.1}%", contrib.percentage)}
                                         </span>
                                     </div>
-                                    <Progress 
+                                    <Progress
                                         value=contrib.percentage as u32
                                         max=100
                                         class="h-2"
@@ -84,4 +84,3 @@ pub fn TopContributorsList(
         </Card>
     }
 }
-

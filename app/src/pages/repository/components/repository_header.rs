@@ -1,9 +1,9 @@
-use leptos::prelude::*;
 use crate::components::{
-    card::{Card, CardBody},
     badge::{Badge, BadgeVariant},
+    card::{Card, CardBody},
 };
 use crate::concepts::repository::Repository;
+use leptos::prelude::*;
 
 /**
  * RepositoryHeader Component
@@ -19,9 +19,7 @@ use crate::concepts::repository::Repository;
  *   └─ app/src/concepts/repository/mod.rs
  */
 #[component]
-pub fn RepositoryHeader(
-    repository: Repository,
-) -> impl IntoView {
+pub fn RepositoryHeader(repository: Repository) -> impl IntoView {
     view! {
         <Card>
             <CardBody>
@@ -29,7 +27,7 @@ pub fn RepositoryHeader(
                     <div class="flex items-start justify-between">
                         <div class="flex-1">
                             <h1 class="text-3xl font-bold mb-2">
-                                <a 
+                                <a
                                     href=format!("https://github.com/{}", repository.full_name.clone())
                                     target="_blank"
                                     class="hover:underline"
@@ -46,7 +44,7 @@ pub fn RepositoryHeader(
                             <span class="font-bold">{repository.stars}</span>
                         </div>
                     </div>
-                    
+
                     <div class="flex flex-wrap items-center gap-4 text-sm">
                         {repository.language.clone().map(|lang| view! {
                             <Badge variant=BadgeVariant::Primary>{lang}</Badge>
@@ -59,7 +57,7 @@ pub fn RepositoryHeader(
                             <span>"Last updated: "</span>
                             <span class="font-medium">{repository.updated_at.format("%Y-%m-%d").to_string()}</span>
                         </div>
-                        <a 
+                        <a
                             href=format!("https://github.com/{}", repository.full_name.clone())
                             target="_blank"
                             class="text-blue-600 hover:underline"
@@ -72,4 +70,3 @@ pub fn RepositoryHeader(
         </Card>
     }
 }
-
