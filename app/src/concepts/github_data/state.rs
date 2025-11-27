@@ -45,4 +45,3 @@ pub struct RepositoryInfo {
     pub language: Option<String>,
     pub updated_at: String,
 }
-

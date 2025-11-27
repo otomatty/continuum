@@ -42,7 +42,7 @@ fn RepositoriesContent() -> impl IntoView {
     // モックデータ（Task 5完了後にリアルデータに置換）
     // TODO: GitHub APIから実際のデータを取得する
     use chrono::Utc;
-    let mock_repositories = vec![
+    let mock_repositories = [
         Repository {
             name: "continuum".to_string(),
             full_name: "org/continuum".to_string(),

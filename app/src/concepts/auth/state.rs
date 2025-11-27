@@ -48,21 +48,12 @@ impl AuthUser {
 }
 
 /// 認証状態
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct AuthState {
     /// 認証済みかどうか
     pub is_authenticated: bool,
     /// 認証済みユーザー情報
     pub user: Option<AuthUser>,
-}
-
-impl Default for AuthState {
-    fn default() -> Self {
-        Self {
-            is_authenticated: false,
-            user: None,
-        }
-    }
 }
 
 /// 認証エラーの種類

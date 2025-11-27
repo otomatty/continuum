@@ -42,7 +42,7 @@ fn ContributorsContent() -> impl IntoView {
     // モックデータ（Task 5完了後にリアルデータに置換）
     // TODO: GitHub APIから実際のデータを取得する
     use chrono::Utc;
-    let mock_users = vec![
+    let mock_users = [
         User {
             username: "alice-dev".to_string(),
             display_name: "Alice Developer".to_string(),

@@ -36,7 +36,7 @@ impl UserRole {
     }
 
     /// 文字列からUserRoleに変換
-    pub fn from_str(s: &str) -> Option<UserRole> {
+    pub fn parse(s: &str) -> Option<UserRole> {
         match s {
             "current" => Some(UserRole::CurrentEmployee),
             "alumni" => Some(UserRole::Alumni),

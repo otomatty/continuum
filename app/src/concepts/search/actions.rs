@@ -50,4 +50,3 @@ where
         .iter()
         .any(|extract| matches_query(extract(item), query))
 }
-

@@ -21,10 +21,7 @@ use leptos::prelude::*;
  *   └─ app/src/concepts/user/mod.rs
  */
 #[component]
-pub fn ContributorCard(
-    user: User,
-    on_click: Option<Callback<String>>,
-) -> impl IntoView {
+pub fn ContributorCard(user: User, on_click: Option<Callback<String>>) -> impl IntoView {
     let role_badge_variant = match user.role {
         UserRole::CurrentEmployee => BadgeVariant::Success,
         UserRole::Alumni => BadgeVariant::Info,

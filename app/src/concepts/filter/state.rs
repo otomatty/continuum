@@ -17,30 +17,20 @@ pub struct FilterState {
 }
 
 /// ソートオプション
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Serialize, Deserialize)]
 pub enum SortOption {
     Name,
+    #[default]
     UpdatedAt,
     Stars,
     Contributions,
     CreatedAt,
 }
 
-impl Default for SortOption {
-    fn default() -> Self {
-        SortOption::UpdatedAt
-    }
-}
-
 /// ソート方向
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Serialize, Deserialize)]
 pub enum SortDirection {
     Ascending,
+    #[default]
     Descending,
-}
-
-impl Default for SortDirection {
-    fn default() -> Self {
-        SortDirection::Descending
-    }
 }

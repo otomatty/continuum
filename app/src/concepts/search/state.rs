@@ -12,18 +12,12 @@ pub struct SearchState {
 }
 
 /// 検索対象フィールド
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub enum SearchField {
     Name,
     Description,
     Author,
     Tag,
+    #[default]
     All,
 }
-
-impl Default for SearchField {
-    fn default() -> Self {
-        SearchField::All
-    }
-}
-

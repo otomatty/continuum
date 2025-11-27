@@ -14,7 +14,6 @@
  *   ├─ Plan: docs/03_plans/continuum/tasks/task-06-search-filter-concepts.md
  *   └─ Issue: (To be created if needed)
  */
-
 pub mod actions;
 pub mod state;
 
@@ -23,4 +22,3 @@ mod tests;
 
 pub use actions::*;
 pub use state::*;
-
