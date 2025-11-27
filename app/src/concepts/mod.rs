@@ -9,7 +9,9 @@
  * Dependencies (Concept modules):
  *   ├─ activity
  *   ├─ auth
+ *   ├─ category
  *   ├─ contribution
+ *   ├─ discussion
  *   ├─ filter
  *   ├─ github_data
  *   ├─ organization
@@ -24,7 +26,9 @@
  */
 pub mod activity;
 pub mod auth;
+pub mod category;
 pub mod contribution;
+pub mod discussion;
 pub mod filter;
 pub mod github_data;
 pub mod organization;
