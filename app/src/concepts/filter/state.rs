@@ -17,7 +17,7 @@ pub struct FilterState {
 }
 
 /// ソートオプション
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
 pub enum SortOption {
     Name,
     UpdatedAt,
@@ -33,7 +33,7 @@ impl Default for SortOption {
 }
 
 /// ソート方向
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
 pub enum SortDirection {
     Ascending,
     Descending,
@@ -44,4 +44,3 @@ impl Default for SortDirection {
         SortDirection::Descending
     }
 }
-

@@ -2,7 +2,8 @@ mod components;
 
 use crate::components::auth_guard::AuthGuard;
 use crate::components::container::Container;
-use crate::concepts::search::{matches_query, SearchState, update_query};
+use crate::concepts::filter::{matches_status, FilterState};
+use crate::concepts::search::{matches_query, update_query, SearchState};
 use crate::concepts::user::{User, UserRole};
 use components::{ContributorGrid, StatusFilter};
 use leptos::prelude::*;
@@ -20,6 +21,7 @@ use leptos_router::hooks::use_navigate;
  *   ├─ app/src/components/auth_guard/mod.rs
  *   ├─ app/src/components/container/mod.rs
  *   ├─ app/src/concepts/search/mod.rs
+ *   ├─ app/src/concepts/filter/mod.rs
  *   ├─ app/src/concepts/user/mod.rs
  *   └─ ./components/mod.rs
  */
@@ -80,27 +82,26 @@ fn ContributorsContent() -> impl IntoView {
     ];
 
     let (search_state, set_search_state) = signal(SearchState::default());
+    let (filter_state, set_filter_state) = signal(FilterState::default());
     let status_filter = RwSignal::new(None::<UserRole>);
 
     // フィルタリングされたユーザー
+    // Filter Conceptのmatches_status関数を使用
     let filtered_users = move || {
         let query = search_state.get().query;
-        let status = status_filter.get();
+        let filter = filter_state.get();
 
         mock_users
             .iter()
             .filter(|user| {
-                // 検索フィルター
-                let matches_search = matches_query(&user.display_name, &query)
+                // 検索フィルター（Search Concept使用）
+                let search_matches = matches_query(&user.display_name, &query)
                     || matches_query(&user.username, &query);
 
-                // ステータスフィルター
-                let matches_status = status
-                    .as_ref()
-                    .map(|s| &user.role == s)
-                    .unwrap_or(true);
+                // ステータスフィルター（Filter Concept使用）
+                let status_matches = matches_status(user, &filter, |u| Some(u.role.as_str()));
 
-                matches_search && matches_status
+                search_matches && status_matches
             })
             .cloned()
             .collect::<Vec<_>>()
@@ -112,14 +113,14 @@ fn ContributorsContent() -> impl IntoView {
     };
 
     // ステータスフィルターハンドラー
-    let status_filter_clone = status_filter.clone();
+    // FilterStateのstatusesを更新（Filter Concept使用）
     let handle_status_change = move |status: Option<UserRole>| {
-        status_filter_clone.set(status);
-    };
-
-    // カードクリックハンドラー
-    let handle_card_click = move |username: String| {
-        navigate(&format!("/portfolio/{}", username), Default::default());
+        status_filter.set(status.clone());
+        let mut new_filter = filter_state.get();
+        new_filter.statuses = status
+            .map(|s| std::iter::once(s.as_str().to_string()).collect())
+            .unwrap_or_default();
+        set_filter_state.set(new_filter);
     };
 
     view! {
@@ -179,4 +180,3 @@ fn ContributorsContent() -> impl IntoView {
         </Container>
     }
 }
-

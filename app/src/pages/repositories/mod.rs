@@ -2,7 +2,7 @@ mod components;
 
 use crate::components::auth_guard::AuthGuard;
 use crate::components::container::Container;
-use crate::concepts::filter::{matches_filter, set_sort, FilterState, SortDirection, SortOption};
+use crate::concepts::filter::{matches_language, set_sort, FilterState, SortDirection, SortOption};
 use crate::concepts::repository::Repository;
 use crate::concepts::search::{matches_query, update_query, SearchState};
 use components::{LanguageFilter, RepositoryTable, SortControl};
@@ -74,7 +74,7 @@ fn RepositoriesContent() -> impl IntoView {
 
     // 利用可能な言語を抽出
     let available_languages: Vec<String> = {
-        let mut langs: HashSet<String> = mock_repositories
+        let langs: HashSet<String> = mock_repositories
             .iter()
             .filter_map(|r| r.language.clone())
             .collect();
@@ -102,7 +102,7 @@ fn RepositoriesContent() -> impl IntoView {
                         .unwrap_or(false);
 
                 // 言語フィルター
-                let matches_lang = matches_filter(r, &filter, |r| r.language.as_deref());
+                let matches_lang = matches_language(r, &filter, |r| r.language.as_deref());
 
                 matches_search && matches_lang
             })
@@ -143,17 +143,6 @@ fn RepositoriesContent() -> impl IntoView {
         let langs: Vec<String> = filter_state.get().languages.iter().cloned().collect();
         selected_languages_signal.set(langs);
     });
-
-    // ソートハンドラー
-    let handle_sort_change = move |sort_by: SortOption, direction: SortDirection| {
-        set_filter_state.set(set_sort(filter_state.get(), sort_by, direction));
-    };
-
-    // テーブル行クリックハンドラー
-    let navigate_for_row_click = navigate.clone();
-    let handle_row_click = move |full_name: String| {
-        navigate_for_row_click(&format!("/repository/{}", full_name), Default::default());
-    };
 
     view! {
         <Container>

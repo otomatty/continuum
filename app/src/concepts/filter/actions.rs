@@ -31,7 +31,10 @@ pub fn set_statuses(state: FilterState, statuses: HashSet<String>) -> FilterStat
 
 /// カテゴリフィルターを設定
 pub fn set_categories(state: FilterState, categories: HashSet<String>) -> FilterState {
-    FilterState { categories, ..state }
+    FilterState {
+        categories,
+        ..state
+    }
 }
 
 /// ソートオプションを設定
@@ -54,13 +57,14 @@ pub fn clear_all(state: FilterState) -> FilterState {
 
 /// フィルターが適用されているか
 pub fn has_active_filters(state: &FilterState) -> bool {
-    !state.languages.is_empty() 
-        || !state.statuses.is_empty() 
-        || !state.categories.is_empty()
+    !state.languages.is_empty() || !state.statuses.is_empty() || !state.categories.is_empty()
 }
 
-/// アイテムがフィルター条件にマッチするか
-pub fn matches_filter<T, F>(item: &T, state: &FilterState, language_extractor: F) -> bool
+/// アイテムが言語フィルター条件にマッチするか
+///
+/// 言語フィルターのみを考慮します。
+/// フィルターが空の場合は全てマッチとみなします。
+pub fn matches_language<T, F>(item: &T, state: &FilterState, language_extractor: F) -> bool
 where
     F: Fn(&T) -> Option<&str>,
 {
@@ -68,7 +72,7 @@ where
     if state.languages.is_empty() {
         return true;
     }
-    
+
     // アイテムの言語がフィルターに含まれているか
     match language_extractor(item) {
         Some(lang) => state.languages.contains(lang),
@@ -76,3 +80,42 @@ where
     }
 }
 
+/// アイテムがステータスフィルター条件にマッチするか
+///
+/// ステータスフィルターのみを考慮します。
+/// フィルターが空の場合は全てマッチとみなします。
+pub fn matches_status<T, F>(item: &T, state: &FilterState, status_extractor: F) -> bool
+where
+    F: Fn(&T) -> Option<&str>,
+{
+    // ステータスフィルターが空なら全てマッチ
+    if state.statuses.is_empty() {
+        return true;
+    }
+
+    // アイテムのステータスがフィルターに含まれているか
+    match status_extractor(item) {
+        Some(status) => state.statuses.contains(status),
+        None => false,
+    }
+}
+
+/// アイテムがカテゴリフィルター条件にマッチするか
+///
+/// カテゴリフィルターのみを考慮します。
+/// フィルターが空の場合は全てマッチとみなします。
+pub fn matches_category<T, F>(item: &T, state: &FilterState, category_extractor: F) -> bool
+where
+    F: Fn(&T) -> Option<&str>,
+{
+    // カテゴリフィルターが空なら全てマッチ
+    if state.categories.is_empty() {
+        return true;
+    }
+
+    // アイテムのカテゴリがフィルターに含まれているか
+    match category_extractor(item) {
+        Some(cat) => state.categories.contains(cat),
+        None => false,
+    }
+}

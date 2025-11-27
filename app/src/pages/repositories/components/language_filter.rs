@@ -51,15 +51,17 @@ pub fn LanguageFilter(
                 {available_languages.into_iter().map(move |lang| {
                     let lang_for_check = lang.clone();
                     let lang_for_toggle = lang.clone();
-                    let is_selected_signal = RwSignal::new(selected_languages.get().contains(&lang_for_check));
-                    Effect::new(move |_| {
-                        is_selected_signal.set(selected_languages.get().contains(&lang_for_check));
+                    // 派生シグナルを使用（効率的なパターン）
+                    // RwSignal + Effect の代わりに Memo を使用することで、
+                    // 不要なリアクティブのオーバーヘッドを削減
+                    let is_selected = Memo::new(move |_| {
+                        selected_languages.get().contains(&lang_for_check)
                     });
                     view! {
                         <li>
                             <label class="label cursor-pointer justify-start gap-2">
                                 <Checkbox
-                                    checked=is_selected_signal.read_only()
+                                    checked=is_selected
                                     on_change=Callback::new(move |_| handle_toggle(lang_for_toggle.clone()))
                                 />
                                 <span>{lang.clone()}</span>
