@@ -1,5 +1,6 @@
 mod components;
 
+use crate::components::auth_guard::AuthGuard;
 use crate::components::card::{Card, CardBody, CardTitle};
 use crate::concepts::activity::initialize_mock_activities;
 use crate::concepts::organization::{initialize_mock_organization_stats, Period};
@@ -18,6 +19,7 @@ use leptos::prelude::*;
  *   └─ app/src/lib.rs (ルーティング)
  *
  * Dependencies (External files that this file imports):
+ *   ├─ app/src/components/auth_guard/mod.rs
  *   ├─ app/src/components/card.rs
  *   ├─ app/src/components/table.rs
  *   ├─ app/src/components/badge.rs
@@ -33,6 +35,16 @@ use leptos::prelude::*;
  */
 #[component]
 pub fn DashboardPage() -> impl IntoView {
+    view! {
+        <AuthGuard>
+            <DashboardContent />
+        </AuthGuard>
+    }
+}
+
+/// Dashboard content component (requires authentication)
+#[component]
+fn DashboardContent() -> impl IntoView {
     let weekly_stats = initialize_mock_organization_stats(Period::Weekly);
 
     // Initialize Concept states

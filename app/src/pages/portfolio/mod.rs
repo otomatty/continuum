@@ -1,5 +1,6 @@
 mod components;
 
+use crate::components::auth_guard::AuthGuard;
 use crate::concepts::contribution::{
     initialize_mock_contribution_graph, initialize_mock_repository_contributions,
 };
@@ -25,6 +26,7 @@ pub struct PortfolioParams {
  *   └─ app/src/lib.rs (ルーティング)
  *
  * Dependencies (External files that this file imports):
+ *   ├─ app/src/components/auth_guard/mod.rs
  *   ├─ app/src/components/card.rs
  *   ├─ app/src/components/badge.rs
  *   ├─ app/src/components/avatar.rs
@@ -37,6 +39,16 @@ pub struct PortfolioParams {
  */
 #[component]
 pub fn PortfolioPage() -> impl IntoView {
+    view! {
+        <AuthGuard>
+            <PortfolioContent />
+        </AuthGuard>
+    }
+}
+
+/// Portfolio content component (requires authentication)
+#[component]
+fn PortfolioContent() -> impl IntoView {
     // For now, use default username since path params routing needs to be fixed
     // TODO: Replace with proper path parameter routing when available. See issue #123.
     let username = move || "alice-dev".to_string();

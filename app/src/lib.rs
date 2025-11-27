@@ -14,9 +14,12 @@ use leptos_meta::{provide_meta_context, MetaTags, Stylesheet, Title};
 use leptos_router::{
     components::{Route, Router, Routes},
     hooks::use_location,
-    StaticSegment,
+    path, StaticSegment,
 };
-use pages::{ComponentsPage, DashboardPage, HomePage, KnowledgePage, PortfolioPage, SettingsPage};
+use pages::{
+    AuthErrorPage, ComponentsPage, DashboardPage, HomePage, KnowledgePage, NotFoundPage,
+    PortfolioPage, SettingsPage,
+};
 
 // web_sys::window is only available in WASM targets
 #[cfg(target_arch = "wasm32")]
@@ -124,6 +127,7 @@ pub fn App() -> impl IntoView {
     #[cfg(target_arch = "wasm32")]
     {
         use crate::hooks::refresh_auth_status_if_needed;
+        use leptos::task::spawn_local;
 
         let context_for_effect = auth_context.clone();
         Effect::new(move |_| {
@@ -133,6 +137,10 @@ pub fn App() -> impl IntoView {
             });
         });
     }
+
+    // Suppress unused variable warning in non-wasm32 builds
+    #[cfg(not(target_arch = "wasm32"))]
+    let _ = auth_context;
 
     // Initialize theme state - load from localStorage if available (client-side only)
     let initial_theme_state = {
@@ -239,9 +247,9 @@ fn AppHeader() -> impl IntoView {
 #[component]
 fn MainContent() -> impl IntoView {
     let location = use_location();
-    let path = move || location.pathname.get();
+    let current_path = move || location.pathname.get();
     let main_class = move || {
-        if path() == "/" {
+        if current_path() == "/" {
             "".to_string()
         } else {
             "container mx-auto py-8".to_string()
@@ -250,13 +258,15 @@ fn MainContent() -> impl IntoView {
 
     view! {
         <main class=main_class>
-            <Routes fallback=|| "Page not found.".into_view()>
+            <Routes fallback=|| view! { <NotFoundPage /> }>
                 <Route path=StaticSegment("") view=HomePage/>
                 <Route path=StaticSegment("dashboard") view=DashboardPage/>
                 <Route path=StaticSegment("portfolio") view=PortfolioPage/>
+                <Route path=path!("/portfolio/:username") view=PortfolioPage/>
                 <Route path=StaticSegment("components") view=ComponentsPage/>
                 <Route path=StaticSegment("knowledge") view=KnowledgePage/>
                 <Route path=StaticSegment("settings") view=SettingsPage/>
+                <Route path=path!("/auth/error") view=AuthErrorPage/>
             </Routes>
         </main>
     }

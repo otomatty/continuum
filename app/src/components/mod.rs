@@ -1,5 +1,6 @@
 pub mod accordion;
 pub mod alert;
+pub mod auth_guard;
 pub mod avatar;
 pub mod badge;
 pub mod breadcrumbs;
