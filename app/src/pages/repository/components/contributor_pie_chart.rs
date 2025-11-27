@@ -49,7 +49,7 @@ pub fn ContributorPieChart(
                 <div class="flex flex-col md:flex-row gap-6 items-center">
                     <div class="relative w-48 h-48">
                         <svg viewBox="0 0 100 100" class="w-full h-full transform -rotate-90">
-                            {pie_segments.iter().enumerate().map(|(idx, (contrib, start_angle, end_angle, percentage))| {
+                            {pie_segments.iter().enumerate().map(|(idx, (_contrib, start_angle, end_angle, percentage))| {
                                 let color = colors[idx % colors.len()];
                                 let large_arc = if percentage > &50.0 { 1 } else { 0 };
                                 
