@@ -1,15 +1,19 @@
+pub mod auth_error;
 pub mod components;
 pub mod dashboard;
 pub mod home;
 pub mod knowledge;
 pub mod knowledge_detail;
+pub mod not_found;
 pub mod portfolio;
 pub mod settings;
 
+pub use auth_error::AuthErrorPage;
 pub use components::ComponentsPage;
 pub use dashboard::DashboardPage;
 pub use home::HomePage;
 pub use knowledge::KnowledgePage;
 pub use knowledge_detail::KnowledgeDetailPage;
+pub use not_found::NotFoundPage;
 pub use portfolio::PortfolioPage;
 pub use settings::SettingsPage;
