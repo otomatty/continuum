@@ -23,14 +23,14 @@ use serde::{Deserialize, Serialize};
 // このファイルでは型定義のみを行い、ロジックは持たない
 use crate::concepts::user::state::User;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct ContributorStats {
     pub user: User,
     pub commits: u32,
     pub percentage: f64,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Repository {
     pub name: String,
     pub full_name: String,

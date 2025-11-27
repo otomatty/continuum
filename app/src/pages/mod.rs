@@ -8,6 +8,7 @@ pub mod knowledge_detail;
 pub mod not_found;
 pub mod portfolio;
 pub mod repositories;
+pub mod repository;
 pub mod settings;
 
 pub use auth_error::AuthErrorPage;
@@ -20,4 +21,5 @@ pub use knowledge_detail::KnowledgeDetailPage;
 pub use not_found::NotFoundPage;
 pub use portfolio::PortfolioPage;
 pub use repositories::RepositoriesPage;
+pub use repository::RepositoryDetailPage;
 pub use settings::SettingsPage;
