@@ -88,3 +88,50 @@ query Contributions($login: String!, $from: DateTime!, $to: DateTime!) {
   }
 }
 "#;
+
+/// Organization の統計情報を取得するクエリ
+pub const ORGANIZATION_STATS_QUERY: &str = r#"
+query OrganizationStats($org: String!) {
+  organization(login: $org) {
+    repositories(first: 100, privacy: PUBLIC) {
+      totalCount
+      nodes {
+        name
+        stargazerCount
+        forkCount
+        updatedAt
+        primaryLanguage {
+          name
+          color
+        }
+      }
+    }
+    membersWithRole {
+      totalCount
+    }
+  }
+}
+"#;
+
+/// ユーザーのコントリビューション情報を取得するクエリ（組織IDを含む）
+pub const USER_CONTRIBUTIONS_QUERY: &str = r#"
+query UserContributions($username: String!, $org: String!, $from: DateTime!, $to: DateTime!) {
+  user(login: $username) {
+    contributionsCollection(organizationID: $org, from: $from, to: $to) {
+      totalCommitContributions
+      totalPullRequestContributions
+      totalPullRequestReviewContributions
+      totalIssueContributions
+      contributionCalendar {
+        totalContributions
+        weeks {
+          contributionDays {
+            contributionCount
+            date
+          }
+        }
+      }
+    }
+  }
+}
+"#;

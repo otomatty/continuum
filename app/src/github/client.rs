@@ -53,6 +53,25 @@ impl GitHubClient {
             .send()
             .await?;
 
+        // レート制限ヘッダーの確認
+        if let Some(remaining) = res.headers().get("X-RateLimit-Remaining") {
+            if let Ok(remaining_str) = remaining.to_str() {
+                if let Ok(remaining_num) = remaining_str.parse::<i32>() {
+                    if remaining_num <= 0 {
+                        let reset = res
+                            .headers()
+                            .get("X-RateLimit-Reset")
+                            .and_then(|h| h.to_str().ok())
+                            .unwrap_or("unknown");
+                        return Err(GitHubError::Api(format!(
+                            "Rate limit exceeded. Reset at: {}",
+                            reset
+                        )));
+                    }
+                }
+            }
+        }
+
         if !res.status().is_success() {
             return Err(GitHubError::Api(format!("Status: {}", res.status())));
         }
@@ -144,6 +163,16 @@ impl GitHubClient {
 
         let data: Response = self.execute_query(CONTRIBUTIONS_QUERY, variables).await?;
         Ok(data.user.contributions_collection)
+    }
+
+    /// Organization の統計情報を取得
+    pub async fn get_organization_stats(
+        &self,
+        org: &str,
+    ) -> Result<OrganizationStatsData, GitHubError> {
+        let variables = json!({ "org": org });
+        let data: OrganizationStatsData = self.execute_query(ORGANIZATION_STATS_QUERY, variables).await?;
+        Ok(data)
     }
 }
 

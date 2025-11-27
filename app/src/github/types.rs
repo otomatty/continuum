@@ -1,5 +1,17 @@
 use serde::{Deserialize, Serialize};
 
+/// GitHub GraphQL API のレスポンス構造
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GraphQLResponse<T> {
+    pub data: Option<T>,
+    pub errors: Option<Vec<GraphQLError>>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GraphQLError {
+    pub message: String,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct Organization {
@@ -101,4 +113,46 @@ pub struct ContributionCalendarDay {
     pub contribution_count: i64,
     pub date: String,
     pub color: String,
+}
+
+/// Organization 統計のレスポンス
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct OrganizationStatsData {
+    pub organization: Option<OrganizationStatsOrg>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct OrganizationStatsOrg {
+    pub repositories: OrganizationStatsRepositoryConnection,
+    pub members_with_role: Count,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct OrganizationStatsRepositoryConnection {
+    pub total_count: i64,
+    pub nodes: Vec<OrganizationStatsRepository>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct OrganizationStatsRepository {
+    pub name: String,
+    pub stargazer_count: i64,
+    pub fork_count: i64,
+    pub updated_at: String,
+    pub primary_language: Option<Language>,
+}
+
+/// Repositories クエリのレスポンス（既存のRepositoryConnectionを拡張）
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct RepositoriesData {
+    pub organization: Option<RepositoriesOrg>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct RepositoriesOrg {
+    pub repositories: RepositoryConnection,
 }
