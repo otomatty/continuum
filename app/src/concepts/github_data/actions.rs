@@ -19,6 +19,7 @@
 use crate::github::client::GitHubClient;
 
 use super::state::{GitHubDataState, OrganizationStats, RepositoryInfo};
+#[cfg(feature = "ssr")]
 use leptos::prelude::*;
 
 /// GitHub Data Stateを初期化
@@ -84,8 +85,8 @@ pub async fn get_organization_stats() -> Result<OrganizationStats, ServerFnError
         .ok_or_else(|| ServerFnError::new("Organization not found"))?;
 
     Ok(OrganizationStats {
-        total_contributors: org_data.members_with_role.total_count as i32,
-        total_repositories: org_data.repositories.total_count as i32,
+        total_contributors: org_data.members_with_role.total_count,
+        total_repositories: org_data.repositories.total_count,
         external_prs_count: 0, // TODO: 外部PRの集計ロジックを追加
     })
 }

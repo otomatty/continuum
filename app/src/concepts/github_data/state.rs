@@ -29,9 +29,9 @@ pub struct GitHubDataState {
 /// 組織の統計情報
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct OrganizationStats {
-    pub total_contributors: i32,
-    pub total_repositories: i32,
-    pub external_prs_count: i32,
+    pub total_contributors: i64,
+    pub total_repositories: i64,
+    pub external_prs_count: i64,
 }
 
 /// リポジトリ情報
@@ -40,8 +40,8 @@ pub struct RepositoryInfo {
     pub name: String,
     pub description: Option<String>,
     pub url: String,
-    pub stars: i32,
-    pub forks: i32,
+    pub stars: i64,
+    pub forks: i64,
     pub language: Option<String>,
     pub updated_at: String,
 }

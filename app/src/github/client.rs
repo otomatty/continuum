@@ -54,21 +54,22 @@ impl GitHubClient {
             .await?;
 
         // レート制限ヘッダーの確認
-        if let Some(remaining) = res.headers().get("X-RateLimit-Remaining") {
-            if let Ok(remaining_str) = remaining.to_str() {
-                if let Ok(remaining_num) = remaining_str.parse::<i32>() {
-                    if remaining_num <= 0 {
-                        let reset = res
-                            .headers()
-                            .get("X-RateLimit-Reset")
-                            .and_then(|h| h.to_str().ok())
-                            .unwrap_or("unknown");
-                        return Err(GitHubError::Api(format!(
-                            "Rate limit exceeded. Reset at: {}",
-                            reset
-                        )));
-                    }
-                }
+        if let Some(remaining_num) = res
+            .headers()
+            .get("X-RateLimit-Remaining")
+            .and_then(|h| h.to_str().ok())
+            .and_then(|s| s.parse::<i32>().ok())
+        {
+            if remaining_num <= 0 {
+                let reset = res
+                    .headers()
+                    .get("X-RateLimit-Reset")
+                    .and_then(|h| h.to_str().ok())
+                    .unwrap_or("unknown");
+                return Err(GitHubError::Api(format!(
+                    "Rate limit exceeded. Reset at: {}",
+                    reset
+                )));
             }
         }
 
