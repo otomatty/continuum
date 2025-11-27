@@ -21,13 +21,22 @@ pub fn StatusFilter(
 ) -> impl IntoView {
     let handle_change = move |role: Option<UserRole>| {
         selected_status.set(role.clone());
-        on_change(role);
+        on_change.run(role);
     };
 
-    let current_checked = move || selected_status.get() == Some(UserRole::CurrentEmployee);
-    let alumni_checked = move || selected_status.get() == Some(UserRole::Alumni);
-    let external_checked = move || selected_status.get() == Some(UserRole::ExternalContributor);
-    let all_checked = move || selected_status.get().is_none();
+    let current_checked = RwSignal::new(selected_status.get() == Some(UserRole::CurrentEmployee));
+    let alumni_checked = RwSignal::new(selected_status.get() == Some(UserRole::Alumni));
+    let external_checked = RwSignal::new(selected_status.get() == Some(UserRole::ExternalContributor));
+    let all_checked = RwSignal::new(selected_status.get().is_none());
+
+    // Update signals when selected_status changes
+    Effect::new(move |_| {
+        let status = selected_status.get();
+        current_checked.set(status == Some(UserRole::CurrentEmployee));
+        alumni_checked.set(status == Some(UserRole::Alumni));
+        external_checked.set(status == Some(UserRole::ExternalContributor));
+        all_checked.set(status.is_none());
+    });
 
     view! {
         <div class="flex flex-wrap gap-4 p-4 bg-base-200 rounded-lg">
@@ -35,7 +44,7 @@ pub fn StatusFilter(
                 <Radio
                     name="status-filter".to_string()
                     value="all".to_string()
-                    checked=all_checked()
+                    checked=all_checked.read_only()
                     on_change=Callback::new(move |_| handle_change(None))
                 />
                 <span class="text-sm font-medium">"All"</span>
@@ -44,7 +53,7 @@ pub fn StatusFilter(
                 <Radio
                     name="status-filter".to_string()
                     value="current".to_string()
-                    checked=current_checked()
+                    checked=current_checked.read_only()
                     on_change=Callback::new(move |_| handle_change(Some(UserRole::CurrentEmployee)))
                 />
                 <span class="text-sm font-medium">"Current"</span>
@@ -53,7 +62,7 @@ pub fn StatusFilter(
                 <Radio
                     name="status-filter".to_string()
                     value="alumni".to_string()
-                    checked=alumni_checked()
+                    checked=alumni_checked.read_only()
                     on_change=Callback::new(move |_| handle_change(Some(UserRole::Alumni)))
                 />
                 <span class="text-sm font-medium">"Alumni"</span>
@@ -62,7 +71,7 @@ pub fn StatusFilter(
                 <Radio
                     name="status-filter".to_string()
                     value="external".to_string()
-                    checked=external_checked()
+                    checked=external_checked.read_only()
                     on_change=Callback::new(move |_| handle_change(Some(UserRole::ExternalContributor)))
                 />
                 <span class="text-sm font-medium">"External"</span>

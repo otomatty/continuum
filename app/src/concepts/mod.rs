@@ -10,10 +10,12 @@
  *   ├─ activity
  *   ├─ auth
  *   ├─ contribution
+ *   ├─ filter
  *   ├─ github_data
  *   ├─ organization
  *   ├─ ranking
  *   ├─ repository
+ *   ├─ search
  *   ├─ theme
  *   └─ user
  *
@@ -23,9 +25,11 @@
 pub mod activity;
 pub mod auth;
 pub mod contribution;
+pub mod filter;
 pub mod github_data;
 pub mod organization;
 pub mod ranking;
 pub mod repository;
+pub mod search;
 pub mod theme;
 pub mod user;

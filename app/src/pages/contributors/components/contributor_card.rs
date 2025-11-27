@@ -23,7 +23,7 @@ use leptos::prelude::*;
 #[component]
 pub fn ContributorCard(
     user: User,
-    #[prop(optional)] on_click: Option<Callback<String>>,
+    on_click: Option<Callback<String>>,
 ) -> impl IntoView {
     let role_badge_variant = match user.role {
         UserRole::CurrentEmployee => BadgeVariant::Success,
@@ -37,9 +37,10 @@ pub fn ContributorCard(
         UserRole::ExternalContributor => "External",
     };
 
+    let username_for_click = user.username.clone();
     let handle_click = move |_| {
         if let Some(callback) = on_click.as_ref() {
-            callback(user.username.clone());
+            callback.run(username_for_click.clone());
         }
     };
 
