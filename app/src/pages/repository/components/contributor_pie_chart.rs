@@ -32,7 +32,7 @@ pub fn ContributorPieChart(contributors: Vec<ContributorStats>) -> impl IntoView
         .collect();
 
     // Generate colors for segments
-    let colors = vec![
+    let colors = [
         "#3b82f6", // blue
         "#10b981", // green
         "#f59e0b", // amber
