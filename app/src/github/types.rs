@@ -1,12 +1,15 @@
 use serde::{Deserialize, Serialize};
 
 /// GitHub GraphQL API のレスポンス構造
+/// 注意: 現在は未使用ですが、将来的にエラーハンドリングを改善する際に使用する予定です。
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GraphQLResponse<T> {
     pub data: Option<T>,
     pub errors: Option<Vec<GraphQLError>>,
 }
 
+/// GraphQLエラーの構造
+/// 注意: 現在は未使用ですが、将来的にエラーハンドリングを改善する際に使用する予定です。
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GraphQLError {
     pub message: String,
@@ -146,11 +149,14 @@ pub struct OrganizationStatsRepository {
 }
 
 /// Repositories クエリのレスポンス（既存のRepositoryConnectionを拡張）
+/// 注意: 現在は未使用ですが、将来的にリポジトリ一覧取得機能を実装する際に使用する予定です。
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct RepositoriesData {
     pub organization: Option<RepositoriesOrg>,
 }
 
+/// Repositories クエリの組織データ
+/// 注意: 現在は未使用ですが、将来的にリポジトリ一覧取得機能を実装する際に使用する予定です。
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct RepositoriesOrg {

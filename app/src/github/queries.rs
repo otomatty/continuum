@@ -114,8 +114,10 @@ query OrganizationStats($org: String!) {
 "#;
 
 /// ユーザーのコントリビューション情報を取得するクエリ（組織IDを含む）
+/// 注意: `organizationID`パラメータは組織のノードID（例: "MDEyOk9yZ2FuaXphdGlvbjE="）を期待します。
+/// 組織のログイン名を使用する場合は、事前に組織IDを取得する必要があります。
 pub const USER_CONTRIBUTIONS_QUERY: &str = r#"
-query UserContributions($username: String!, $org: String!, $from: DateTime!, $to: DateTime!) {
+query UserContributions($username: String!, $org: ID!, $from: DateTime!, $to: DateTime!) {
   user(login: $username) {
     contributionsCollection(organizationID: $org, from: $from, to: $to) {
       totalCommitContributions

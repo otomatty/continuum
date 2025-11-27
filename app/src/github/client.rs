@@ -172,7 +172,9 @@ impl GitHubClient {
         org: &str,
     ) -> Result<OrganizationStatsData, GitHubError> {
         let variables = json!({ "org": org });
-        let data: OrganizationStatsData = self.execute_query(ORGANIZATION_STATS_QUERY, variables).await?;
+        let data: OrganizationStatsData = self
+            .execute_query(ORGANIZATION_STATS_QUERY, variables)
+            .await?;
         Ok(data)
     }
 }
@@ -253,5 +255,55 @@ mod tests {
 
         let result = client.get_organization("test_org").await;
         assert!(matches!(result, Err(GitHubError::GraphQL(_))));
+    }
+
+    #[tokio::test]
+    async fn test_get_organization_stats() {
+        let mock_server = MockServer::start().await;
+        let client =
+            GitHubClient::new_with_base_url("test_token".to_string(), mock_server.uri()).unwrap();
+
+        let mock_response = json!({
+            "data": {
+                "organization": {
+                    "repositories": {
+                        "totalCount": 25,
+                        "nodes": [
+                            {
+                                "name": "repo1",
+                                "stargazerCount": 100,
+                                "forkCount": 20,
+                                "updatedAt": "2025-01-01T00:00:00Z",
+                                "primaryLanguage": {
+                                    "name": "Rust",
+                                    "color": "#dea584"
+                                }
+                            }
+                        ]
+                    },
+                    "membersWithRole": {
+                        "totalCount": 15
+                    }
+                }
+            }
+        });
+
+        Mock::given(method("POST"))
+            .and(path("/"))
+            .and(body_json(json!({
+                "query": ORGANIZATION_STATS_QUERY,
+                "variables": { "org": "test_org" }
+            })))
+            .respond_with(ResponseTemplate::new(200).set_body_json(mock_response))
+            .mount(&mock_server)
+            .await;
+
+        let result = client.get_organization_stats("test_org").await.unwrap();
+        assert!(result.organization.is_some());
+        let org = result.organization.unwrap();
+        assert_eq!(org.repositories.total_count, 25);
+        assert_eq!(org.members_with_role.total_count, 15);
+        assert_eq!(org.repositories.nodes.len(), 1);
+        assert_eq!(org.repositories.nodes[0].name, "repo1");
     }
 }
