@@ -20,7 +20,9 @@ jobs:
       uses: dtolnay/rust-toolchain@nightly
       with:
         targets: wasm32-unknown-unknown
+    - name: Install cargo-leptos
+      run: cargo install cargo-leptos --locked
     - name: Build
-      run: cargo build --verbose
+      run: cargo leptos build --verbose
     - name: Run tests
       run: cargo test --verbose
