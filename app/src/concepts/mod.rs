@@ -1,8 +1,3 @@
-pub mod activity;
-pub mod contribution;
-pub mod organization;
-pub mod ranking;
-pub mod repository;
 /**
  * Concepts Module
  *
@@ -12,14 +7,33 @@ pub mod repository;
  *   └─ app/src/lib.rs
  *
  * Dependencies (Concept modules):
- *   ├─ user
- *   ├─ repository
  *   ├─ activity
+ *   ├─ auth
+ *   ├─ category
+ *   ├─ contribution
+ *   ├─ discussion
+ *   ├─ filter
+ *   ├─ github_data
  *   ├─ organization
  *   ├─ ranking
- *   └─ contribution
+ *   ├─ repository
+ *   ├─ search
+ *   ├─ theme
+ *   └─ user
  *
  * Related Documentation:
  *   └─ docs/00_prompts/legible-architecture.md
  */
+pub mod activity;
+pub mod auth;
+pub mod category;
+pub mod contribution;
+pub mod discussion;
+pub mod filter;
+pub mod github_data;
+pub mod organization;
+pub mod ranking;
+pub mod repository;
+pub mod search;
+pub mod theme;
 pub mod user;

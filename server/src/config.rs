@@ -126,7 +126,11 @@ mod tests {
         );
         env::set_var("GITHUB_ORG_NAME", "test_org");
         env::set_var("SESSION_SECRET", "test_session_secret");
-        env::set_var("LEPTOS_SITE_ADDR", "127.0.0.1:8080");
+        // Note: LEPTOS_SITE_ADDR is optional and defaults to "127.0.0.1:3000"
+        // We test that the default is used when not set
+        env::remove_var("LEPTOS_SITE_ADDR");
+        // Ensure ENV is set to TEST - remove first to avoid any existing value
+        env::remove_var("ENV");
         env::set_var("ENV", "TEST");
 
         // Force reload of .env file (or lack thereof)
@@ -140,7 +144,8 @@ mod tests {
                 assert_eq!(config.github.callback_url, "http://localhost:3000/callback");
                 assert_eq!(config.github.org_name, "test_org");
                 assert_eq!(config.session.secret, "test_session_secret");
-                assert_eq!(config.server.addr, "127.0.0.1:8080");
+                // Default value should be used when LEPTOS_SITE_ADDR is not set
+                assert_eq!(config.server.addr, "127.0.0.1:3000");
                 assert_eq!(config.server.env, "TEST");
             }
             Err(_) => {
@@ -216,6 +221,10 @@ mod tests {
         // We need to handle the case where dotenv might have loaded values
         // Since we can't unload dotenv, we might need to skip this test if it fails due to env vars
         // But for unit testing purposes, we should be running in an environment without .env file ideally
+
+        // Ensure ENV is removed right before calling Config::from_env()
+        // to avoid any interference from parallel test execution
+        env::remove_var("ENV");
 
         match Config::from_env() {
             Ok(config) => {

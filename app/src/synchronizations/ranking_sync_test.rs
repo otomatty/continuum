@@ -23,8 +23,9 @@ mod tests {
     use crate::concepts::user::{User, UserRole, UserState};
     use chrono::Utc;
 
-    fn create_test_user(username: &str) -> User {
+    fn create_test_user(id: &str, username: &str) -> User {
         User {
+            id: id.to_string(),
             username: username.to_string(),
             display_name: format!("{} Display", username),
             avatar_url: format!("https://example.com/{}", username),
@@ -38,7 +39,10 @@ mod tests {
     #[test]
     fn test_calculate_weekly_ranking() {
         let user_state = UserState {
-            users: vec![create_test_user("user1"), create_test_user("user2")],
+            users: vec![
+                create_test_user("user-1", "user1"),
+                create_test_user("user-2", "user2"),
+            ],
             current_user_id: None,
         };
 
@@ -48,11 +52,8 @@ mod tests {
                 Activity {
                     id: "1".to_string(),
                     activity_type: ActivityType::Commit,
-                    user: user_state.users[0].clone(),
-                    repository: crate::concepts::repository::actions::initialize_mock_repositories(
-                    )
-                    .repositories[0]
-                        .clone(),
+                    user_id: "user-1".to_string(),
+                    repository_id: "repo-1".to_string(),
                     title: "Test commit".to_string(),
                     created_at: now - chrono::Duration::try_days(1).unwrap(),
                     url: "https://github.com/test".to_string(),
@@ -60,11 +61,8 @@ mod tests {
                 Activity {
                     id: "2".to_string(),
                     activity_type: ActivityType::PullRequest,
-                    user: user_state.users[1].clone(),
-                    repository: crate::concepts::repository::actions::initialize_mock_repositories(
-                    )
-                    .repositories[0]
-                        .clone(),
+                    user_id: "user-2".to_string(),
+                    repository_id: "repo-1".to_string(),
                     title: "Test PR".to_string(),
                     created_at: now - chrono::Duration::try_days(2).unwrap(),
                     url: "https://github.com/test".to_string(),
@@ -84,7 +82,7 @@ mod tests {
     #[test]
     fn test_calculate_monthly_ranking() {
         let user_state = UserState {
-            users: vec![create_test_user("user1")],
+            users: vec![create_test_user("user-1", "user1")],
             current_user_id: None,
         };
 

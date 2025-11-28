@@ -1,5 +1,6 @@
 mod components;
 
+use crate::components::auth_guard::AuthGuard;
 use crate::components::tabs::{Tab, TabList, TabPanel, Tabs};
 use components::{DataExportButton, NotificationSettings, PrivacySettings, ProfileSettingsForm};
 use leptos::prelude::*;
@@ -13,11 +14,22 @@ use leptos::prelude::*;
  *   └─ app/src/lib.rs
  *
  * Dependencies (External files that this component imports):
+ *   ├─ app/src/components/auth_guard/mod.rs
  *   ├─ app/src/pages/settings/components/mod.rs
  *   └─ app/src/components/tabs.rs
  */
 #[component]
 pub fn SettingsPage() -> impl IntoView {
+    view! {
+        <AuthGuard>
+            <SettingsContent />
+        </AuthGuard>
+    }
+}
+
+/// Settings content component (requires authentication)
+#[component]
+fn SettingsContent() -> impl IntoView {
     view! {
         <div class="container mx-auto px-4 py-8">
             <h1 class="text-4xl font-bold mb-8">"Settings"</h1>

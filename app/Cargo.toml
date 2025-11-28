@@ -10,6 +10,8 @@ leptos.workspace = true
 leptos_meta.workspace = true
 leptos_router.workspace = true
 leptos_axum = { workspace = true, optional = true }
+axum = { workspace = true, optional = true }
+axum-extra = { version = "0.10", features = ["cookie", "cookie-private"], optional = true }
 
 http.workspace = true
 cfg-if.workspace = true
@@ -23,12 +25,12 @@ reqwest = { version = "0.12", features = ["json", "rustls-tls"], optional = true
 wasm-bindgen = { version = "0.2", optional = true }
 wasm-bindgen-futures = { version = "0.4", optional = true }
 js-sys = { version = "0.3", optional = true }
-web-sys = { version = "0.3", optional = true }
+web-sys = { version = "0.3", optional = true, features = ["Window", "Storage", "MediaQueryList", "IntersectionObserver", "IntersectionObserverEntry", "IntersectionObserverInit", "Element"] }
 
 [features]
 default = []
 hydrate = ["leptos/hydrate", "dep:wasm-bindgen", "dep:wasm-bindgen-futures", "dep:js-sys", "dep:web-sys"]
-ssr = ["leptos/ssr", "leptos_meta/ssr", "leptos_router/ssr", "dep:leptos_axum", "dep:reqwest"]
+ssr = ["leptos/ssr", "leptos_meta/ssr", "leptos_router/ssr", "dep:leptos_axum", "dep:reqwest", "dep:axum", "dep:axum-extra"]
 
 [dev-dependencies]
 wiremock = "0.6"

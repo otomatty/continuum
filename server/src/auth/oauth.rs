@@ -7,7 +7,7 @@ use axum::{
     extract::{Query, State},
     response::{IntoResponse, Redirect},
     routing::get,
-    Router,
+    Json, Router,
 };
 use axum_extra::extract::cookie::Cookie;
 use axum_extra::extract::cookie::PrivateCookieJar;
@@ -16,7 +16,7 @@ use oauth2::{
     basic::BasicClient, reqwest::async_http_client, AuthUrl, AuthorizationCode, ClientId,
     ClientSecret, CsrfToken, RedirectUrl, Scope, TokenResponse, TokenUrl,
 };
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone)]
 pub struct AuthState {
@@ -29,11 +29,20 @@ pub struct AuthRequest {
     state: String,
 }
 
+#[derive(Debug, Serialize)]
+pub struct AuthStatus {
+    authenticated: bool,
+    user_id: Option<String>,
+}
+
 pub fn auth_routes() -> Router<AppState> {
     Router::new()
         .route("/auth/login", get(login))
         .route("/auth/callback", get(callback))
         .route("/auth/logout", get(logout))
+        .route("/api/auth/me", get(check_auth_status))
+        // Test-only endpoint for E2E tests (only available in DEV/TEST environment)
+        .route("/api/test/auth/set-session", get(set_test_session))
 }
 
 pub fn create_auth_state(config: &Config) -> AuthState {
@@ -119,7 +128,8 @@ async fn callback(
 
                             match create_session_cookie(&session, secure, duration_secs) {
                                 Ok(cookie) => {
-                                    return (jar.add(cookie), Redirect::to("/")).into_response();
+                                    return (jar.add(cookie), Redirect::to("/dashboard"))
+                                        .into_response();
                                 }
                                 Err(e) => {
                                     log!("Failed to create session cookie: {}", e);
@@ -147,4 +157,71 @@ async fn callback(
 async fn logout(State(state): State<AppState>, jar: PrivateCookieJar) -> impl IntoResponse {
     let secure = state.config.server.env != "DEV";
     (jar.add(create_logout_cookie(secure)), Redirect::to("/"))
+}
+
+async fn check_auth_status(jar: PrivateCookieJar) -> impl IntoResponse {
+    if let Some(cookie) = jar.get("session") {
+        if let Ok(session) = Session::from_cookie_value(cookie.value()) {
+            if !session.is_expired() {
+                return Json(AuthStatus {
+                    authenticated: true,
+                    user_id: Some(session.user_id),
+                });
+            }
+        }
+    }
+
+    Json(AuthStatus {
+        authenticated: false,
+        user_id: None,
+    })
+}
+
+// Test-only endpoint for E2E tests
+// This allows setting a session cookie for testing purposes
+// Only available when ENV=DEV or ENV=TEST
+#[derive(Debug, Deserialize)]
+struct SetTestSessionRequest {
+    user_id: String,
+    expires_in_seconds: Option<u64>,
+}
+
+async fn set_test_session(
+    State(state): State<AppState>,
+    jar: PrivateCookieJar,
+    Query(query): Query<SetTestSessionRequest>,
+) -> impl IntoResponse {
+    // Only allow in DEV/TEST environment
+    if state.config.server.env != "DEV" && state.config.server.env != "TEST" {
+        return Json(serde_json::json!({
+            "error": "This endpoint is only available in DEV/TEST environment"
+        }))
+        .into_response();
+    }
+
+    let expires_in_secs = query.expires_in_seconds.unwrap_or(3600);
+    let session = Session::new(
+        query.user_id,
+        "test_access_token".to_string(),
+        expires_in_secs,
+    );
+
+    let secure = state.config.server.env != "DEV";
+    match create_session_cookie(&session, secure, expires_in_secs as i64) {
+        Ok(cookie) => (
+            jar.add(cookie),
+            Json(serde_json::json!({
+                "success": true,
+                "user_id": session.user_id
+            })),
+        )
+            .into_response(),
+        Err(e) => {
+            log!("Failed to create test session cookie: {}", e);
+            Json(serde_json::json!({
+                "error": format!("Failed to create session cookie: {}", e)
+            }))
+            .into_response()
+        }
+    }
 }

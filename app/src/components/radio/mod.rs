@@ -18,7 +18,10 @@ pub fn Radio(
     name: String,
     value: String,
     #[prop(optional)] variant: RadioVariant,
-    #[prop(optional, into)] checked: Option<ReadSignal<bool>>,
+    /// checkedプロパティはSignal<bool>を受け入れます。
+    /// これにより、ReadSignal, RwSignal, Memo などを柔軟に渡せます。
+    #[prop(optional, into)]
+    checked: Signal<bool>,
     #[prop(optional, into)] on_change: Option<Callback<Event>>,
     #[prop(optional, into)] class: String,
 ) -> impl IntoView {
@@ -50,7 +53,7 @@ pub fn Radio(
             name=name
             value=value
             class=combined_class
-            checked=move || checked.map(|c| c.get()).unwrap_or(false)
+            checked=move || checked.get()
             on:change=handle_change
         />
     }

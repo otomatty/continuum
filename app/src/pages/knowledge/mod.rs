@@ -1,5 +1,6 @@
 pub mod components;
 
+use crate::components::auth_guard::AuthGuard;
 use components::{
     AuthorFilter, CategoryFilter, KnowledgeCard, KnowledgeCategory, KnowledgeItem, SearchBar,
 };
@@ -14,10 +15,21 @@ use leptos::prelude::*;
  *   └─ app/src/lib.rs
  *
  * Dependencies (External files that this component imports):
+ *   ├─ app/src/components/auth_guard/mod.rs
  *   └─ app/src/pages/knowledge/components/mod.rs
  */
 #[component]
 pub fn KnowledgePage() -> impl IntoView {
+    view! {
+        <AuthGuard>
+            <KnowledgeContent />
+        </AuthGuard>
+    }
+}
+
+/// Knowledge content component (requires authentication)
+#[component]
+fn KnowledgeContent() -> impl IntoView {
     // Mock data - will be replaced with API calls later
     let mock_knowledge_items = vec![
         KnowledgeItem {

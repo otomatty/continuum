@@ -117,6 +117,60 @@ There are some examples tests are located in `end2end/tests` directory that pass
 
 A web-based report on tests is available by running `npx playwright show-report` in the `end2end` directory.
 
+## CI Checks
+
+コミット前にCIと同じチェックをローカルで実行できます。
+
+### すべてのチェックを実行（推奨）
+
+```bash
+# スクリプトを直接実行
+./scripts/check-all.sh
+
+# または bun を使用
+bun run check
+```
+
+このコマンドは以下のチェックを順番に実行します：
+1. フォーマットチェック (`cargo fmt --check --all`)
+2. Clippyチェック (`cargo clippy --all-targets -- -D warnings`)
+3. テスト実行 (`cargo test --all`)
+4. ビルドチェック (`cargo check --all`)
+
+各チェックの実行時間と結果が表示され、最後にサマリーが表示されます。
+
+### 個別のチェックを実行
+
+```bash
+# フォーマットチェックのみ
+bun run check:format
+
+# Clippyチェックのみ
+bun run check:clippy
+
+# テストのみ
+bun run check:test
+
+# ビルドチェックのみ
+bun run check:build
+```
+
+### 高速チェック（テストをスキップ）
+
+```bash
+bun run check:fast
+```
+
+### Pre-commitフックの設定
+
+Git hooksをインストールすると、コミット前に自動的にチェックが実行されます：
+
+```bash
+bun run install:hooks
+```
+
+詳細は [CI_CHECKS.md](docs/CI_CHECKS.md) を参照してください。
+
 
 ## Executing a Server on a Remote Machine Without the Toolchain
 After running a `cargo leptos build --release` the minimum files needed are:
