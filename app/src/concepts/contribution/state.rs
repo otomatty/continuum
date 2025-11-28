@@ -23,17 +23,12 @@ use chrono::NaiveDate;
 use serde::{Deserialize, Serialize};
 
 /// Period enumを Contribution Concept 内で定義（独立性の維持）
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Default, Serialize, Deserialize, PartialEq, Eq)]
 pub enum ContributionPeriod {
     Weekly,
+    #[default]
     Monthly,
     All,
-}
-
-impl Default for ContributionPeriod {
-    fn default() -> Self {
-        Self::Monthly
-    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]

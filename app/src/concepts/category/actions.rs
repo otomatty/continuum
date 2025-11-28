@@ -78,7 +78,7 @@ pub fn sort_by_name(mut categories: Vec<Category>) -> Vec<Category> {
 }
 
 /// 選択中のカテゴリを取得
-pub fn get_selected_category<'a>(state: &'a CategoryState) -> Option<&'a Category> {
+pub fn get_selected_category(state: &CategoryState) -> Option<&Category> {
     state
         .selected_category_id
         .as_ref()
@@ -89,7 +89,10 @@ pub fn get_selected_category<'a>(state: &'a CategoryState) -> Option<&'a Categor
 pub fn add_category(state: CategoryState, category: Category) -> CategoryState {
     let mut categories = state.categories;
     categories.push(category);
-    CategoryState { categories, ..state }
+    CategoryState {
+        categories,
+        ..state
+    }
 }
 
 /// カテゴリのDiscussion数を更新
@@ -112,5 +115,8 @@ pub fn update_discussions_count(
             }
         })
         .collect();
-    CategoryState { categories, ..state }
+    CategoryState {
+        categories,
+        ..state
+    }
 }

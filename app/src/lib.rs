@@ -241,12 +241,7 @@ fn AppHeader() -> impl IntoView {
     // For protected routes, check actual auth status to prevent flickering
     let auth = crate::hooks::use_auth();
     let is_auth_loading = move || auth.status.get().is_none();
-    let is_authenticated = move || {
-        auth.status
-            .get()
-            .map(|s| s.authenticated)
-            .unwrap_or(false)
-    };
+    let is_authenticated = move || auth.status.get().map(|s| s.authenticated).unwrap_or(false);
 
     view! {
         {move || {

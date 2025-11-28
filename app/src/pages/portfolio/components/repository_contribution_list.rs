@@ -1,22 +1,20 @@
+// RepositoryContributionList Component
+//
+// DEPENDENCY MAP:
+//
+// Parents (Files that import this component):
+//   └─ app/src/pages/portfolio/mod.rs
+//
+// Dependencies (External files that this component imports):
+//   ├─ app/src/components/card.rs
+//   └─ app/src/concepts/contribution/mod.rs
+//
+// Note: RepositoryContribution は ID 参照のみ保持するため、
+// 表示に必要な情報は RepositoryContributionDisplay として UI 層で結合する
+
 use crate::components::card::{Card, CardBody, CardTitle};
 use crate::concepts::contribution::RepositoryContribution;
 use leptos::prelude::*;
-
-/**
- * RepositoryContributionList Component
- *
- * DEPENDENCY MAP:
- *
- * Parents (Files that import this component):
- *   └─ app/src/pages/portfolio/mod.rs
- *
- * Dependencies (External files that this component imports):
- *   ├─ app/src/components/card.rs
- *   └─ app/src/concepts/contribution/mod.rs
- *
- * Note: RepositoryContribution は ID 参照のみ保持するため、
- * 表示に必要な情報は RepositoryContributionDisplay として UI 層で結合する
- */
 
 /// UI 表示用の RepositoryContribution データ（Synchronization/UI 層で結合）
 #[derive(Debug, Clone)]
@@ -32,7 +30,8 @@ impl RepositoryContributionDisplay {
     pub fn from_contribution_with_mock(contribution: RepositoryContribution) -> Self {
         let repository_name = contribution.repository_id.clone();
         let repository_full_name = format!("org/{}", contribution.repository_id);
-        let repository_description = Some(format!("Description for {}", contribution.repository_id));
+        let repository_description =
+            Some(format!("Description for {}", contribution.repository_id));
 
         Self {
             contribution,
@@ -44,7 +43,9 @@ impl RepositoryContributionDisplay {
 }
 
 #[component]
-pub fn RepositoryContributionList(contributions: Vec<RepositoryContributionDisplay>) -> impl IntoView {
+pub fn RepositoryContributionList(
+    contributions: Vec<RepositoryContributionDisplay>,
+) -> impl IntoView {
     view! {
         <Card>
             <CardTitle>"Repository Contributions"</CardTitle>

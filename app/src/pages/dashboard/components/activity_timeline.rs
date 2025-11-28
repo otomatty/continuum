@@ -1,26 +1,24 @@
+// ActivityTimeline Component
+//
+// DEPENDENCY MAP:
+//
+// Parents (Files that import this component):
+//   └─ app/src/pages/dashboard/mod.rs
+//
+// Dependencies (External files that this component imports):
+//   ├─ app/src/components/badge.rs
+//   ├─ app/src/components/avatar.rs
+//   └─ app/src/concepts/activity/mod.rs
+//
+// Note: Activity Concept は ID 参照のみ保持するため、
+// 表示に必要な情報は ActivityDisplay として UI 層で結合する
+
 use crate::components::{
     avatar::Avatar,
     badge::{Badge, BadgeVariant},
 };
 use crate::concepts::activity::{Activity, ActivityType};
 use leptos::prelude::*;
-
-/**
- * ActivityTimeline Component
- *
- * DEPENDENCY MAP:
- *
- * Parents (Files that import this component):
- *   └─ app/src/pages/dashboard/mod.rs
- *
- * Dependencies (External files that this component imports):
- *   ├─ app/src/components/badge.rs
- *   ├─ app/src/components/avatar.rs
- *   └─ app/src/concepts/activity/mod.rs
- *
- * Note: Activity Concept は ID 参照のみ保持するため、
- * 表示に必要な情報は ActivityDisplay として UI 層で結合する
- */
 
 /// UI 表示用の Activity データ（Synchronization/UI 層で結合）
 #[derive(Debug, Clone)]
@@ -33,6 +31,7 @@ pub struct ActivityDisplay {
 
 impl ActivityDisplay {
     /// Activity と関連データから表示用データを生成
+    #[allow(dead_code)]
     pub fn from_activity(
         activity: Activity,
         user_display_name: String,
