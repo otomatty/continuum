@@ -50,6 +50,7 @@ fn RepositoryDetailContent() -> impl IntoView {
     let mock_contributors = vec![
         ContributorStats {
             user: User {
+                id: "user-alice".to_string(),
                 username: "alice-dev".to_string(),
                 display_name: "Alice Developer".to_string(),
                 avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alice".to_string(),
@@ -63,6 +64,7 @@ fn RepositoryDetailContent() -> impl IntoView {
         },
         ContributorStats {
             user: User {
+                id: "user-bob".to_string(),
                 username: "bob-contrib".to_string(),
                 display_name: "Bob Contributor".to_string(),
                 avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Bob".to_string(),
@@ -76,6 +78,7 @@ fn RepositoryDetailContent() -> impl IntoView {
         },
         ContributorStats {
             user: User {
+                id: "user-charlie".to_string(),
                 username: "charlie".to_string(),
                 display_name: "Charlie".to_string(),
                 avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Charlie".to_string(),
@@ -89,6 +92,7 @@ fn RepositoryDetailContent() -> impl IntoView {
         },
         ContributorStats {
             user: User {
+                id: "user-others".to_string(),
                 username: "others".to_string(),
                 display_name: "Others".to_string(),
                 avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Others".to_string(),

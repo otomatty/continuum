@@ -60,14 +60,14 @@ fn calculate_ranking_by_period(
             .with_timezone(&Utc),
     };
 
-    // Aggregate activities by user
+    // Aggregate activities by user_id
     let mut user_stats: std::collections::HashMap<String, (u32, u32, u32)> =
         std::collections::HashMap::new();
 
     for activity in &activity_state.activities {
         if activity.created_at >= cutoff_date {
             let stats = user_stats
-                .entry(activity.user.username.clone())
+                .entry(activity.user_id.clone())
                 .or_insert((0, 0, 0));
             match activity.activity_type {
                 ActivityType::Commit => stats.0 += 1,
@@ -78,12 +78,13 @@ fn calculate_ranking_by_period(
         }
     }
 
-    // Create ranking entries
+    // Create ranking entries by matching user_id to user
     let entries: Vec<RankingEntry> = user_state
         .users
         .iter()
         .filter_map(|user| {
-            if let Some((commits, prs, reviews)) = user_stats.get(&user.username) {
+            // user.id matches activity.user_id
+            if let Some((commits, prs, reviews)) = user_stats.get(&user.id) {
                 Some(RankingEntry {
                     user: user.clone(),
                     commits: *commits,

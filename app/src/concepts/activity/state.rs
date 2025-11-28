@@ -9,20 +9,18 @@
  *   └─ src/concepts/activity/tests.rs
  *
  * Dependencies (External files that this file imports):
- *   ├─ chrono::DateTime, chrono::Utc
- *   └─ crate::concepts::{user::state::User, repository::state::Repository} (型定義のみ)
+ *   └─ chrono::DateTime, chrono::Utc
  *
  * Related Documentation:
  *   ├─ Spec: ./activity.spec.md
  *   └─ Plan: docs/03_plans/continuum/legible-architecture-refactoring.md
+ *
+ * Note: Legible Architecture の「状態の単一所有」原則に従い、
+ * User/Repository は ID 参照のみ保持し、実際のオブジェクトは
+ * Synchronization 層または UI 層で結合する
  */
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-
-// Note: User型とRepository型は他のConceptから参照するが、
-// Conceptの独立性を保つため、このファイルでは型定義のみを行い、ロジックは持たない
-use crate::concepts::repository::state::Repository;
-use crate::concepts::user::state::User;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum ActivityType {
@@ -33,12 +31,14 @@ pub enum ActivityType {
     Discussion,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Activity {
     pub id: String,
     pub activity_type: ActivityType,
-    pub user: User,
-    pub repository: Repository,
+    /// ユーザーの参照（ID のみ保持、Concept の独立性を維持）
+    pub user_id: String,
+    /// リポジトリの参照（ID のみ保持、Concept の独立性を維持）
+    pub repository_id: String,
     pub title: String,
     pub created_at: DateTime<Utc>,
     pub url: String,

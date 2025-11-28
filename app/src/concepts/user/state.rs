@@ -48,6 +48,7 @@ impl UserRole {
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct User {
+    pub id: String,
     pub username: String,
     pub display_name: String,
     pub avatar_url: String,

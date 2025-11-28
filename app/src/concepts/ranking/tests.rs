@@ -24,6 +24,7 @@ mod tests {
     fn test_add_ranking_entry() {
         let state = RankingState::default();
         let user = User {
+            id: "user-test".to_string(),
             username: "test-user".to_string(),
             display_name: "Test User".to_string(),
             avatar_url: "https://example.com/avatar.png".to_string(),
@@ -57,6 +58,7 @@ mod tests {
     #[test]
     fn test_sort_by_score() {
         let user1 = User {
+            id: "user-1".to_string(),
             username: "user1".to_string(),
             display_name: "User 1".to_string(),
             avatar_url: "https://example.com/avatar1.png".to_string(),
@@ -66,6 +68,7 @@ mod tests {
             left_at: None,
         };
         let user2 = User {
+            id: "user-2".to_string(),
             username: "user2".to_string(),
             display_name: "User 2".to_string(),
             avatar_url: "https://example.com/avatar2.png".to_string(),

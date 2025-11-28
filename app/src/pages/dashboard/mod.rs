@@ -7,7 +7,7 @@ use crate::concepts::organization::{initialize_mock_organization_stats, Period};
 use crate::concepts::repository::initialize_mock_repositories;
 use crate::concepts::user::initialize_mock_users;
 use crate::synchronizations::{calculate_monthly_ranking, calculate_weekly_ranking};
-use components::{ActivityTimeline, RankingTable, RepositoryList, StatsCard};
+use components::{ActivityDisplay, ActivityTimeline, RankingTable, RepositoryList, StatsCard};
 use leptos::prelude::*;
 
 /**
@@ -55,7 +55,12 @@ fn DashboardContent() -> impl IntoView {
     let weekly_ranking = calculate_weekly_ranking(&user_state, &activity_state);
     let monthly_ranking = calculate_monthly_ranking(&user_state, &activity_state);
 
-    let activities = activity_state.activities;
+    // Activity を ActivityDisplay に変換（UI 層でのデータ結合）
+    let activities: Vec<ActivityDisplay> = activity_state
+        .activities
+        .into_iter()
+        .map(ActivityDisplay::from_activity_with_mock)
+        .collect();
     let repositories = initialize_mock_repositories().repositories;
 
     let (selected_period, set_selected_period) = signal(Period::Weekly);
