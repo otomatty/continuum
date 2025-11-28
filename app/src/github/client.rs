@@ -177,6 +177,54 @@ impl GitHubClient {
             .await?;
         Ok(data)
     }
+
+    /// Discussion カテゴリを取得
+    pub async fn get_discussion_categories(
+        &self,
+        owner: &str,
+        repo: &str,
+    ) -> Result<DiscussionCategoriesData, GitHubError> {
+        let variables = json!({
+            "owner": owner,
+            "name": repo
+        });
+        let data: DiscussionCategoriesData = self
+            .execute_query(DISCUSSION_CATEGORIES_QUERY, variables)
+            .await?;
+        Ok(data)
+    }
+
+    /// Discussion 一覧を取得
+    pub async fn get_discussions(
+        &self,
+        owner: &str,
+        repo: &str,
+        first: i32,
+        after: Option<&str>,
+        category_id: Option<&str>,
+    ) -> Result<DiscussionsData, GitHubError> {
+        let variables = json!({
+            "owner": owner,
+            "name": repo,
+            "first": first,
+            "after": after,
+            "categoryId": category_id
+        });
+        let data: DiscussionsData = self.execute_query(DISCUSSIONS_QUERY, variables).await?;
+        Ok(data)
+    }
+
+    /// Discussion 詳細を取得
+    pub async fn get_discussion_detail(
+        &self,
+        discussion_id: &str,
+    ) -> Result<DiscussionDetailData, GitHubError> {
+        let variables = json!({ "id": discussion_id });
+        let data: DiscussionDetailData = self
+            .execute_query(DISCUSSION_DETAIL_QUERY, variables)
+            .await?;
+        Ok(data)
+    }
 }
 
 #[cfg(test)]
