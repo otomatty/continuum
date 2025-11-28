@@ -162,3 +162,150 @@ pub struct RepositoriesData {
 pub struct RepositoriesOrg {
     pub repositories: RepositoryConnection,
 }
+
+// =============================================================================
+// Discussion 関連の型定義
+// =============================================================================
+
+/// Discussion ページネーション情報
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct DiscussionPageInfo {
+    pub has_next_page: bool,
+    pub has_previous_page: bool,
+    pub end_cursor: Option<String>,
+    pub start_cursor: Option<String>,
+}
+
+/// Discussion カテゴリのレスポンス
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct DiscussionCategoriesData {
+    pub repository: Option<DiscussionCategoriesRepository>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct DiscussionCategoriesRepository {
+    pub discussion_categories: DiscussionCategoryConnection,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct DiscussionCategoryConnection {
+    pub nodes: Vec<GitHubDiscussionCategory>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct GitHubDiscussionCategory {
+    pub id: String,
+    pub name: String,
+    pub description: Option<String>,
+    pub emoji: Option<String>,
+}
+
+/// Discussions 一覧のレスポンス
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct DiscussionsData {
+    pub repository: Option<DiscussionsRepository>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct DiscussionsRepository {
+    pub discussions: DiscussionConnection,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct DiscussionConnection {
+    pub total_count: i32,
+    pub page_info: DiscussionPageInfo,
+    pub nodes: Vec<GitHubDiscussion>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct GitHubDiscussion {
+    pub id: String,
+    pub title: String,
+    pub body: String,
+    pub body_text: Option<String>,
+    pub body_html: Option<String>,
+    pub created_at: String,
+    pub updated_at: String,
+    pub url: String,
+    pub author: Option<GitHubAuthor>,
+    pub category: GitHubDiscussionCategory,
+    pub comments: CommentCount,
+    pub reactions: ReactionCount,
+    pub labels: LabelConnection,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct GitHubAuthor {
+    pub login: String,
+    pub avatar_url: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct CommentCount {
+    pub total_count: i32,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct ReactionCount {
+    pub total_count: i32,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct LabelConnection {
+    pub nodes: Vec<GitHubLabel>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct GitHubLabel {
+    pub name: String,
+}
+
+/// Discussion 詳細のレスポンス
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct DiscussionDetailData {
+    pub node: Option<GitHubDiscussionDetail>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct GitHubDiscussionDetail {
+    pub id: String,
+    pub title: String,
+    pub body: String,
+    pub body_html: Option<String>,
+    pub body_text: Option<String>,
+    pub created_at: String,
+    pub updated_at: String,
+    pub url: String,
+    pub author: Option<GitHubAuthor>,
+    pub category: GitHubDiscussionCategory,
+    pub comments: DiscussionCommentConnection,
+    pub reactions: ReactionCount,
+    pub labels: LabelConnection,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct DiscussionCommentConnection {
+    pub total_count: i32,
+    pub nodes: Vec<GitHubDiscussionComment>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct GitHubDiscussionComment {
+    pub id: String,
+    pub body: String,
+    pub body_html: Option<String>,
+    pub created_at: String,
+    pub author: Option<GitHubAuthor>,
+    pub reactions: ReactionCount,
+}

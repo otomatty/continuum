@@ -5,12 +5,18 @@
 - Implementation: `src/concepts/discussion/mod.rs`
 - State: `src/concepts/discussion/state.rs`
 - Actions: `src/concepts/discussion/actions.rs`
+- Server: `src/concepts/discussion/server.rs`
 - Tests: `src/concepts/discussion/tests.rs`
 
 ## Related Documentation
 
 - Plan: `docs/03_plans/continuum/tasks/task-10-discussion-concepts.md`
+- GitHub API Task: `docs/03_plans/continuum/tasks/task-11-github-discussions-api.md`
 - PRD: `PRD.md` - セクション 5.2 知見共有機能
+- GitHub API:
+  - Client: `src/github/client.rs`
+  - Queries: `src/github/queries.rs`
+  - Types: `src/github/types.rs`
 - Synchronizations:
   - (将来) discussion_category_sync: `src/synchronizations/discussion_category_sync.rs`
 
@@ -85,6 +91,20 @@
 | `sort_by_updated_at_desc` | 更新日時でソート（新しい順）                      |
 | `sort_by_comments_desc`   | コメント数でソート（多い順）                      |
 | `sort_by_reactions_desc`  | リアクション数でソート（多い順）                  |
+
+### Server Functions
+
+| Server Function             | 説明                                          | エンドポイント                |
+| --------------------------- | --------------------------------------------- | ----------------------------- |
+| `get_discussion_categories` | Discussion カテゴリ一覧を取得                 | `/api/discussions/categories` |
+| `get_discussions`           | Discussion 一覧を取得（ページネーション対応） | `/api/discussions`            |
+| `get_discussion_detail`     | 単一の Discussion 詳細を取得                  | `/api/discussions/detail`     |
+
+#### 環境変数要件
+
+- `GITHUB_ORG_NAME`: GitHub Organization 名
+- `GITHUB_TOKEN`: GitHub API アクセストークン
+- `GITHUB_DISCUSSIONS_REPO`: Discussions が有効なリポジトリ名（オプション）
 
 ## Test Cases
 

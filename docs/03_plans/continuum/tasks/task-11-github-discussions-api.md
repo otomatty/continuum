@@ -3,9 +3,11 @@
 ## 1. 目的と背景
 
 ### なぜこのタスクが必要か
+
 Task 10 で定義した Discussion Concept に実際のデータを流し込むため、GitHub GraphQL API を使用して Discussions データを取得する機能を実装します。
 
 ### 完成時のユーザー体験
+
 - 知見共有ページにリアルな GitHub Discussions が表示される
 - カテゴリ別にフィルタリングできる
 - 詳細ページで Markdown がレンダリングされる
@@ -15,10 +17,12 @@ Task 10 で定義した Discussion Concept に実際のデータを流し込む�
 ## 2. 前提条件
 
 ### 依存するタスク
+
 - ✅ Task 5: GitHub API 実装（基盤）
 - ✅ Task 10: Discussion Concepts 実装
 
 ### 必要な環境設定
+
 - GitHub Organization に Discussions が有効なリポジトリが存在すること
 - `GITHUB_ORG` 環境変数が設定されていること
 
@@ -27,15 +31,17 @@ Task 10 で定義した Discussion Concept に実際のデータを流し込む�
 ## 3. 作成/更新ファイル一覧
 
 ### 更新ファイル
-| ファイル | 変更内容 |
-|---------|---------|
-| `app/src/github/queries.rs` | Discussions 関連クエリ追加 |
-| `app/src/github/types.rs` | Discussions レスポンス型追加 |
-| `app/src/github/client.rs` | Discussions 取得メソッド追加 |
+
+| ファイル                    | 変更内容                     |
+| --------------------------- | ---------------------------- |
+| `app/src/github/queries.rs` | Discussions 関連クエリ追加   |
+| `app/src/github/types.rs`   | Discussions レスポンス型追加 |
+| `app/src/github/client.rs`  | Discussions 取得メソッド追加 |
 
 ### 新規作成ファイル
-| ファイル | 内容 |
-|---------|------|
+
+| ファイル                                | 内容                 |
+| --------------------------------------- | -------------------- |
 | `app/src/concepts/discussion/server.rs` | Server Function 定義 |
 
 ---
@@ -66,16 +72,16 @@ query DiscussionCategories($owner: String!, $name: String!) {
 /// Discussion 一覧を取得するクエリ
 pub const DISCUSSIONS_QUERY: &str = r#"
 query Discussions(
-  $owner: String!, 
-  $name: String!, 
-  $first: Int!, 
+  $owner: String!,
+  $name: String!,
+  $first: Int!,
   $after: String,
   $categoryId: ID
 ) {
   repository(owner: $owner, name: $name) {
     discussions(
-      first: $first, 
-      after: $after, 
+      first: $first,
+      after: $after,
       categoryId: $categoryId,
       orderBy: {field: CREATED_AT, direction: DESC}
     ) {
@@ -362,12 +368,12 @@ pub async fn get_discussion_categories(
 ) -> Result<Vec<crate::concepts::category::Category>, ServerFnError> {
     let org = std::env::var("GITHUB_ORG")
         .map_err(|_| ServerFnError::new("GITHUB_ORG not set"))?;
-    
+
     let token = std::env::var("GITHUB_TOKEN")
         .map_err(|_| ServerFnError::new("GITHUB_TOKEN not set"))?;
 
     let client = GitHubClient::new(token);
-    
+
     let data = client
         .get_discussion_categories(&org, &repo_name)
         .await
@@ -400,12 +406,12 @@ pub async fn get_discussions(
 ) -> Result<(Vec<Discussion>, PaginationInfo), ServerFnError> {
     let org = std::env::var("GITHUB_ORG")
         .map_err(|_| ServerFnError::new("GITHUB_ORG not set"))?;
-    
+
     let token = std::env::var("GITHUB_TOKEN")
         .map_err(|_| ServerFnError::new("GITHUB_TOKEN not set"))?;
 
     let client = GitHubClient::new(token);
-    
+
     let data = client
         .get_discussions(
             &org,
@@ -480,7 +486,7 @@ pub async fn get_discussion_detail(
         .map_err(|_| ServerFnError::new("GITHUB_TOKEN not set"))?;
 
     let client = GitHubClient::new(token);
-    
+
     let data = client
         .get_discussion_detail(&discussion_id)
         .await
@@ -548,6 +554,7 @@ pub use server::*;
 ### 動作確認手順
 
 1. 環境変数を設定：
+
 ```bash
 export GITHUB_ORG="your-org"
 export GITHUB_TOKEN="ghp_xxxxx"
@@ -555,6 +562,7 @@ export GITHUB_DISCUSSIONS_REPO="repo-with-discussions"
 ```
 
 2. 開発サーバーを起動：
+
 ```bash
 bun run dev
 ```
@@ -568,18 +576,18 @@ bun run dev
 
 ## 6. 完了条件チェックリスト
 
-- [ ] GraphQL クエリが定義されている
-  - [ ] `DISCUSSION_CATEGORIES_QUERY`
-  - [ ] `DISCUSSIONS_QUERY`
-  - [ ] `DISCUSSION_DETAIL_QUERY`
-- [ ] 型定義が完了している
-- [ ] GitHubClient にメソッドが追加されている
-- [ ] Server Function が実装されている
-  - [ ] `get_discussion_categories`
-  - [ ] `get_discussions`
-  - [ ] `get_discussion_detail`
-- [ ] 実際のデータが取得できる
-- [ ] ビルドエラーがない
+- [x] GraphQL クエリが定義されている
+  - [x] `DISCUSSION_CATEGORIES_QUERY`
+  - [x] `DISCUSSIONS_QUERY`
+  - [x] `DISCUSSION_DETAIL_QUERY`
+- [x] 型定義が完了している
+- [x] GitHubClient にメソッドが追加されている
+- [x] Server Function が実装されている
+  - [x] `get_discussion_categories`
+  - [x] `get_discussions`
+  - [x] `get_discussion_detail`
+- [ ] 実際のデータが取得できる（要動作確認）
+- [x] ビルドエラーがない
 
 ---
 
@@ -596,3 +604,9 @@ bun run dev
 - **レート制限**: GitHub API のレート制限に注意
 - **Markdown レンダリング**: `bodyHTML` フィールドを使用するとサーバーサイドでレンダリング済み HTML が取得できる
 
+---
+
+## 9. 実装ログ
+
+- 実装日: 2025 年 11 月 28 日
+- ログ: `docs/05_logs/2025_11/20251128/task-11-github-discussions-api.md`

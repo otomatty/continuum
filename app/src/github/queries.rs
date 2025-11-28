@@ -137,3 +137,129 @@ query UserContributions($username: String!, $org: ID!, $from: DateTime!, $to: Da
   }
 }
 "#;
+
+/// Discussion カテゴリ一覧を取得するクエリ
+pub const DISCUSSION_CATEGORIES_QUERY: &str = r#"
+query DiscussionCategories($owner: String!, $name: String!) {
+  repository(owner: $owner, name: $name) {
+    discussionCategories(first: 25) {
+      nodes {
+        id
+        name
+        description
+        emoji
+      }
+    }
+  }
+}
+"#;
+
+/// Discussion 一覧を取得するクエリ
+pub const DISCUSSIONS_QUERY: &str = r#"
+query Discussions(
+  $owner: String!, 
+  $name: String!, 
+  $first: Int!, 
+  $after: String,
+  $categoryId: ID
+) {
+  repository(owner: $owner, name: $name) {
+    discussions(
+      first: $first, 
+      after: $after, 
+      categoryId: $categoryId,
+      orderBy: {field: CREATED_AT, direction: DESC}
+    ) {
+      totalCount
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        endCursor
+        startCursor
+      }
+      nodes {
+        id
+        title
+        body
+        bodyText
+        createdAt
+        updatedAt
+        url
+        author {
+          login
+          avatarUrl
+        }
+        category {
+          id
+          name
+          description
+          emoji
+        }
+        comments {
+          totalCount
+        }
+        reactions {
+          totalCount
+        }
+        labels(first: 10) {
+          nodes {
+            name
+          }
+        }
+      }
+    }
+  }
+}
+"#;
+
+/// 単一の Discussion を取得するクエリ
+pub const DISCUSSION_DETAIL_QUERY: &str = r#"
+query DiscussionDetail($id: ID!) {
+  node(id: $id) {
+    ... on Discussion {
+      id
+      title
+      body
+      bodyHTML
+      bodyText
+      createdAt
+      updatedAt
+      url
+      author {
+        login
+        avatarUrl
+      }
+      category {
+        id
+        name
+        description
+        emoji
+      }
+      comments(first: 50) {
+        totalCount
+        nodes {
+          id
+          body
+          bodyHTML
+          createdAt
+          author {
+            login
+            avatarUrl
+          }
+          reactions {
+            totalCount
+          }
+        }
+      }
+      reactions {
+        totalCount
+      }
+      labels(first: 10) {
+        nodes {
+          name
+        }
+      }
+    }
+  }
+}
+"#;
