@@ -44,6 +44,7 @@ fn ContributorsContent() -> impl IntoView {
     use chrono::Utc;
     let mock_users = [
         User {
+            id: "user-alice".to_string(),
             username: "alice-dev".to_string(),
             display_name: "Alice Developer".to_string(),
             avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alice".to_string(),
@@ -53,6 +54,7 @@ fn ContributorsContent() -> impl IntoView {
             left_at: None,
         },
         User {
+            id: "user-bob".to_string(),
             username: "bob-contrib".to_string(),
             display_name: "Bob Contributor".to_string(),
             avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Bob".to_string(),
@@ -62,6 +64,7 @@ fn ContributorsContent() -> impl IntoView {
             left_at: None,
         },
         User {
+            id: "user-charlie".to_string(),
             username: "charlie-alumni".to_string(),
             display_name: "Charlie Alumni".to_string(),
             avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Charlie".to_string(),
@@ -71,6 +74,7 @@ fn ContributorsContent() -> impl IntoView {
             left_at: Some(Utc::now()),
         },
         User {
+            id: "user-dave".to_string(),
             username: "dave-external".to_string(),
             display_name: "Dave External".to_string(),
             avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Dave".to_string(),

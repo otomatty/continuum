@@ -231,17 +231,51 @@ fn AppHeader() -> impl IntoView {
         "/settings",
     ];
 
-    let is_authenticated = move || {
+    let is_protected_route = move || {
         let current_path = path();
         authenticated_paths
             .iter()
             .any(|p| current_path.starts_with(p))
     };
 
+    // For protected routes, check actual auth status to prevent flickering
+    let auth = crate::hooks::use_auth();
+    let is_auth_loading = move || auth.status.get().is_none();
+    let is_authenticated = move || {
+        auth.status
+            .get()
+            .map(|s| s.authenticated)
+            .unwrap_or(false)
+    };
+
     view! {
-        <Show when=is_authenticated fallback=|| view! { <PublicHeader /> }>
-            <AuthenticatedHeader />
-        </Show>
+        {move || {
+            if is_protected_route() {
+                // For protected routes, show authenticated header only when confirmed authenticated
+                // Show a minimal header during loading to prevent flicker
+                if is_auth_loading() {
+                    // During auth check, show a minimal loading header
+                    view! {
+                        <header class="navbar bg-base-100 shadow-sm">
+                            <div class="flex-1">
+                                <a class="btn btn-ghost text-xl" href="/">"Continuum"</a>
+                            </div>
+                            <div class="flex-none gap-2">
+                                <span class="loading loading-spinner loading-sm"></span>
+                            </div>
+                        </header>
+                    }.into_any()
+                } else if is_authenticated() {
+                    view! { <AuthenticatedHeader /> }.into_any()
+                } else {
+                    // User not authenticated on protected route - will be redirected by AuthGuard
+                    view! { <PublicHeader /> }.into_any()
+                }
+            } else {
+                // For public routes, always show public header
+                view! { <PublicHeader /> }.into_any()
+            }
+        }}
     }
 }
 

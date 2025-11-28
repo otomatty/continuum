@@ -3,7 +3,7 @@ pub mod ranking_table;
 pub mod repository_list;
 pub mod stats_card;
 
-pub use activity_timeline::ActivityTimeline;
+pub use activity_timeline::{ActivityDisplay, ActivityTimeline};
 pub use ranking_table::RankingTable;
 pub use repository_list::RepositoryList;
 pub use stats_card::StatsCard;

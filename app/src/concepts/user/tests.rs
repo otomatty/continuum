@@ -31,6 +31,7 @@ mod tests {
     fn test_add_user() {
         let state = UserState::default();
         let new_user = User {
+            id: "test-user-1".to_string(),
             username: "test-user".to_string(),
             display_name: "Test User".to_string(),
             avatar_url: "https://example.com/avatar.png".to_string(),

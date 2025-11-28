@@ -18,8 +18,6 @@
 mod tests {
     use super::super::actions::*;
     use super::super::state::*;
-    use crate::concepts::repository::state::Repository;
-    use crate::concepts::user::state::{User, UserRole};
     use chrono::{DateTime, Utc};
 
     #[test]
@@ -32,31 +30,11 @@ mod tests {
     #[test]
     fn test_add_activity() {
         let state = ActivityState::default();
-        let user = User {
-            username: "test-user".to_string(),
-            display_name: "Test User".to_string(),
-            avatar_url: "https://example.com/avatar.png".to_string(),
-            github_url: "https://github.com/test-user".to_string(),
-            role: UserRole::CurrentEmployee,
-            joined_at: None,
-            left_at: None,
-        };
-        let repo = Repository {
-            name: "test-repo".to_string(),
-            full_name: "org/test-repo".to_string(),
-            description: None,
-            stars: 0,
-            language: None,
-            updated_at: DateTime::parse_from_rfc3339("2024-01-01T00:00:00Z")
-                .unwrap()
-                .with_timezone(&Utc),
-            contributors: vec![],
-        };
         let new_activity = Activity {
             id: "test-1".to_string(),
             activity_type: ActivityType::Commit,
-            user: user.clone(),
-            repository: repo.clone(),
+            user_id: "user-test".to_string(),
+            repository_id: "repo-test".to_string(),
             title: "Test commit".to_string(),
             created_at: DateTime::parse_from_rfc3339("2024-01-01T00:00:00Z")
                 .unwrap()

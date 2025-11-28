@@ -3,11 +3,12 @@ mod components;
 use crate::components::auth_guard::AuthGuard;
 use crate::concepts::contribution::{
     initialize_mock_contribution_graph, initialize_mock_repository_contributions,
+    ContributionPeriod,
 };
-use crate::concepts::organization::Period;
 use crate::concepts::user::{get_user_by_username, initialize_mock_users};
 use components::{
-    ContributionGraph, ContributionHighlights, RepositoryContributionList, UserProfile,
+    ContributionGraphComponent, ContributionHighlights, RepositoryContributionDisplay,
+    RepositoryContributionList, UserProfile,
 };
 use leptos::prelude::*;
 use leptos_router::params::Params;
@@ -31,8 +32,7 @@ pub struct PortfolioParams {
  *   ├─ app/src/components/badge.rs
  *   ├─ app/src/components/avatar.rs
  *   ├─ app/src/concepts/user/mod.rs
- *   ├─ app/src/concepts/contribution/mod.rs
- *   └─ app/src/concepts/organization/mod.rs
+ *   └─ app/src/concepts/contribution/mod.rs
  *
  * Related Documentation:
  *   └─ docs/03_plans/continuum/prototype-pages.md
@@ -60,15 +60,22 @@ fn PortfolioContent() -> impl IntoView {
     };
 
     let contribution_graph_weekly =
-        move || initialize_mock_contribution_graph(&username(), Period::Weekly);
+        move || initialize_mock_contribution_graph(&username(), ContributionPeriod::Weekly);
 
     let contribution_graph_monthly =
-        move || initialize_mock_contribution_graph(&username(), Period::Monthly);
+        move || initialize_mock_contribution_graph(&username(), ContributionPeriod::Monthly);
 
     // Generate repository contributions once before view! macro to avoid regeneration
     let repository_contributions = initialize_mock_repository_contributions(&username());
 
-    let (selected_period, set_selected_period) = signal(Period::Weekly);
+    // Convert to display format for RepositoryContributionList
+    let repository_contributions_display: Vec<RepositoryContributionDisplay> =
+        repository_contributions
+            .iter()
+            .map(|c| RepositoryContributionDisplay::from_contribution_with_mock(c.clone()))
+            .collect();
+
+    let (selected_period, set_selected_period) = signal(ContributionPeriod::Weekly);
 
     view! {
         <div class="space-y-8">
@@ -78,7 +85,7 @@ fn PortfolioContent() -> impl IntoView {
 
             {move || {
                 let period = selected_period.get();
-                let graph = if period == Period::Weekly {
+                let graph = if period == ContributionPeriod::Weekly {
                     contribution_graph_weekly()
                 } else {
                     contribution_graph_monthly()
@@ -90,26 +97,26 @@ fn PortfolioContent() -> impl IntoView {
                             <div class="join">
                                 <button
                                     class="join-item btn btn-sm"
-                                    class:btn-active=move || selected_period.get() == Period::Weekly
-                                    on:click=move |_| set_selected_period.set(Period::Weekly)
+                                    class:btn-active=move || selected_period.get() == ContributionPeriod::Weekly
+                                    on:click=move |_| set_selected_period.set(ContributionPeriod::Weekly)
                                 >
                                     "Weekly"
                                 </button>
                                 <button
                                     class="join-item btn btn-sm"
-                                    class:btn-active=move || selected_period.get() == Period::Monthly
-                                    on:click=move |_| set_selected_period.set(Period::Monthly)
+                                    class:btn-active=move || selected_period.get() == ContributionPeriod::Monthly
+                                    on:click=move |_| set_selected_period.set(ContributionPeriod::Monthly)
                                 >
                                     "Monthly"
                                 </button>
                             </div>
                         </div>
-                        <ContributionGraph graph=graph />
+                        <ContributionGraphComponent graph=graph />
                     </div>
                 }
             }}
 
-            <RepositoryContributionList contributions=repository_contributions.clone() />
+            <RepositoryContributionList contributions=repository_contributions_display.clone() />
         </div>
     }
 }

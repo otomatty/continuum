@@ -24,6 +24,7 @@ use once_cell::sync::Lazy;
 static MOCK_USERS: Lazy<Vec<User>> = Lazy::new(|| {
     vec![
         User {
+            id: "user-alice".to_string(),
             username: "alice-dev".to_string(),
             display_name: "Alice Developer".to_string(),
             avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=alice".to_string(),
@@ -37,6 +38,7 @@ static MOCK_USERS: Lazy<Vec<User>> = Lazy::new(|| {
             left_at: None,
         },
         User {
+            id: "user-bob".to_string(),
             username: "bob-engineer".to_string(),
             display_name: "Bob Engineer".to_string(),
             avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=bob".to_string(),
@@ -50,6 +52,7 @@ static MOCK_USERS: Lazy<Vec<User>> = Lazy::new(|| {
             left_at: None,
         },
         User {
+            id: "user-charlie".to_string(),
             username: "charlie-coder".to_string(),
             display_name: "Charlie Coder".to_string(),
             avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=charlie".to_string(),
@@ -67,6 +70,7 @@ static MOCK_USERS: Lazy<Vec<User>> = Lazy::new(|| {
             ),
         },
         User {
+            id: "user-diana".to_string(),
             username: "diana-hacker".to_string(),
             display_name: "Diana Hacker".to_string(),
             avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=diana".to_string(),
@@ -76,6 +80,7 @@ static MOCK_USERS: Lazy<Vec<User>> = Lazy::new(|| {
             left_at: None,
         },
         User {
+            id: "user-eve".to_string(),
             username: "eve-maker".to_string(),
             display_name: "Eve Maker".to_string(),
             avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=eve".to_string(),

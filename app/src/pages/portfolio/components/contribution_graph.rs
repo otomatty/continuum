@@ -1,10 +1,9 @@
 use crate::components::card::{Card, CardBody, CardTitle};
-use crate::concepts::contribution::ContributionGraph;
-use crate::concepts::organization::Period;
+use crate::concepts::contribution::{ContributionGraph, ContributionPeriod};
 use leptos::prelude::*;
 
 /**
- * ContributionGraph Component
+ * ContributionGraphComponent
  *
  * DEPENDENCY MAP:
  *
@@ -13,11 +12,13 @@ use leptos::prelude::*;
  *
  * Dependencies (External files that this component imports):
  *   ├─ app/src/components/card.rs
- *   ├─ app/src/concepts/contribution/mod.rs
- *   └─ app/src/concepts/organization/mod.rs
+ *   └─ app/src/concepts/contribution/mod.rs
+ *
+ * Note: ContributionGraph は user_id のみ保持するため、
+ * コンポーネント名を ContributionGraphComponent に変更して型との衝突を回避
  */
 #[component]
-pub fn ContributionGraph(graph: ContributionGraph) -> impl IntoView {
+pub fn ContributionGraphComponent(graph: ContributionGraph) -> impl IntoView {
     let max_commits = graph.data.iter().map(|d| d.commits).max().unwrap_or(1) as f64;
     let max_prs = graph.data.iter().map(|d| d.prs).max().unwrap_or(1) as f64;
     let max_reviews = graph.data.iter().map(|d| d.reviews).max().unwrap_or(1) as f64;
@@ -26,9 +27,9 @@ pub fn ContributionGraph(graph: ContributionGraph) -> impl IntoView {
         <Card>
             <CardTitle>
                 {format!("Contribution Graph ({})", match graph.period {
-                    Period::Weekly => "Weekly",
-                    Period::Monthly => "Monthly",
-                    Period::All => "All Time",
+                    ContributionPeriod::Weekly => "Weekly",
+                    ContributionPeriod::Monthly => "Monthly",
+                    ContributionPeriod::All => "All Time",
                 })}
             </CardTitle>
             <CardBody>

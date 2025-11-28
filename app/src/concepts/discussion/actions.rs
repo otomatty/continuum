@@ -8,12 +8,14 @@
  *   └─ src/concepts/discussion/tests.rs
  *
  * Dependencies (External files that this file imports):
- *   └─ ./state.rs
+ *   ├─ ./state.rs
+ *   └─ pulldown_cmark (Markdownパーサー)
  *
  * Related Documentation:
  *   └─ Spec: ./discussion.spec.md
  */
 use super::state::*;
+use pulldown_cmark::{Event, Parser, Tag};
 
 /// Discussion 一覧を設定
 pub fn set_discussions(state: DiscussionState, discussions: Vec<Discussion>) -> DiscussionState {
@@ -95,18 +97,39 @@ pub fn filter_by_category(discussions: &[Discussion], category_id: &str) -> Vec<
 }
 
 /// 本文プレビューを生成（最初の指定文字数）
+/// pulldown-cmark を使用してMarkdownを正確にパースし、プレーンテキストを抽出
 pub fn generate_preview(body: &str, max_length: usize) -> String {
-    // Markdownの装飾を簡易的に除去
-    let plain_text: String = body
-        .lines()
-        .filter(|line| !line.starts_with('#') && !line.starts_with("```"))
-        .collect::<Vec<_>>()
-        .join(" ");
+    let parser = Parser::new(body);
+    let mut plain_text = String::new();
+    let mut in_code_block = false;
 
-    if plain_text.chars().count() <= max_length {
-        plain_text
+    // Markdownをパースし、テキストコンテンツのみを抽出
+    for event in parser {
+        match event {
+            Event::Start(Tag::CodeBlock(_)) => in_code_block = true,
+            Event::End(Tag::CodeBlock(_)) => in_code_block = false,
+            Event::Text(text) => {
+                if !in_code_block {
+                    if !plain_text.is_empty() && !plain_text.ends_with(' ') {
+                        plain_text.push(' ');
+                    }
+                    plain_text.push_str(&text);
+                }
+            }
+            Event::SoftBreak | Event::HardBreak => {
+                if !plain_text.is_empty() && !plain_text.ends_with(' ') {
+                    plain_text.push(' ');
+                }
+            }
+            _ => (),
+        }
+    }
+
+    let trimmed_text = plain_text.trim();
+    if trimmed_text.chars().count() <= max_length {
+        trimmed_text.to_string()
     } else {
-        let truncated: String = plain_text.chars().take(max_length).collect();
+        let truncated: String = trimmed_text.chars().take(max_length).collect();
         format!("{}...", truncated)
     }
 }

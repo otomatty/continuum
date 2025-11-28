@@ -17,13 +17,61 @@ use leptos::prelude::*;
  *   ├─ app/src/components/badge.rs
  *   ├─ app/src/components/avatar.rs
  *   └─ app/src/concepts/activity/mod.rs
+ *
+ * Note: Activity Concept は ID 参照のみ保持するため、
+ * 表示に必要な情報は ActivityDisplay として UI 層で結合する
  */
+
+/// UI 表示用の Activity データ（Synchronization/UI 層で結合）
+#[derive(Debug, Clone)]
+pub struct ActivityDisplay {
+    pub activity: Activity,
+    pub user_display_name: String,
+    pub user_avatar_url: String,
+    pub repository_name: String,
+}
+
+impl ActivityDisplay {
+    /// Activity と関連データから表示用データを生成
+    pub fn from_activity(
+        activity: Activity,
+        user_display_name: String,
+        user_avatar_url: String,
+        repository_name: String,
+    ) -> Self {
+        Self {
+            activity,
+            user_display_name,
+            user_avatar_url,
+            repository_name,
+        }
+    }
+
+    /// モックデータから表示用データを生成（開発用）
+    pub fn from_activity_with_mock(activity: Activity) -> Self {
+        // ID からモック表示名を生成
+        let user_display_name = format!("User {}", activity.user_id);
+        let user_avatar_url = format!(
+            "https://avatars.githubusercontent.com/u/{}",
+            activity.user_id.chars().take(8).collect::<String>()
+        );
+        let repository_name = activity.repository_id.clone();
+
+        Self {
+            activity,
+            user_display_name,
+            user_avatar_url,
+            repository_name,
+        }
+    }
+}
+
 #[component]
-pub fn ActivityTimeline(activities: Vec<Activity>) -> impl IntoView {
+pub fn ActivityTimeline(activities: Vec<ActivityDisplay>) -> impl IntoView {
     view! {
         <div class="space-y-4">
-            {activities.into_iter().map(|activity| {
-                let activity_type_badge = match activity.activity_type {
+            {activities.into_iter().map(|activity_display| {
+                let activity_type_badge = match activity_display.activity.activity_type {
                     ActivityType::Commit => BadgeVariant::Success,
                     ActivityType::PullRequest => BadgeVariant::Primary,
                     ActivityType::Review => BadgeVariant::Info,
@@ -31,7 +79,7 @@ pub fn ActivityTimeline(activities: Vec<Activity>) -> impl IntoView {
                     ActivityType::Discussion => BadgeVariant::Accent,
                 };
 
-                let activity_type_label = match activity.activity_type {
+                let activity_type_label = match activity_display.activity.activity_type {
                     ActivityType::Commit => "Commit",
                     ActivityType::PullRequest => "PR",
                     ActivityType::Review => "Review",
@@ -39,12 +87,12 @@ pub fn ActivityTimeline(activities: Vec<Activity>) -> impl IntoView {
                     ActivityType::Discussion => "Discussion",
                 };
 
-                let display_name = activity.user.display_name.clone();
-                let avatar_url = activity.user.avatar_url.clone();
-                let repo_name = activity.repository.name.clone();
-                let url = activity.url.clone();
-                let title = activity.title.clone();
-                let created_at = activity.created_at.format("%Y-%m-%d %H:%M").to_string();
+                let display_name = activity_display.user_display_name.clone();
+                let avatar_url = activity_display.user_avatar_url.clone();
+                let repo_name = activity_display.repository_name.clone();
+                let url = activity_display.activity.url.clone();
+                let title = activity_display.activity.title.clone();
+                let created_at = activity_display.activity.created_at.format("%Y-%m-%d %H:%M").to_string();
 
                 view! {
                     <div class="flex gap-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50">

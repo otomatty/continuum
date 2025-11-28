@@ -9,34 +9,32 @@
  *   └─ src/concepts/contribution/tests.rs
  *
  * Dependencies (External files that this file imports):
- *   ├─ ./state.rs
- *   ├─ crate::concepts::user::actions::initialize_mock_users
- *   ├─ crate::concepts::repository::actions::initialize_mock_repositories
- *   └─ crate::concepts::organization::state::Period
+ *   └─ ./state.rs
  *
  * Related Documentation:
  *   ├─ Spec: ./contribution.spec.md
  *   └─ Plan: docs/03_plans/continuum/legible-architecture-refactoring.md
+ *
+ * Note: Legible Architecture の「Concept の独立性」原則に従い、
+ * 他の Concept を直接参照しない。モックデータは ID 参照のみで構成し、
+ * 実際のデータ結合は Synchronization 層で行う
  */
-use super::state::{ContributionDay, ContributionGraph, ContributionState, RepositoryContribution};
-use crate::concepts::organization::state::Period;
+use super::state::{
+    ContributionDay, ContributionGraph, ContributionPeriod, ContributionState,
+    RepositoryContribution,
+};
 use chrono::{Duration, Utc};
 
-// Note: モックデータ生成のため、userとrepository conceptのinitialize関数を使用
-// これは初期化時のみの依存で、通常のアクションでは他のConceptを参照しない
-use crate::concepts::repository::actions::initialize_mock_repositories;
-use crate::concepts::user::actions::{get_user_by_username, initialize_mock_users};
-
 /// Initialize mock contribution graph for development/testing
-pub fn initialize_mock_contribution_graph(username: &str, period: Period) -> ContributionGraph {
-    let user_state = initialize_mock_users();
-    let user =
-        get_user_by_username(&user_state, username).unwrap_or_else(|| user_state.users[0].clone());
-
+/// Note: User は ID のみ参照し、Concept の独立性を維持
+pub fn initialize_mock_contribution_graph(
+    user_id: &str,
+    period: ContributionPeriod,
+) -> ContributionGraph {
     let days = match period {
-        Period::Weekly => 7,
-        Period::Monthly => 30,
-        Period::All => 365,
+        ContributionPeriod::Weekly => 7,
+        ContributionPeriod::Monthly => 30,
+        ContributionPeriod::All => 365,
     };
 
     let mut data = Vec::new();
@@ -54,28 +52,38 @@ pub fn initialize_mock_contribution_graph(username: &str, period: Period) -> Con
         });
     }
 
-    ContributionGraph { user, data, period }
+    ContributionGraph {
+        user_id: user_id.to_string(),
+        data,
+        period,
+    }
 }
 
 /// Initialize mock repository contributions for development/testing
-pub fn initialize_mock_repository_contributions(username: &str) -> Vec<RepositoryContribution> {
-    let repos = initialize_mock_repositories().repositories;
+/// Note: Repository は ID のみ参照し、Concept の独立性を維持
+pub fn initialize_mock_repository_contributions(user_id: &str) -> Vec<RepositoryContribution> {
+    // モックリポジトリ ID のリスト
+    let mock_repos = vec![
+        ("awesome-rust", 1200, 15.5),
+        ("web-framework", 800, 25.0),
+        ("cli-tool", 500, 10.0),
+        ("data-processor", 300, 5.0),
+    ];
 
-    repos
-        .iter()
-        .map(|repo| RepositoryContribution {
-            repository: repo.clone(),
-            commits: (repo.stars / 10),
-            prs: (repo.stars / 20),
-            reviews: (repo.stars / 30),
-            lines_added: (repo.stars * 5),
-            lines_deleted: (repo.stars * 2),
-            percentage: repo
-                .contributors
-                .iter()
-                .find(|c| c.user.username == username)
-                .map(|c| c.percentage)
-                .unwrap_or(0.0),
+    mock_repos
+        .into_iter()
+        .map(|(repo_id, stars, percentage)| RepositoryContribution {
+            repository_id: repo_id.to_string(),
+            commits: stars / 10,
+            prs: stars / 20,
+            reviews: stars / 30,
+            lines_added: stars * 5,
+            lines_deleted: stars * 2,
+            percentage: if user_id == "alice" {
+                percentage
+            } else {
+                percentage * 0.5
+            },
         })
         .collect()
 }
@@ -91,4 +99,22 @@ pub fn add_contribution_graph(
         graphs: new_graphs,
         ..state
     }
+}
+
+/// Find contribution graph by user ID
+pub fn find_contribution_graph_by_user<'a>(
+    state: &'a ContributionState,
+    user_id: &str,
+) -> Option<&'a ContributionGraph> {
+    state.graphs.iter().find(|g| g.user_id == user_id)
+}
+
+/// Filter repository contributions by repository ID
+pub fn filter_by_repository<'a>(
+    contributions: &'a [RepositoryContribution],
+    repository_id: &str,
+) -> Option<&'a RepositoryContribution> {
+    contributions
+        .iter()
+        .find(|c| c.repository_id == repository_id)
 }
